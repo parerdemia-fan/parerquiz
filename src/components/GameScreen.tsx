@@ -1,4 +1,4 @@
-import type { GameSettings, Talent, GameMode, DebugMode } from '../types';
+import type { GameSettings, DebugMode } from '../types';
 // 値として使用するものは通常のインポート
 import { useState, useEffect } from 'react';
 import { useGame } from '../hooks/useGame';

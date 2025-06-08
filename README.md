@@ -1,54 +1,72 @@
-# React + TypeScript + Vite
+# パレクイズ～めざせ！パレデミア学園60名完全マスター！～
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+パレデミア学園の60名のアイドルを覚えるクイズゲーム！名前当てモード・顔当てモードで楽しく学習できます。
 
-Currently, two official plugins are available:
+## 🎮 ゲーム概要
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **出題範囲**: バゥ寮、ミュゥ寮、クゥ寮、ウィニー寮、または全寮から選択可能
+- **ゲームモード**: 
+  - 名前当てモード（画像から名前を当てる）
+  - 顔当てモード（プロフィールから顔を当てる）
+- **難易度**: 
+  - ふつう（基本モード）
+  - むずかしい（似た髪色の人が優先的に選択肢に登場）
+  - 寮生専用（シルエット表示モード）
 
-## Expanding the ESLint configuration
+## 🏆 バッジシステム
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+各出題範囲と難易度の組み合わせで全問正解すると、バッジを獲得できます。
+- **銅バッジ**: ふつう難易度で全問正解
+- **銀バッジ**: むずかしい難易度で全問正解  
+- **金バッジ**: 寮生専用難易度で全問正解
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 🌐 プレイ
+
+**公式サイト**: [https://parerdemia-fan.github.io/parerquiz/](https://parerdemia-fan.github.io/parerquiz/)
+
+## 💻 技術スタック
+
+- React 19
+- TypeScript
+- Vite 6
+- Tailwind CSS v4
+- GitHub Pages
+
+## 🛠️ 開発環境
+
+### 必要な環境
+- Node.js 20以上
+- npm
+
+### セットアップ
+
+```bash
+# 依存関係のインストール
+npm ci
+
+# 開発サーバーの起動
+npm run dev
+
+# ビルド
+npm run build
+
+# プレビュー（ビルド後の確認）
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📦 デプロイ
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+GitHub Actionsを使用してGitHub Pagesに自動デプロイされます。
+`main`ブランチへのプッシュで自動的にビルド・デプロイが実行されます。
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
+## ⚠️ 注意事項
+
+このゲームは二次創作物であり、非公式のものです。
+パレデミア学園の公式サイト: [https://www.parerdemia.jp/](https://www.parerdemia.jp/)
+
+## 📄 ライセンス
+
+このプロジェクトはMITライセンスの下で公開されています。
   },
 })
 ```

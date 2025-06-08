@@ -1,4 +1,4 @@
-import type { Badge as BadgeType, Dormitory, Difficulty } from '../types';
+import type { Dormitory, Difficulty } from '../types';
 
 interface BadgeProps {
   dormitory: Dormitory;
