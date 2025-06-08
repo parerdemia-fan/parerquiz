@@ -1,0 +1,483 @@
+@import 'tailwindcss';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'M PLUS Rounded 1c', 'Noto Sans JP', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-stroke: 0.01em transparent;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'M PLUS Rounded 1c', 'Noto Sans JP', sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* カスタムフォントクラス */
+.font-rounded {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+}
+
+.font-elegant {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* テキストシャドウユーティリティ */
+.text-shadow-soft {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.text-shadow-glow {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* 虹色グラデーションアニメーション */
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.bg-rainbow-animated {
+  background: linear-gradient(-45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #fd79a8, #a29bfe, #6c5ce7);
+  background-size: 400% 400%;
+  animation: rainbow 3s ease infinite;
+}
+
+/* バッジ関連のアニメーション */
+@keyframes badgeGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
+  50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
+}
+
+.badge-gold {
+  animation: badgeGlow 2s ease-in-out infinite;
+}
+
+@keyframes badgeSilverGlow {
+  0%, 100% { 
+    box-shadow: 
+      0 0 15px rgba(192, 192, 192, 0.6), 
+      0 0 30px rgba(192, 192, 192, 0.4),
+      0 0 45px rgba(192, 192, 192, 0.2),
+      inset 0 0 10px rgba(255, 255, 255, 0.3);
+    transform: scale(1);
+    filter: brightness(1) saturate(1.2);
+  }
+  25% {
+    box-shadow: 
+      0 0 25px rgba(192, 192, 192, 0.8), 
+      0 0 40px rgba(192, 192, 192, 0.6),
+      0 0 60px rgba(192, 192, 192, 0.3),
+      0 0 80px rgba(192, 192, 192, 0.1),
+      inset 0 0 15px rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+    filter: brightness(1.1) saturate(1.4);
+  }
+  50% { 
+    box-shadow: 
+      0 0 30px rgba(192, 192, 192, 0.9), 
+      0 0 50px rgba(192, 192, 192, 0.7),
+      0 0 70px rgba(192, 192, 192, 0.4),
+      0 0 90px rgba(192, 192, 192, 0.2),
+      inset 0 0 20px rgba(255, 255, 255, 0.5);
+    transform: scale(1.08);
+    filter: brightness(1.2) saturate(1.5);
+  }
+  75% {
+    box-shadow: 
+      0 0 25px rgba(192, 192, 192, 0.8), 
+      0 0 40px rgba(192, 192, 192, 0.6),
+      0 0 60px rgba(192, 192, 192, 0.3),
+      0 0 80px rgba(192, 192, 192, 0.1),
+      inset 0 0 15px rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+    filter: brightness(1.1) saturate(1.4);
+  }
+}
+
+.badge-silver {
+  animation: badgeSilverGlow 2s ease-in-out infinite;
+  position: relative;
+}
+
+.badge-silver::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, transparent, rgba(192, 192, 192, 0.3), transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: silverShimmer 3s linear infinite;
+  z-index: -1;
+}
+
+@keyframes silverShimmer {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes badgeGoldGlow {
+  0%, 100% { 
+    box-shadow: 
+      0 0 20px rgba(255, 215, 0, 0.6), 
+      0 0 40px rgba(255, 215, 0, 0.4), 
+      0 0 60px rgba(255, 215, 0, 0.2),
+      0 0 80px rgba(255, 215, 0, 0.1),
+      inset 0 0 15px rgba(255, 255, 255, 0.4);
+    transform: scale(1);
+    filter: brightness(1) saturate(1.3) hue-rotate(0deg);
+  }
+  20% {
+    box-shadow: 
+      0 0 30px rgba(255, 215, 0, 0.8), 
+      0 0 60px rgba(255, 215, 0, 0.6), 
+      0 0 90px rgba(255, 215, 0, 0.3),
+      0 0 120px rgba(255, 215, 0, 0.15),
+      inset 0 0 20px rgba(255, 255, 255, 0.5);
+    transform: scale(1.06);
+    filter: brightness(1.15) saturate(1.5) hue-rotate(5deg);
+  }
+  40% {
+    box-shadow: 
+      0 0 40px rgba(255, 215, 0, 0.9), 
+      0 0 70px rgba(255, 215, 0, 0.7), 
+      0 0 100px rgba(255, 215, 0, 0.4),
+      0 0 130px rgba(255, 215, 0, 0.2),
+      inset 0 0 25px rgba(255, 255, 255, 0.6);
+    transform: scale(1.1);
+    filter: brightness(1.25) saturate(1.7) hue-rotate(10deg);
+  }
+  60% {
+    box-shadow: 
+      0 0 35px rgba(255, 215, 0, 0.85), 
+      0 0 65px rgba(255, 215, 0, 0.65), 
+      0 0 95px rgba(255, 215, 0, 0.35),
+      0 0 125px rgba(255, 215, 0, 0.18),
+      inset 0 0 22px rgba(255, 255, 255, 0.55);
+    transform: scale(1.08);
+    filter: brightness(1.2) saturate(1.6) hue-rotate(8deg);
+  }
+  80% {
+    box-shadow: 
+      0 0 25px rgba(255, 215, 0, 0.75), 
+      0 0 50px rgba(255, 215, 0, 0.55), 
+      0 0 75px rgba(255, 215, 0, 0.25),
+      0 0 100px rgba(255, 215, 0, 0.12),
+      inset 0 0 18px rgba(255, 255, 255, 0.45);
+    transform: scale(1.04);
+    filter: brightness(1.1) saturate(1.4) hue-rotate(3deg);
+  }
+}
+
+.badge-gold-enhanced {
+  animation: badgeGoldGlow 1.8s ease-in-out infinite;
+  position: relative;
+}
+
+.badge-gold-enhanced::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, 
+    transparent, 
+    rgba(255, 215, 0, 0.4), 
+    transparent, 
+    rgba(255, 255, 255, 0.6), 
+    transparent,
+    rgba(255, 140, 0, 0.3),
+    transparent);
+  animation: goldShimmer 2.5s linear infinite;
+  z-index: -1;
+}
+
+.badge-gold-enhanced::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: linear-gradient(-45deg, 
+    transparent, 
+    rgba(255, 215, 0, 0.3), 
+    transparent, 
+    rgba(255, 255, 255, 0.4), 
+    transparent);
+  animation: goldShimmer 2s linear infinite reverse;
+  z-index: -1;
+}
+
+@keyframes goldShimmer {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.05); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* バッジ取得ポップアップアニメーション */
+@keyframes badgePopup {
+  0% {
+    transform: translateY(100vh) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(-20px) scale(1.1);
+    opacity: 1;
+  }
+  30% {
+    transform: translateY(10px) scale(0.95);
+    opacity: 1;
+  }
+  40% {
+    transform: translateY(-5px) scale(1.02);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(0px) scale(1);
+    opacity: 1;
+  }
+  85% {
+    transform: translateY(0px) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) scale(0.8);
+    opacity: 0;
+  }
+}
+
+.badge-popup-animation {
+  animation: badgePopup 4s ease-out forwards;
+}
+
+/* キラキラエフェクト */
+@keyframes sparkle {
+  0%, 100% { 
+    transform: scale(0) rotate(0deg); 
+    opacity: 0; 
+  }
+  50% { 
+    transform: scale(1) rotate(180deg); 
+    opacity: 1; 
+  }
+}
+
+.sparkle-effect {
+  animation: sparkle 1.5s infinite;
+}
+
+.sparkle-effect:nth-child(1) { animation-delay: 0s; }
+.sparkle-effect:nth-child(2) { animation-delay: 0.3s; }
+.sparkle-effect:nth-child(3) { animation-delay: 0.6s; }
+.sparkle-effect:nth-child(4) { animation-delay: 0.9s; }
+.sparkle-effect:nth-child(5) { animation-delay: 1.2s; }
+
+/* モーダルアニメーション */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* 正解・不正解エフェクト用アニメーション */
+@keyframes gentlePulse {
+  0%, 100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.95;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes subtleShimmer {
+  0%, 100% { 
+    background-position: -200% center;
+    opacity: 0.1;
+  }
+  50% { 
+    background-position: 200% center;
+    opacity: 0.2;
+  }
+}
+
+.gentle-pulse {
+  animation: gentlePulse 2s ease-in-out infinite;
+}
+
+.subtle-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  background-size: 200% 100%;
+  animation: subtleShimmer 3s ease-in-out infinite;
+}
+
+/* 派手な正解エフェクト用アニメーション */
+@keyframes correctCelebration {
+  0% { 
+    transform: scale(1) rotate(0deg);
+    filter: hue-rotate(0deg) saturate(1) brightness(1);
+  }
+  25% { 
+    transform: scale(1.05) rotate(1deg);
+    filter: hue-rotate(10deg) saturate(1.2) brightness(1.1);
+  }
+  50% { 
+    transform: scale(1.02) rotate(-1deg);
+    filter: hue-rotate(20deg) saturate(1.4) brightness(1.2);
+  }
+  75% { 
+    transform: scale(1.03) rotate(0.5deg);
+    filter: hue-rotate(10deg) saturate(1.2) brightness(1.1);
+  }
+  100% { 
+    transform: scale(1) rotate(0deg);
+    filter: hue-rotate(0deg) saturate(1) brightness(1);
+  }
+}
+
+@keyframes correctGlow {
+  /* このアニメーションを無効化 */
+  0%, 100% { 
+    box-shadow: none;
+  }
+  50% { 
+    box-shadow: none;
+  }
+}
+
+@keyframes correctShimmer {
+  0% { 
+    background-position: -200% center;
+    opacity: 0;
+  }
+  50% { 
+    background-position: 200% center;
+    opacity: 0.3;
+  }
+  100% {
+    background-position: 400% center;
+    opacity: 0;
+  }
+}
+
+@keyframes correctParticles {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-40px) rotate(360deg) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes correctRainbow {
+  0% { filter: hue-rotate(0deg); }
+  25% { filter: hue-rotate(90deg); }
+  50% { filter: hue-rotate(180deg); }
+  75% { filter: hue-rotate(270deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+.correct-celebration {
+  animation: correctCelebration 1.5s ease-in-out infinite;
+}
+
+.correct-glow {
+  animation: none;
+}
+
+.correct-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.correct-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: correctShimmer 2s linear infinite;
+  z-index: 1;
+}
+
+.correct-particles {
+  position: relative;
+}
+
+.correct-particles::after {
+  content: '✨🌟💫⭐✨🌟💫⭐';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 1.2rem;
+  pointer-events: none;
+  animation: correctParticles 2s ease-out infinite;
+  z-index: 2;
+}
+
+.correct-rainbow-text {
+  animation: correctRainbow 3s linear infinite;
+}
