@@ -485,25 +485,33 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       {/* タイトルに戻るボタン - 左上固定 */}
       <button
         onClick={onBackToTitle}
-        className="fixed top-4 left-4 z-10 px-3 py-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-md text-gray-700 font-medium font-rounded hover:bg-white transition-all duration-200 text-sm"
+        className="fixed top-4 left-4 z-10 lg:px-3 lg:py-2 lg:bg-white/90 lg:backdrop-blur-sm lg:rounded-lg lg:shadow-md lg:text-gray-700 lg:font-medium lg:font-rounded lg:hover:bg-white lg:transition-all lg:duration-200 lg:text-sm w-12 h-12 lg:w-auto lg:h-auto bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:shadow-lg transition-all duration-200 hover:scale-110 active:scale-95 border border-white/50 flex items-center justify-center lg:inline-flex text-gray-700 hover:text-purple-600"
       >
-        タイトルに戻る
+        <span className="lg:hidden text-xl">←</span>
+        <span className="hidden lg:inline">タイトルに戻る</span>
       </button>
 
       {/* メインコンテンツ */}
-      <div className="min-h-screen flex flex-col p-4">
+      <div className="min-h-screen flex flex-col p-2 md:p-4">
         {/* ゲームタイトル */}
-        <div className="text-center py-4">
-          <h1 className="text-2xl md:text-3xl font-black font-rounded bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+        <div className="text-center py-2 md:py-4 relative">
+          <h1 className="text-xl md:text-3xl font-black font-rounded bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
             パレクイズ
           </h1>
-          <p className="text-sm text-gray-600 font-medium font-elegant">
+          <p className="text-sm text-gray-600 font-medium font-elegant hidden lg:block">
             ～めざせ！パレデミア学園60名完全マスター！～
           </p>
+          
+          {/* モバイル用の問題数表示 - タイトル右に配置 */}
+          <div className="absolute top-1/2 right-0 transform -translate-y-1/2 lg:hidden">
+            <span className="text-xs font-medium font-rounded text-gray-600 bg-white/60 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
+              {gameState.currentQuestion + 1}/{gameState.totalQuestions}
+            </span>
+          </div>
         </div>
 
         {/* ヘッダー - プログレスバーのみ */}
-        <header className="mb-6">
+        <header className="mb-4 md:mb-6 hidden lg:block">
           <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-4 max-w-4xl mx-auto w-full">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium font-rounded text-gray-600">
@@ -525,8 +533,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         </header>
 
         {/* メインコンテンツエリア */}
-        <div className="flex-1 max-w-4xl mx-auto w-full pb-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+        <div className="flex-1 max-w-4xl mx-auto w-full pb-1 md:pb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-6 h-full">
             {/* 問題表示エリア */}
             <div className="flex flex-col">
               <QuestionDisplay
@@ -539,8 +547,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
             {/* 回答選択肢エリア */}
             <div className="flex flex-col">
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/50 flex-1 min-h-0">
-                <h3 className="text-lg font-bold font-rounded text-gray-800 mb-4">選択肢</h3>
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-1 md:p-6 border border-white/50 flex-1 min-h-0">
+                <h3 className="text-lg font-bold font-rounded text-gray-800 mb-2 md:mb-4 hidden lg:block">選択肢</h3>
                 <div className="h-full overflow-y-auto">
                   <AnswerOptions
                     options={currentQuestion.options}

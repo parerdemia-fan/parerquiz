@@ -132,16 +132,16 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-1 md:space-y-4">
       {/* 選択肢グリッド */}
-      <div className="grid grid-cols-2 gap-4 p-2">
+      <div className="grid grid-cols-2 gap-0.5 md:gap-4 p-0 md:p-2">
         {options.map((talent, index) => (
           <button
             key={talent.studentId}
             onClick={() => onAnswer(index)}
             disabled={isAnswered}
             className={`
-              relative rounded-xl font-medium font-rounded transition-all duration-300 shadow-lg hover:shadow-xl
+              relative rounded-lg md:rounded-xl font-medium font-rounded transition-all duration-300 shadow-lg hover:shadow-xl
               ${getOptionStyle(index, talent)}
               ${!isAnswered ? 'active:scale-[0.98] cursor-pointer transform hover:scale-[1.01] hover:-translate-y-0.5' : 'cursor-default'}
             `}
@@ -150,7 +150,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
               // 名前当てモード: 回答前は名前のみ、回答後は画像付き
               <div>
                 {!isAnswered ? (
-                  <div className="w-full aspect-square flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-lg relative overflow-hidden border-2 border-indigo-200/50 shadow-inner">
+                  <div className="w-full aspect-[4/3] md:aspect-square flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-md md:rounded-lg relative overflow-hidden border-2 border-indigo-200/50 shadow-inner">
                     {/* 装飾的な背景パターン */}
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 via-purple-100/20 to-pink-100/30"></div>
                     <div className="absolute inset-0">
@@ -177,13 +177,13 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
                     <div className="absolute inset-6 border border-indigo-200/30 rounded-lg bg-gradient-to-br from-white/20 via-transparent to-purple-100/20"></div>
                     
                     {/* メインコンテンツ - 縦方向中央揃えに調整 */}
-                    <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-4">
+                    <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-1 md:p-4">
                       {/* カナ表示 - 名前の上に配置 */}
                       <div className={`${getKanaFontSize(talent.kana)} font-medium text-indigo-500/80 mb-1 leading-tight`}>
                         {talent.kana}
                       </div>
                       {/* 名前表示 - 縦方向完全中央、カナ削除 */}
-                      <div className={`${getOptionNameFontSize(talent.name)} font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight drop-shadow-sm whitespace-nowrap px-2`}>
+                      <div className={`${getOptionNameFontSize(talent.name)} font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight drop-shadow-sm whitespace-nowrap px-1 md:px-2`}>
                         {talent.name}
                       </div>
                     </div>
@@ -202,13 +202,13 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
                     <img
                       src={`/parerquiz/assets/images/portrait/${talent.studentId}.webp`}
                       alt={talent.name}
-                      className="w-full aspect-square object-cover rounded-lg"
+                      className="w-full aspect-[4/3] md:aspect-square object-cover rounded-md md:rounded-lg"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==';
                       }}
                     />
-                    <div className="absolute bottom-1 left-1 right-1 bg-black/60 text-white px-2 py-1 rounded-b-lg">
+                    <div className="absolute bottom-1 left-1 right-1 bg-black/60 text-white px-2 py-1 rounded-b-md md:rounded-b-lg">
                       <span className={`${getNameBandFontSize(talent.name)} font-medium font-rounded whitespace-nowrap`}>{talent.name}</span>
                     </div>
                   </div>
@@ -220,7 +220,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
                 <img
                   src={`/parerquiz/assets/images/portrait/${talent.studentId}.webp`}
                   alt={isAnswered ? talent.name : '???'}
-                  className={`w-full aspect-square object-cover rounded-lg ${
+                  className={`w-full aspect-[4/3] md:aspect-square object-cover rounded-md md:rounded-lg ${
                     isAdvancedMode && !isAnswered 
                       ? 'filter brightness-0 contrast-200 sepia-100 hue-rotate-180 saturate-200 opacity-80' 
                       : ''
@@ -235,7 +235,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
                   }}
                 />
                 {isAnswered && (
-                  <div className="absolute bottom-1 left-1 right-1 bg-black/60 text-white px-2 py-1 rounded-b-lg">
+                  <div className="absolute bottom-1 left-1 right-1 bg-black/60 text-white px-2 py-1 rounded-b-md md:rounded-b-lg">
                     <span className={`${getNameBandFontSize(talent.name)} font-medium font-rounded whitespace-nowrap`}>{talent.name}</span>
                   </div>
                 )}
@@ -247,7 +247,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
 
       {/* 回答結果表示 */}
       {isAnswered && (
-        <div className="mt-6">
+        <div className="mt-2 md:mt-6">
           {isCorrect ? (
             // 正解時の表示 - 派手なエフェクト
             <div className="relative overflow-hidden bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 rounded-2xl p-4 shadow-lg correct-celebration correct-glow correct-shimmer correct-particles">

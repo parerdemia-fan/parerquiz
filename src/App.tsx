@@ -171,7 +171,7 @@ function App() {
           <h1 className="text-4xl md:text-6xl font-black font-rounded bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent mb-2 text-shadow-soft">
             パレクイズ
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 font-medium font-elegant">
+          <p className="text-sm md:text-lg lg:text-xl text-gray-600 font-medium font-elegant">
             ～めざせ！パレデミア学園60名完全マスター！～
           </p>
           
@@ -222,7 +222,7 @@ function App() {
                         {dorm.name}
                       </div>
                       {badge && (
-                        <div className="text-xs text-gray-500 mt-1">
+                        <div className="text-xs text-gray-500 mt-1 hidden md:block">
                           {badge.difficulty === 'ふつう' ? 'ベーシック' : 
                            badge.difficulty === 'むずかしい' ? 'アドバンス' : 
                            badge.difficulty === '寮生専用' ? 'エキスパート' : badge.difficulty}
@@ -279,19 +279,19 @@ function App() {
                 </span>
                 ゲームモード
               </h2>
-              <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
                 {gameModes.map((mode) => (
                   <button
                     key={mode.id}
                     onClick={() => handleGameModeSelect(mode.id)}
-                    className={`w-full text-left px-4 py-3 rounded-xl font-bold font-rounded transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
+                    className={`text-center px-4 py-3 rounded-xl font-bold font-rounded transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
                       selectedGameMode === mode.id
                         ? `bg-gradient-to-r ${mode.color} text-white shadow-lg ring-2 ring-white/50`
                         : 'bg-white/80 text-gray-700 hover:bg-white shadow-md border border-gray-200/50 hover:shadow-lg'
                     }`}
                   >
                     <div className="font-bold">{mode.name}</div>
-                    <div className="text-sm opacity-90">{mode.description}</div>
+                    <div className="text-sm opacity-90 hidden md:block">{mode.description}</div>
                   </button>
                 ))}
               </div>

@@ -50,12 +50,13 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
   const renderTalentDetails = () => (
     <>
       {/* 将来の夢 */}
-      <div className="bg-yellow-50 p-4 rounded-lg text-left mb-4">
+      <div className="bg-yellow-50 p-4 rounded-lg text-left mb-4 hidden md:block">
         <h3 className="font-bold font-rounded text-yellow-700 mb-2">将来の夢</h3>
         <p className="text-sm text-gray-700 font-elegant">{getDreamText()}</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+      {/* 趣味と特技を横並び */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mb-4 hidden md:grid">
         <div className="bg-purple-50 p-4 rounded-lg">
           <h3 className="font-bold font-rounded text-purple-700 mb-2">趣味</h3>
           <ul className="text-sm text-gray-700 font-elegant">
@@ -73,7 +74,9 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
           </ul>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-left">
+
+      {/* 好きなものとその他を横並び */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left hidden md:grid">
         <div className="bg-pink-50 p-4 rounded-lg">
           <h3 className="font-bold font-rounded text-pink-700 mb-2">好きなもの</h3>
           <ul className="text-sm text-gray-700 font-elegant">
@@ -94,18 +97,18 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
   );
 
   return (
-    <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/50">
+    <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-2 md:p-6 border border-white/50">
       {gameMode === 'name' ? (
         // 名前当てモード: タレント画像と詳細情報を表示
         <div className="text-center">
-          <h2 className="text-2xl font-bold font-rounded text-gray-800 mb-4">
+          <h2 className="text-lg md:text-2xl font-bold font-rounded text-gray-800 mb-1 md:mb-4">
             この子の名前は？
           </h2>
-          <div className="mb-4 relative">
+          <div className="mb-1 md:mb-4 relative">
             <img
               src={`/parerquiz/assets/images/${isAdvancedMode ? 'portrait' : 'ogp'}/${talent.studentId}.${isAdvancedMode ? 'webp' : 'png'}`}
               alt={talent.name}
-              className={`w-full max-w-md mx-auto rounded-xl shadow-md ${
+              className={`w-full ${isAdvancedMode ? 'max-w-xs md:max-w-md' : 'max-w-md'} mx-auto rounded-xl shadow-md ${
                 isAdvancedMode && !isAnswered
                   ? 'filter brightness-0 contrast-200 sepia-100 hue-rotate-180 saturate-200 opacity-80' 
                   : isAdvancedMode && isAnswered
@@ -124,7 +127,7 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
             
             {/* 寮生専用モードの名前当てモードで回答後に名前帯を表示 */}
             {isAdvancedMode && isAnswered && (
-              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-[calc(100%-16px)] max-w-[calc(456px-16px)]">
+              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-[calc(100%-16px)] max-w-[calc(320px-16px)] md:max-w-[calc(456px-16px)]">
                 <div className="bg-black/60 text-white px-3 py-2 rounded-lg backdrop-blur-sm">
                   <span className="text-lg font-bold font-rounded text-center block whitespace-nowrap overflow-hidden text-ellipsis">
                     {talent.name}
@@ -138,11 +141,11 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
         </div>
       ) : (
         // 顔当てモード: タレント名と詳細情報を表示
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-1 md:space-y-4">
           {/* タレント名（美しいカード風デザイン） */}
           <div className="relative bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl p-1 shadow-2xl transform hover:scale-[1.02] transition-all duration-300">
             {/* 内側の白いカード */}
-            <div className="bg-white rounded-xl p-8 relative overflow-hidden">
+            <div className="bg-white rounded-xl p-2 md:p-8 relative overflow-hidden">
               {/* 装飾的な背景パターン */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-purple-50/40 to-pink-50/40"></div>
               <div className="absolute inset-0 bg-gradient-to-tl from-indigo-50/30 via-transparent to-purple-50/30"></div>
@@ -154,19 +157,19 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
               <div className="absolute bottom-1/3 right-1/4 w-24 h-24 bg-gradient-to-tl from-purple-200/20 to-pink-200/15 rounded-full blur-xl"></div>
 
               {/* メインコンテンツ */}
-              <div className="relative z-10 space-y-4">
+              <div className="relative z-10 space-y-1 md:space-y-4">
                 {/* 読み仮名 */}
-                <div className="text-sm font-medium text-gray-500 tracking-wider uppercase mb-2">
+                <div className="text-xs md:text-sm font-medium text-gray-500 tracking-wider uppercase mb-1 md:mb-2">
                   {talent.kana}
                 </div>
                 
                 {/* タレント名 - 動的フォントサイズ適用 */}
-                <h2 className={`${getNameFontSize(talent.name)} font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight drop-shadow-sm mb-6 whitespace-nowrap`}>
+                <h2 className={`${getNameFontSize(talent.name)} font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight drop-shadow-sm mb-2 md:mb-6 whitespace-nowrap`}>
                   {talent.name}
                 </h2>
                 
                 {/* 質問文 */}
-                <div className="relative bg-gradient-to-r from-amber-100 via-yellow-50 to-orange-100 rounded-2xl p-6 border-2 border-amber-200/50 shadow-lg overflow-hidden">
+                <div className="relative bg-gradient-to-r from-amber-100 via-yellow-50 to-orange-100 rounded-2xl p-2 md:p-6 border-2 border-amber-200/50 shadow-lg overflow-hidden">
                   {/* 装飾的な背景要素 */}
                   <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-yellow-200/20 to-orange-200/20 rounded-full blur-2xl"></div>
                   <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-amber-200/20 to-yellow-200/20 rounded-full blur-2xl"></div>
@@ -178,10 +181,10 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
                   <div className="absolute bottom-3 left-6 text-amber-500/60 text-base animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '2.1s' }}>💡</div>
                   
                   <div className="relative z-10 text-center">
-                    <h3 className="text-xl md:text-2xl font-black bg-gradient-to-r from-amber-600 via-orange-600 to-red-500 bg-clip-text text-transparent leading-tight mb-2 drop-shadow-sm">
+                    <h3 className="text-base md:text-xl lg:text-2xl font-black bg-gradient-to-r from-amber-600 via-orange-600 to-red-500 bg-clip-text text-transparent leading-tight mb-1 md:mb-2 drop-shadow-sm">
                       この子はどれかな？
                     </h3>
-                    <div className="flex items-center justify-center space-x-2 text-amber-700/80">
+                    <div className="hidden md:flex items-center justify-center space-x-2 text-amber-700/80">
                       <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
                       <span className="text-sm font-medium tracking-wide">顔をよく見て選んでね</span>
                       <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
