@@ -106,11 +106,13 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
               src={`/parerquiz/assets/images/${isAdvancedMode ? 'portrait' : 'ogp'}/${talent.studentId}.${isAdvancedMode ? 'webp' : 'png'}`}
               alt={talent.name}
               className={`w-full max-w-md mx-auto rounded-xl shadow-md ${
-                isAdvancedMode 
+                isAdvancedMode && !isAnswered
                   ? 'filter brightness-0 contrast-200 sepia-100 hue-rotate-180 saturate-200 opacity-80' 
+                  : isAdvancedMode && isAnswered
+                  ? 'silhouette-to-normal'
                   : ''
               }`}
-              style={isAdvancedMode ? {
+              style={isAdvancedMode && !isAnswered ? {
                 filter: 'brightness(0) contrast(1) drop-shadow(0 0 0 #4a5568) sepia(1) saturate(0) hue-rotate(0deg)',
                 WebkitFilter: 'brightness(0) contrast(1) drop-shadow(0 0 0 #4a5568) sepia(1) saturate(0) hue-rotate(0deg)'
               } : {}}
@@ -119,6 +121,17 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
                 target.src = '/parerquiz/assets/images/parerdemia-logo.png';
               }}
             />
+            
+            {/* 寮生専用モードの名前当てモードで回答後に名前帯を表示 */}
+            {isAdvancedMode && isAnswered && (
+              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-[calc(100%-16px)] max-w-[calc(456px-16px)]">
+                <div className="bg-black/60 text-white px-3 py-2 rounded-lg backdrop-blur-sm">
+                  <span className="text-lg font-bold font-rounded text-center block whitespace-nowrap overflow-hidden text-ellipsis">
+                    {talent.name}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
           
           {renderTalentDetails()}

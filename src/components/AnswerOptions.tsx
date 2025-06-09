@@ -150,7 +150,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
               // 名前当てモード: 回答前は名前のみ、回答後は画像付き
               <div>
                 {!isAnswered ? (
-                  <div className="w-full aspect-square flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-lg relative overflow-hidden border-2 border-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 shadow-inner">
+                  <div className="w-full aspect-square flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-lg relative overflow-hidden border-2 border-indigo-200/50 shadow-inner">
                     {/* 装飾的な背景パターン */}
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 via-purple-100/20 to-pink-100/30"></div>
                     <div className="absolute inset-0">

@@ -87,12 +87,6 @@ body {
     filter: brightness(1) saturate(1.2);
   }
   25% {
-    box-shadow: 
-      0 0 25px rgba(192, 192, 192, 0.8), 
-      0 0 40px rgba(192, 192, 192, 0.6),
-      0 0 60px rgba(192, 192, 192, 0.3),
-      0 0 80px rgba(192, 192, 192, 0.1),
-      inset 0 0 15px rgba(255, 255, 255, 0.4);
     transform: scale(1.05);
     filter: brightness(1.1) saturate(1.4);
   }
@@ -448,36 +442,24 @@ body {
   bottom: 0;
   background: linear-gradient(
     90deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    rgba(255, 255, 255, 0.6),
-    rgba(255, 255, 255, 0.4),
-    transparent
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
   );
+  background-size: 200% 100%;
   animation: correctShimmer 2s linear infinite;
-  z-index: 1;
 }
 
-.correct-particles {
-  position: relative;
+/* シルエットから通常画像への変化アニメーション */
+@keyframes silhouetteToNormal {
+  from {
+    filter: brightness(0) contrast(1) drop-shadow(0 0 0 #4a5568) sepia(1) saturate(0) hue-rotate(0deg);
+  }
+  to {
+    filter: brightness(1) contrast(1) drop-shadow(0 0 0 transparent) sepia(0) saturate(1) hue-rotate(0deg);
+  }
 }
 
-.correct-particles::after {
-  content: '✨🌟💫⭐✨🌟💫⭐';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  font-size: 1.2rem;
-  pointer-events: none;
-  animation: correctParticles 2s ease-out infinite;
-  z-index: 2;
-}
-
-.correct-rainbow-text {
-  animation: correctRainbow 3s linear infinite;
+.silhouette-to-normal {
+  animation: silhouetteToNormal 0.5s ease-out forwards;
 }
