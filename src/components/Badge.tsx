@@ -22,7 +22,7 @@ export const Badge: React.FC<BadgeProps> = ({
       'ミュゥ寮': 'me',
       'クゥ寮': 'co',
       'ウィニー寮': 'wh',
-      'すべて': 'parerdemia-logo'
+      'すべて': 'mirror'
     };
 
     const filename = dormitoryMap[dormitory];

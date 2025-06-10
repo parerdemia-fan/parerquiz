@@ -1,4 +1,4 @@
-import type { GameSettings, DebugMode, DormitoryInfo } from './types';
+import type { GameSettings, DebugMode, DormitoryInfo, Dormitory } from './types';
 // 値として使用するものは通常のインポート
 import { useState, useEffect } from 'react';
 import { GameScreen } from './components/GameScreen';
@@ -90,7 +90,7 @@ function App() {
       name: 'すべて', 
       color: 'from-yellow-400 to-amber-500', 
       textColor: 'text-white',
-      imagePath: '/parerquiz/assets/images/parerdemia-logo.png'
+      imagePath: '/parerquiz/assets/images/mirror.png'
     }
   ];
 
@@ -208,11 +208,11 @@ function App() {
               </h2>
               <div className="grid grid-cols-5 gap-4 justify-items-center">
                 {dormitories.map((dorm) => {
-                  const badge = getBadgeForDormitory(dorm.name as any);
+                  const badge = getBadgeForDormitory(dorm.name as Dormitory);
                   return (
                     <div key={dorm.name} className="text-center">
                       <Badge
-                        dormitory={dorm.name as any}
+                        dormitory={dorm.name as Dormitory}
                         difficulty={badge?.difficulty || 'ふつう'}
                         earned={!!badge}
                         size="medium"
