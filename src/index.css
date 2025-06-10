@@ -556,3 +556,17 @@ body {
     rgba(240, 248, 255, 0.02) 100%
   );
 }
+
+/* Xロゴのスタイル */
+.x-logo {
+  font-family: "X", "Twitter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* Xシェアボタンのホバーエフェクト */
+.x-share-button:hover {
+  background: linear-gradient(45deg, #000000, #1a1a1a);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}

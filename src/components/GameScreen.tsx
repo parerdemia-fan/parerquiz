@@ -308,6 +308,35 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
     const gameModeStyle = getGameModeStyle(settings.gameMode);
     
+    // Xシェア用のテキストを生成
+    const generateShareText = () => {
+      const modeText = settings.gameMode === 'name' ? '名前当て' : '顔当て';
+      const difficultyText = settings.difficulty === 'ふつう' ? 'ふつう' : 
+                            settings.difficulty === 'むずかしい' ? 'むずかしい' : 
+                            '寮生専用';
+      
+      let shareText = `パレクイズで${settings.dormitory}の${modeText}モード（難易度:${difficultyText}）に挑戦！\n`;
+      shareText += `結果: ${correctRate}%正解 (${correctAnswers}/${totalQuestions}問)\n`;
+      
+      if (correctRate === 100) {
+        shareText += `🏆 パーフェクト達成！ 🏆\n`;
+      } else if (correctRate >= 90) {
+        shareText += `🌟 エクセレント！ 🌟\n`;
+      } else if (correctRate >= 70) {
+        shareText += `✨ グレート！ ✨\n`;
+      }
+      
+      shareText += `\n#パレデミア学園 #パレクイズ`;
+      return shareText;
+    };
+
+    const handleXShare = () => {
+      const shareText = generateShareText();
+      const shareUrl = 'https://parerdemia-fan.github.io/parerquiz/';
+      const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+      window.open(tweetUrl, '_blank', 'noopener,noreferrer');
+    };
+    
     return (
       <div className={`min-h-screen bg-gradient-to-br ${result.bgClass} relative overflow-hidden`}>
         {/* 全問正解時のお祝いアニメーション */}
@@ -445,13 +474,23 @@ export const GameScreen: React.FC<GameScreenProps> = ({
               </div>
               
               {/* アクションボタン */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
                 <button
                   onClick={restartGame}
                   className="w-full px-6 py-3 bg-gradient-to-r from-gray-400 to-gray-500 text-white font-bold font-rounded text-base rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 hover:from-gray-500 hover:to-gray-600"
                 >
                   🔄 リトライ
                 </button>
+                
+                {/* Xシェアボタン */}
+                <button
+                  onClick={handleXShare}
+                  className="w-full px-6 py-3 bg-gradient-to-r from-black to-gray-800 text-white font-bold font-rounded text-base rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <span className="text-lg">𝕏</span>
+                  結果をシェア
+                </button>
+                
                 <button
                   onClick={onBackToTitle}
                   className="w-full px-6 py-3 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-700 font-bold font-rounded text-base rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 hover:from-gray-400 hover:to-gray-500 hover:text-white"

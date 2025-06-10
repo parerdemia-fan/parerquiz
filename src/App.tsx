@@ -153,6 +153,14 @@ function App() {
     reloadBadges();
   };
 
+  // Xシェア用の関数
+  const handleXShareTitle = () => {
+    const shareText = `パレデミア学園の60名のアイドルを覚えるクイズゲーム「パレクイズ」で遊んでみよう！\n名前当てモード・顔当てモードで楽しく学習🎮\n\n#パレデミア学園 #パレクイズ`;
+    const shareUrl = 'https://parerdemia-fan.github.io/parerquiz/';
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    window.open(tweetUrl, '_blank', 'noopener,noreferrer');
+  };
+
   if (currentScreen === 'game' && (gameSettings || debugGameSettings)) {
     return (
       <GameScreen 
@@ -343,6 +351,17 @@ function App() {
               <span className="ml-3 group-hover:translate-x-1 transition-transform duration-200">
                 →
               </span>
+            </button>
+          </div>
+
+          {/* Xシェアボタン - スタートボタンの下に追加 */}
+          <div className="text-center mt-4">
+            <button
+              onClick={handleXShareTitle}
+              className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-black to-gray-800 text-white font-bold font-rounded text-base rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 gap-2"
+            >
+              <span className="text-lg">𝕏</span>
+              このゲームをシェア
             </button>
           </div>
 
