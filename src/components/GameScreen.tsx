@@ -482,6 +482,32 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100">
+      {/* モバイル専用背景装飾 - 画面下部1/3 */}
+      <div className="fixed bottom-0 left-0 right-0 h-1/3 pointer-events-none overflow-hidden lg:hidden">
+        <div className="mobile-decoration-container absolute inset-0">
+          {/* メイン装飾 - 魔法の鏡 */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 mobile-bg-decoration">
+            <img 
+              src="/assets/images/mirror.png" 
+              alt="" 
+              className="w-32 h-32 opacity-10 mobile-glow-effect"
+            />
+          </div>
+          
+          {/* キラキラエフェクト */}
+          <div className="absolute bottom-20 left-4 text-pink-300 text-sm mobile-sparkle-1">✨</div>
+          <div className="absolute bottom-32 right-6 text-purple-300 text-xs mobile-sparkle-2">⭐</div>
+          <div className="absolute bottom-16 right-1/4 text-blue-300 text-sm mobile-sparkle-3">💫</div>
+          <div className="absolute bottom-28 left-1/3 text-yellow-300 text-xs mobile-sparkle-4">🌟</div>
+          <div className="absolute bottom-12 left-1/6 text-pink-300 text-sm mobile-sparkle-5">✨</div>
+          
+          {/* 追加の小さな装飾 */}
+          <div className="absolute bottom-24 right-8 w-2 h-2 bg-pink-200 rounded-full opacity-30 mobile-sparkle-1"></div>
+          <div className="absolute bottom-36 left-8 w-1 h-1 bg-purple-200 rounded-full opacity-40 mobile-sparkle-3"></div>
+          <div className="absolute bottom-14 right-1/3 w-1.5 h-1.5 bg-blue-200 rounded-full opacity-35 mobile-sparkle-2"></div>
+        </div>
+      </div>
+
       {/* タイトルに戻るボタン - 左上固定 */}
       <button
         onClick={onBackToTitle}
