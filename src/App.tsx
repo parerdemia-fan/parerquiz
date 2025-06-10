@@ -100,9 +100,9 @@ function App() {
   ];
 
   const difficulties = [
-    { id: 'ふつう', name: 'ふつう', description: '標準的な難易度', color: 'from-blue-400 to-blue-600', available: true },
-    { id: 'むずかしい', name: 'むずかしい', description: '似た髪色の人が優先的に出現', color: 'from-orange-400 to-orange-600', available: true },
-    { id: '寮生専用', name: '寮生専用', description: 'マニア向け（シルエット表示）', color: 'from-purple-400 to-purple-600', available: true }
+    { id: 'ふつう', name: 'ふつう', description: '標準的な難易度', color: 'from-blue-400 to-blue-600', available: true, emoji: '📝' },
+    { id: 'むずかしい', name: 'むずかしい', description: '似た髪色の人が優先的に出現', color: 'from-orange-400 to-orange-600', available: true, emoji: '🔥' },
+    { id: '寮生専用', name: '寮生専用', description: 'マニア向け（シルエット表示）', color: 'from-purple-400 to-purple-600', available: true, emoji: '👑' }
   ];
 
   const handleDormitorySelect = (dormName: string) => {
@@ -287,7 +287,7 @@ function App() {
                 </span>
                 ゲームモード
               </h2>
-              <div className="grid grid-cols-2 gap-2 md:gap-3">
+              <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 md:gap-3">
                 {gameModes.map((mode) => (
                   <button
                     key={mode.id}
@@ -328,7 +328,8 @@ function App() {
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-md border border-gray-200/50'
                   }`}
                 >
-                  <div className="flex items-center">
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-lg">{difficulty.emoji}</span>
                     <span>{difficulty.name}</span>
                     {!difficulty.available && (
                       <span className="ml-2 text-xs bg-gray-400 text-white px-2 py-1 rounded-full font-elegant">

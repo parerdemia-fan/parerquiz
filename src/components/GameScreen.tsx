@@ -449,23 +449,23 @@ export const GameScreen: React.FC<GameScreenProps> = ({
               </div>
               
               {/* ゲーム設定表示 */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className={`${dormitoryStyle.bgClass} p-3 rounded-xl border-2 ${dormitoryStyle.borderClass} ${settings.dormitory === 'すべて' ? 'shadow-lg shadow-amber-200/50' : ''}`}>
+              <div className="grid grid-cols-3 gap-2 md:gap-3">
+                <div className={`${dormitoryStyle.bgClass} p-2 md:p-3 rounded-xl border-2 ${dormitoryStyle.borderClass} ${settings.dormitory === 'すべて' ? 'shadow-lg shadow-amber-200/50' : ''}`}>
                   <div className={`text-xs ${dormitoryStyle.textClass} font-bold mb-1 ${settings.dormitory === 'すべて' ? 'drop-shadow-md' : ''}`}>出題範囲</div>
-                  <div className={`text-sm font-black ${dormitoryStyle.textClass} ${settings.dormitory === 'すべて' ? 'drop-shadow-md' : ''}`}>
+                  <div className={`text-xs md:text-sm font-black ${dormitoryStyle.textClass} ${settings.dormitory === 'すべて' ? 'drop-shadow-md' : ''} leading-tight`}>
                     {settings.dormitory}
                     {settings.dormitory === 'すべて' && <span className="ml-1">✨</span>}
                   </div>
                 </div>
-                <div className={`${gameModeStyle.bgClass} p-3 rounded-xl border-2 ${gameModeStyle.borderClass}`}>
+                <div className={`${gameModeStyle.bgClass} p-2 md:p-3 rounded-xl border-2 ${gameModeStyle.borderClass}`}>
                   <div className={`text-xs ${gameModeStyle.textClass} mb-1`}>ゲームモード</div>
-                  <div className={`text-sm ${gameModeStyle.textClass}`}>
+                  <div className={`text-xs md:text-sm ${gameModeStyle.textClass} leading-tight`}>
                     {settings.gameMode === 'name' ? '名前当て' : '顔当て'}
                   </div>
                 </div>
-                <div className={`${difficultyStyle.bgClass} p-3 rounded-xl border-2 ${difficultyStyle.borderClass}`}>
+                <div className={`${difficultyStyle.bgClass} p-2 md:p-3 rounded-xl border-2 ${difficultyStyle.borderClass}`}>
                   <div className={`text-xs ${difficultyStyle.textClass} mb-1 ${settings.difficulty === '寮生専用' ? 'drop-shadow-md' : settings.difficulty === 'むずかしい' ? 'drop-shadow-sm' : 'font-bold'}`}>難易度</div>
-                  <div className={`text-sm ${difficultyStyle.textClass} ${settings.difficulty === '寮生専用' ? 'drop-shadow-md' : settings.difficulty === 'むずかしい' ? 'drop-shadow-sm' : ''}`}>
+                  <div className={`text-xs md:text-sm ${difficultyStyle.textClass} ${settings.difficulty === '寮生専用' ? 'drop-shadow-md' : settings.difficulty === 'むずかしい' ? 'drop-shadow-sm' : ''} leading-tight`}>
                     {settings.difficulty}
                     {settings.difficulty === '寮生専用' && <span className="ml-1">👑</span>}
                     {settings.difficulty === 'むずかしい' && <span className="ml-1">⚡</span>}
