@@ -174,9 +174,9 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 flex flex-col">
       {/* Header */}
-      <header className="text-center py-8 px-4 relative">
+      <header className="text-center py-4 md:py-8 px-4 relative">
         <div className="max-w-4xl mx-auto relative">
-          <h1 className="text-4xl md:text-6xl font-black font-rounded bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent mb-2 text-shadow-soft">
+          <h1 className="text-4xl md:text-6xl font-black font-rounded bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent mb-1 md:mb-2 text-shadow-soft">
             パレクイズ
           </h1>
           <p className="text-sm md:text-lg lg:text-xl text-gray-600 font-medium font-elegant">
@@ -186,10 +186,10 @@ function App() {
           {/* ヘルプボタン */}
           <button
             onClick={() => setIsHelpModalOpen(true)}
-            className="absolute top-0 right-0 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110 active:scale-95 border border-white/50 flex items-center justify-center group"
+            className="absolute top-0 right-0 w-10 h-10 md:w-12 md:h-12 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110 active:scale-95 border border-white/50 flex items-center justify-center group"
             title="ヘルプ"
           >
-            <span className="text-2xl text-gray-600 group-hover:text-purple-600 transition-colors duration-200">
+            <span className="text-xl md:text-2xl text-gray-600 group-hover:text-purple-600 transition-colors duration-200">
               ❓
             </span>
           </button>
@@ -203,18 +203,18 @@ function App() {
       />
 
       {/* Main Content */}
-      <main className="flex-1 px-4 pb-8">
+      <main className="flex-1 px-4 pb-4 md:pb-8">
         <div className="max-w-4xl mx-auto">
           {/* バッジコレクション表示エリア - バッジがある場合のみ表示 */}
           {badges.length > 0 && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/50 mb-6">
-              <h2 className="text-2xl font-bold font-rounded text-gray-800 mb-4 flex items-center">
-                <span className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center text-white text-sm font-black mr-3">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-6 border border-white/50 mb-4 md:mb-6">
+              <h2 className="text-xl md:text-2xl font-bold font-rounded text-gray-800 mb-3 md:mb-4 flex items-center">
+                <span className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-black mr-2 md:mr-3">
                   🏆
                 </span>
                 バッジコレクション
               </h2>
-              <div className="grid grid-cols-5 gap-4 justify-items-center">
+              <div className="grid grid-cols-5 gap-2 md:gap-4 justify-items-center">
                 {dormitories.map((dorm) => {
                   const badge = getBadgeForDormitory(dorm.name as Dormitory);
                   return (
@@ -226,7 +226,7 @@ function App() {
                         size="medium"
                         enableGlow={badge ? shouldBadgeGlow(badge.difficulty) : false}
                       />
-                      <div className="text-xs text-gray-600 mt-2 font-medium">
+                      <div className="text-xs text-gray-600 mt-1 md:mt-2 font-medium">
                         {dorm.name}
                       </div>
                       {badge && (
@@ -243,22 +243,22 @@ function App() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
             
             {/* 出題範囲セクション */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/50">
-              <h2 className="text-2xl font-bold font-rounded text-gray-800 mb-4 flex items-center">
-                <span className="w-8 h-8 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full flex items-center justify-center text-white text-sm font-black mr-3">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-6 border border-white/50">
+              <h2 className="text-xl md:text-2xl font-bold font-rounded text-gray-800 mb-3 md:mb-4 flex items-center">
+                <span className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-black mr-2 md:mr-3">
                   1
                 </span>
                 出題範囲
               </h2>
-              <div className="flex flex-wrap gap-3 justify-center">
+              <div className="flex flex-wrap gap-2 md:gap-3 justify-center">
                 {dormitories.map((dorm) => (
                   <button
                     key={dorm.name}
                     onClick={() => handleDormitorySelect(dorm.name)}
-                    className={`px-4 py-3 rounded-xl font-medium font-rounded transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-3 ${
+                    className={`px-3 md:px-4 py-2 md:py-3 rounded-xl font-medium font-rounded transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 md:gap-3 text-sm md:text-base ${
                       selectedDormitory === dorm.name
                         ? `bg-gradient-to-r ${dorm.color} ${dorm.textColor} shadow-lg ring-2 ring-white/50 font-bold`
                         : 'bg-white/80 text-gray-700 hover:bg-white shadow-md border border-gray-200/50 hover:shadow-lg'
@@ -267,7 +267,7 @@ function App() {
                     <img
                       src={dorm.imagePath}
                       alt={`${dorm.name}のエンブレム`}
-                      className="w-6 h-6 object-contain"
+                      className="w-5 h-5 md:w-6 md:h-6 object-contain"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.style.display = 'none';
@@ -280,26 +280,26 @@ function App() {
             </div>
 
             {/* ゲームモードセクション */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/50">
-              <h2 className="text-2xl font-bold font-rounded text-gray-800 mb-4 flex items-center">
-                <span className="w-8 h-8 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full flex items-center justify-center text-white text-sm font-black mr-3">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-6 border border-white/50">
+              <h2 className="text-xl md:text-2xl font-bold font-rounded text-gray-800 mb-3 md:mb-4 flex items-center">
+                <span className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-black mr-2 md:mr-3">
                   2
                 </span>
                 ゲームモード
               </h2>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 md:gap-3">
                 {gameModes.map((mode) => (
                   <button
                     key={mode.id}
                     onClick={() => handleGameModeSelect(mode.id)}
-                    className={`text-center px-4 py-3 rounded-xl font-bold font-rounded transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
+                    className={`text-center px-3 md:px-4 py-2 md:py-3 rounded-xl font-bold font-rounded transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] text-sm md:text-base ${
                       selectedGameMode === mode.id
                         ? `bg-gradient-to-r ${mode.color} text-white shadow-lg ring-2 ring-white/50`
                         : 'bg-white/80 text-gray-700 hover:bg-white shadow-md border border-gray-200/50 hover:shadow-lg'
                     }`}
                   >
                     <div className="font-bold">{mode.name}</div>
-                    <div className="text-sm opacity-90 hidden md:block">{mode.description}</div>
+                    <div className="text-xs md:text-sm opacity-90 hidden md:block">{mode.description}</div>
                   </button>
                 ))}
               </div>
@@ -307,20 +307,20 @@ function App() {
           </div>
 
           {/* 難易度セクション */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/50 mb-8">
-            <h2 className="text-2xl font-bold font-rounded text-gray-800 mb-4 flex items-center">
-              <span className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white text-sm font-black mr-3">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-6 border border-white/50 mb-6 md:mb-8">
+            <h2 className="text-xl md:text-2xl font-bold font-rounded text-gray-800 mb-3 md:mb-4 flex items-center">
+              <span className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-black mr-2 md:mr-3">
                 3
               </span>
               難易度
             </h2>
-            <div className="flex flex-wrap gap-3 justify-center">
+            <div className="flex flex-wrap gap-2 md:gap-3 justify-center">
               {difficulties.map((difficulty) => (
                 <button
                   key={difficulty.id}
                   onClick={() => difficulty.available && handleDifficultySelect(difficulty.id)}
                   disabled={!difficulty.available}
-                  className={`px-4 py-3 rounded-xl font-medium font-rounded transition-all duration-200 ${
+                  className={`px-3 md:px-4 py-2 md:py-3 rounded-xl font-medium font-rounded transition-all duration-200 text-sm md:text-base ${
                     difficulty.available 
                       ? selectedDifficulty === difficulty.id
                         ? `bg-gradient-to-r ${difficulty.color} text-white shadow-lg ring-2 ring-white/50 font-bold`
@@ -345,7 +345,7 @@ function App() {
           <div className="text-center">
             <button 
               onClick={handleGameStart}
-              className="inline-flex items-center px-12 py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white font-black font-rounded text-xl rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 group text-shadow-soft"
+              className="inline-flex items-center px-8 md:px-12 py-3 md:py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white font-black font-rounded text-lg md:text-xl rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 group text-shadow-soft"
             >
               スタート
               <span className="ml-3 group-hover:translate-x-1 transition-transform duration-200">
@@ -355,19 +355,19 @@ function App() {
           </div>
 
           {/* Xシェアボタン - スタートボタンの下に追加 */}
-          <div className="text-center mt-4">
+          <div className="text-center mt-3 md:mt-4">
             <button
               onClick={handleXShareTitle}
-              className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-black to-gray-800 text-white font-bold font-rounded text-base rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 gap-2"
+              className="inline-flex items-center px-6 md:px-8 py-2 md:py-3 bg-gradient-to-r from-black to-gray-800 text-white font-bold font-rounded text-sm md:text-base rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 gap-2"
             >
-              <span className="text-lg">𝕏</span>
+              <span className="text-base md:text-lg">𝕏</span>
               このゲームをシェア
             </button>
           </div>
 
           {/* デバッグ用ボタン（localhost でのみ表示） - 画面最下部に移動 */}
           {isLocalhost && (
-            <div className="bg-yellow-100 border border-yellow-300 rounded-2xl shadow-lg p-4 mt-8">
+            <div className="bg-yellow-100 border border-yellow-300 rounded-2xl shadow-lg p-4 mt-6 md:mt-8">
               <h3 className="text-lg font-bold text-yellow-800 mb-3">🐛 デバッグ用機能</h3>
               
               {/* ゲーム結果シミュレーション */}
@@ -429,9 +429,9 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="text-center py-6 px-4">
-        <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-md px-6 py-3 inline-block border border-white/50">
-          <p className="text-sm text-gray-600 font-elegant">
+      <footer className="text-center py-3 md:py-6 px-4">
+        <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-md px-4 md:px-6 py-2 md:py-3 inline-block border border-white/50">
+          <p className="text-xs md:text-sm text-gray-600 font-elegant">
             このゲームは二次創作物であり非公式のものです
           </p>
         </div>
