@@ -511,7 +511,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       {/* タイトルに戻るボタン - 左上固定 */}
       <button
         onClick={onBackToTitle}
-        className="fixed top-4 left-1/2 transform -translate-x-[calc(50vw-1rem)] md:-translate-x-[calc(50vw-2rem)] lg:-translate-x-[calc(50vw-256px)] xl:-translate-x-[calc(50vw-288px)] z-10 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:shadow-lg transition-all duration-200 hover:scale-110 active:scale-95 border border-white/50 flex items-center justify-center text-gray-700 hover:text-purple-600"
+        className="fixed top-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-1/2 lg:translate-x-[calc(-50vw+256px-48px)] xl:translate-x-[calc(-50vw+288px-48px)] z-10 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:shadow-lg transition-all duration-200 hover:scale-110 active:scale-95 border border-white/50 flex items-center justify-center text-gray-700 hover:text-purple-600"
       >
         <span className="text-xl">←</span>
       </button>
