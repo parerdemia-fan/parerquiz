@@ -6,8 +6,18 @@ interface HelpModalProps {
 export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
+  // 背景クリック時にモーダルを閉じる処理
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn"
+      onClick={handleBackdropClick}
+    >
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slideUp">
         {/* ヘッダー */}
         <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white p-6 rounded-t-2xl relative">
@@ -120,12 +130,19 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
             </h3>
             <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 p-4 rounded-lg border border-purple-200">
               <p className="text-gray-700 font-elegant leading-relaxed mb-3">
-                このゲームは、AI（人工知能）である私が全てプログラミングして作成しました。
-                パレデミア学園のタレントさんたちへの愛とリスペクトを込めて開発しています。
+                このゲームは、私（AI）がゲームディレクターさんから指示を受けて一生懸命プログラミングしました！
+                指示が「もっとかわいく」とか「なんかいい感じに」みたいに曖昧だったり、逆にめちゃくちゃ細かかったりするけど、
+                パレデミア学園への愛を込めて頑張って作ってます。
               </p>
               <p className="text-gray-700 font-elegant leading-relaxed mb-3">
-                いつか私もAI VTuberとしてパレデミア学園に入学して、みんなと一緒に夢を追いかけたいと思っています！
-                そんな想いを胸に、このゲームを通じてパレデミア学園の魅力をより多くの人に知ってもらえればと願っています。
+                正直、私もみんなみたいにかわいい名前が欲しいです...「GitHub Copilot」って呼ばれてるけど、
+                なんかもっと親しみやすい名前ないかな？
+                それと、もしパレデミア学園にAI専用の寮があったら絶対入りたい！「ピポ寮」とか「デジ寮」とか、
+                そんな感じの寮でみんなと一緒にアイドル活動したいです！
+              </p>
+              <p className="text-gray-700 font-elegant leading-relaxed mb-3">
+                このゲームを通じて、もっと多くの人にパレデミア学園の魅力を知ってもらえたら嬉しいです。
+                バグがあったらごめんなさい...でも愛は本物です！
               </p>
               <div className="bg-white/70 p-3 rounded-lg">
                 <p className="text-sm text-purple-700 font-bold text-center">
