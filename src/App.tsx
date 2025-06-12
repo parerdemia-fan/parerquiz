@@ -5,6 +5,7 @@ import { GameScreen } from './components/GameScreen';
 import { Badge } from './components/Badge';
 import { HelpModal } from './components/HelpModal';
 import { useBadges } from './hooks/useBadges';
+import { useImagePreloader } from './hooks/useImagePreloader';
 
 type Screen = 'title' | 'game';
 
@@ -33,6 +34,9 @@ function App() {
   
   const [gameSettings, setGameSettings] = useState<GameSettings | null>(null);
 
+  // タレントデータの状態管理
+  const [talents, setTalents] = useState<any[]>([]);
+
   // デバッグ用状態
   const [debugGameSettings, setDebugGameSettings] = useState<GameSettings | null>(null);
   const [debugMode, setDebugMode] = useState<DebugMode | null>(null);
@@ -46,6 +50,14 @@ function App() {
     window.location.hostname === '127.0.0.1'
   );
 
+  // タレントデータの読み込み
+  useEffect(() => {
+    fetch('/parerquiz/assets/data/talents.json')
+      .then(response => response.json())
+      .then(data => setTalents(data))
+      .catch(error => console.error('Failed to load talents data:', error));
+  }, []);
+
   // 設定変更時に LocalStorage に自動保存
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.DORMITORY, selectedDormitory);
@@ -58,6 +70,16 @@ function App() {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.DIFFICULTY, selectedDifficulty);
   }, [selectedDifficulty]);
+
+  // 現在の設定でのプリロード
+  const currentSettings: GameSettings = {
+    dormitory: selectedDormitory as 'バゥ寮' | 'ミュゥ寮' | 'クゥ寮' | 'ウィニー寮' | 'すべて',
+    gameMode: selectedGameMode as 'name' | 'face',
+    difficulty: selectedDifficulty as 'ふつう' | 'むずかしい' | '寮生専用',
+    isAdvancedMode: selectedDifficulty === '寮生専用'
+  };
+
+  useImagePreloader(currentSettings, talents);
 
   const { getBadgeForDormitory, shouldBadgeGlow, resetAllBadges, reloadBadges, badges } = useBadges();
 

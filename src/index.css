@@ -569,3 +569,20 @@ body {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
+
+/* プリロード関連のアニメーション */
+@keyframes imagePreload {
+  0% { opacity: 0; }
+  50% { opacity: 0.1; }
+  100% { opacity: 0; }
+}
+
+.preload-indicator {
+  animation: imagePreload 2s ease-in-out infinite;
+}
+
+/* 画像読み込み最適化 */
+img {
+  image-rendering: optimizeQuality;
+  image-rendering: -webkit-optimize-contrast;
+}
