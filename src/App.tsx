@@ -209,7 +209,7 @@ function App() {
           {/* ヘルプボタン */}
           <button
             onClick={() => setIsHelpModalOpen(true)}
-            className="absolute top-0 right-0 w-10 h-10 md:w-12 md:h-12 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110 active:scale-95 border border-white/50 flex items-center justify-center group"
+            className="absolute top-0 right-0 w-10 h-10 md:w-12 md:h-12 bg-white/90 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110 active:scale-95 border border-white/50 flex items-center justify-center group"
             title="ヘルプ"
           >
             <span className="text-xl md:text-2xl text-gray-600 group-hover:text-purple-600 transition-colors duration-200">
@@ -230,7 +230,7 @@ function App() {
         <div className="max-w-4xl mx-auto">
           {/* バッジコレクション表示エリア - バッジがある場合のみ表示 */}
           {badges.length > 0 && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-6 border border-white/50 mb-4 md:mb-6">
+            <div className="bg-white/90 rounded-2xl shadow-lg p-4 md:p-6 border border-white/50 mb-4 md:mb-6">
               <h2 className="text-xl md:text-2xl font-bold font-rounded text-gray-800 mb-3 md:mb-4 flex items-center">
                 <span className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-black mr-2 md:mr-3">
                   🏆
@@ -269,7 +269,7 @@ function App() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
             
             {/* 出題範囲セクション */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-6 border border-white/50">
+            <div className="bg-white/90 rounded-2xl shadow-lg p-4 md:p-6 border border-white/50">
               <h2 className="text-xl md:text-2xl font-bold font-rounded text-gray-800 mb-3 md:mb-4 flex items-center">
                 <span className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-black mr-2 md:mr-3">
                   1
@@ -303,7 +303,7 @@ function App() {
             </div>
 
             {/* ゲームモードセクション */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-6 border border-white/50">
+            <div className="bg-white/90 rounded-2xl shadow-lg p-4 md:p-6 border border-white/50">
               <h2 className="text-xl md:text-2xl font-bold font-rounded text-gray-800 mb-3 md:mb-4 flex items-center">
                 <span className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-black mr-2 md:mr-3">
                   2
@@ -330,7 +330,7 @@ function App() {
           </div>
 
           {/* 難易度セクション */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-6 border border-white/50 mb-6 md:mb-8">
+          <div className="bg-white/90 rounded-2xl shadow-lg p-4 md:p-6 border border-white/50 mb-6 md:mb-8">
             <h2 className="text-xl md:text-2xl font-bold font-rounded text-gray-800 mb-3 md:mb-4 flex items-center">
               <span className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-black mr-2 md:mr-3">
                 3
@@ -454,7 +454,7 @@ function App() {
 
       {/* Footer */}
       <footer className="text-center py-3 md:py-6 px-4">
-        <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-md px-4 md:px-6 py-2 md:py-3 inline-block border border-white/50">
+        <div className="bg-white/80 rounded-xl shadow-md px-4 md:px-6 py-2 md:py-3 inline-block border border-white/50">
           <p className="text-xs md:text-sm text-gray-600 font-elegant">
             このゲームは二次創作物であり非公式のものです
           </p>

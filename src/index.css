@@ -619,3 +619,28 @@ img {
   pointer-events: none;
   z-index: 0;
 }
+
+/* ゲーム画面背景画像の最適化 */
+.game-background {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* モバイルでの背景画像最適化 */
+@media (max-width: 768px) {
+  .game-background {
+    background-attachment: scroll;
+    background-size: cover;
+  }
+}
+
+/* 背景画像のプリロード最適化 */
+.preload-game-background {
+  opacity: 0;
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  z-index: -1;
+}

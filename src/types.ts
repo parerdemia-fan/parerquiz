@@ -64,3 +64,12 @@ export interface DormitoryInfo {
   textColor: string;
   imagePath: string;
 }
+
+// 寮コードマッピング用の型定義
+export const DORMITORY_CODE_MAP: Record<Dormitory, string | null> = {
+  'バゥ寮': 'wa',
+  'ミュゥ寮': 'me',
+  'クゥ寮': 'co',
+  'ウィニー寮': 'wh',
+  'すべて': null
+};

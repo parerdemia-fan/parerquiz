@@ -22,6 +22,34 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   const [newBadgeEarned, setNewBadgeEarned] = useState<boolean>(false);
   const [badgeAnimationKey, setBadgeAnimationKey] = useState<number>(0);
 
+  // 出題範囲に応じた背景画像パスを取得する関数
+  const getBackgroundImagePath = (dormitory: string) => {
+    switch (dormitory) {
+      case 'バゥ寮':
+        return '/parerquiz/assets/images/dormitory/wa_wp.webp';
+      case 'ミュゥ寮':
+        return '/parerquiz/assets/images/dormitory/me_wp.webp';
+      case 'クゥ寮':
+        return '/parerquiz/assets/images/dormitory/co_wp.webp';
+      case 'ウィニー寮':
+        return '/parerquiz/assets/images/dormitory/wh_wp.webp';
+      case 'すべて':
+        return '/parerquiz/assets/images/clocktower.webp';
+      default:
+        return '/parerquiz/assets/images/clocktower.webp';
+    }
+  };
+
+  // 背景画像のスタイルを設定
+  const backgroundImagePath = getBackgroundImagePath(settings.dormitory);
+  const backgroundStyle = {
+    backgroundImage: `url('${backgroundImagePath}')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'fixed'
+  };
+
   // デバッグモード用の強制終了処理
   useEffect(() => {
     if (debugMode && gameState.questions.length > 0 && !gameState.gameFinished) {
@@ -338,7 +366,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     };
     
     return (
-      <div className={`min-h-screen bg-gradient-to-br ${result.bgClass} relative overflow-hidden`}>
+      <div className={`min-h-screen bg-gradient-to-br ${result.bgClass} relative overflow-hidden`} style={backgroundStyle}>
+        {/* 背景画像用のオーバーレイ - ぼかし無し */}
+        <div className="absolute inset-0 bg-white/75"></div>
+        
         {/* 全問正解時のお祝いアニメーション */}
         {result.celebration && (
           <>
@@ -368,7 +399,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
               <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 rounded-full blur-2xl scale-150 opacity-30"></div>
               
               {/* メインバッジコンテナ */}
-              <div className="relative bg-gradient-to-br from-white via-yellow-50 to-orange-50 rounded-3xl shadow-2xl p-8 border-4 border-yellow-400 backdrop-blur-sm">
+              <div className="relative bg-gradient-to-br from-white via-yellow-50 to-orange-50 rounded-3xl shadow-2xl p-8 border-4 border-yellow-400">
                 {/* キラキラエフェクト */}
                 <div className="absolute -top-4 -left-4 text-yellow-400 text-2xl sparkle-effect">✨</div>
                 <div className="absolute -top-4 -right-4 text-orange-400 text-2xl sparkle-effect">⭐</div>
@@ -402,8 +433,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           </div>
         )}
 
-        {/* ゲームタイトル */}
-        <div className="text-center py-6 px-4">
+        {/* ゲームタイトル - z-indexを追加して半透明を回避 */}
+        <div className="text-center py-6 px-4 relative z-20">
           <h1 className="text-3xl md:text-4xl font-black font-rounded bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent mb-2 text-shadow-soft">
             パレクイズ
           </h1>
@@ -413,8 +444,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         </div>
 
         {/* メインコンテンツ */}
-        <div className="flex items-center justify-center px-4 pb-8">
-          <div className={`${result.cardClass} backdrop-blur-sm rounded-3xl shadow-2xl p-6 md:p-8 max-w-2xl w-full transform ${result.celebration ? 'shadow-3xl border-4 border-yellow-400/50' : ''}`}>
+        <div className="flex items-center justify-center px-4 pb-8 relative z-20">
+          <div className={`bg-white/90 rounded-3xl shadow-2xl p-6 md:p-8 max-w-2xl w-full transform border border-white/40 ${result.celebration ? 'shadow-3xl border-4 border-yellow-400/50' : ''}`}>
             <div className="text-center space-y-6">
               {/* 結果タイトル */}
               <div className="space-y-2">
@@ -426,8 +457,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({
                 </p>
               </div>
               
-              {/* 正解率（大きく表示）}
-              <div className={`bg-white/90 backdrop-blur-sm p-6 rounded-2xl border-2 border-gray-200 shadow-lg ${result.celebration ? 'shadow-xl border-yellow-300 bg-gradient-to-br from-yellow-50 to-orange-50' : ''}`}>
+              {/* 正解率（大きく表示）*/}
+              <div className={`bg-white/80 p-6 rounded-2xl border-2 border-gray-200/50 shadow-lg ${result.celebration ? 'shadow-xl border-yellow-300/60 bg-gradient-to-br from-yellow-50/70 to-orange-50/70' : ''}`}>
                 <div className={`text-6xl md:text-7xl font-black bg-gradient-to-r ${result.titleClass} bg-clip-text text-transparent ${result.celebration ? 'drop-shadow-md' : ''}`}>
                   {correctRate}%
                 </div>
@@ -436,11 +467,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({
               
               {/* 詳細結果 */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-200">
+                <div className="bg-emerald-50/90 p-4 rounded-xl border border-emerald-200/60">
                   <div className="text-3xl font-black text-emerald-600">{correctAnswers}</div>
                   <div className="text-sm text-emerald-700 font-bold">正解数</div>
                 </div>
-                <div className="bg-rose-50 p-4 rounded-xl border border-rose-200">
+                <div className="bg-rose-50/90 p-4 rounded-xl border border-rose-200/60">
                   <div className="text-3xl font-black text-rose-600">
                     {totalQuestions - correctAnswers}
                   </div>
@@ -520,9 +551,12 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   const currentQuestion = gameState.questions[gameState.currentQuestion];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100">
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 relative" style={backgroundStyle}>
+      {/* 背景画像用のオーバーレイ */}
+      <div className="absolute inset-0 bg-white/80"></div>
+      
       {/* モバイル専用背景装飾 - 画面下部1/3 */}
-      <div className="fixed bottom-0 left-0 right-0 h-1/3 pointer-events-none overflow-hidden lg:hidden">
+      <div className="fixed bottom-0 left-0 right-0 h-1/3 pointer-events-none overflow-hidden lg:hidden relative z-10">
         <div className="mobile-decoration-container absolute inset-0">
           {/* メイン装飾 - 魔法の鏡 */}
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 mobile-bg-decoration">
@@ -550,13 +584,13 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       {/* タイトルに戻るボタン - 左上固定 */}
       <button
         onClick={onBackToTitle}
-        className="fixed top-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-1/2 lg:translate-x-[calc(-50vw+256px-48px)] xl:translate-x-[calc(-50vw+288px-48px)] z-10 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:shadow-lg transition-all duration-200 hover:scale-110 active:scale-95 border border-white/50 flex items-center justify-center text-gray-700 hover:text-purple-600"
+        className="fixed top-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-1/2 lg:translate-x-[calc(-50vw+256px-48px)] xl:translate-x-[calc(-50vw+288px-48px)] z-20 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:shadow-lg transition-all duration-200 hover:scale-110 active:scale-95 border border-white/50 flex items-center justify-center text-gray-700 hover:text-purple-600"
       >
         <span className="text-xl">←</span>
       </button>
 
       {/* メインコンテンツ */}
-      <div className="min-h-screen flex flex-col p-2 md:p-4">
+      <div className="min-h-screen flex flex-col p-2 md:p-4 relative z-10">
         {/* ゲームタイトル */}
         <div className="text-center py-2 md:py-4 relative">
           <h1 className="text-xl md:text-3xl font-black font-rounded bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
@@ -568,7 +602,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           
           {/* モバイル用の問題数表示 - タイトル右に配置 */}
           <div className="absolute top-1/2 right-0 transform -translate-y-1/2 lg:hidden">
-            <span className="text-xs font-medium font-rounded text-gray-600 bg-white/60 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
+            <span className="text-xs font-medium font-rounded text-gray-600 bg-white/60 px-3 py-1 rounded-full shadow-sm">
               {gameState.currentQuestion + 1}/{gameState.totalQuestions}
             </span>
           </div>
@@ -576,7 +610,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
         {/* ヘッダー - プログレスバーのみ */}
         <header className="mb-4 md:mb-6 hidden lg:block">
-          <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-4 max-w-4xl mx-auto w-full">
+          <div className="bg-white/80 rounded-lg shadow-md p-4 max-w-4xl mx-auto w-full">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium font-rounded text-gray-600">
                 問題 {gameState.currentQuestion + 1} / {gameState.totalQuestions}
@@ -611,7 +645,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
             {/* 回答選択肢エリア */}
             <div className="flex flex-col">
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-1 md:p-6 border border-white/50 flex-1 min-h-0">
+              <div className="bg-white/80 rounded-2xl shadow-lg p-1 md:p-6 border border-white/50 flex-1 min-h-0">
                 <h3 className="text-lg font-bold font-rounded text-gray-800 mb-2 md:mb-4 hidden lg:block">選択肢</h3>
                 <div className="h-full overflow-y-auto">
                   <AnswerOptions

@@ -97,7 +97,7 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
   );
 
   return (
-    <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-2 md:p-6 border border-white/50">
+    <div className="bg-white/80 rounded-2xl shadow-lg p-2 md:p-6 border border-white/30">
       {gameMode === 'name' ? (
         // 名前当てモード: タレント画像と詳細情報を表示
         <div className="text-center">
@@ -208,7 +208,7 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
             </div>
 
             {/* 外側のグロー効果 */}
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-2xl blur-xl -z-10 animate-pulse"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-2xl -z-10 animate-pulse"></div>
           </div>
 
           {renderTalentDetails()}

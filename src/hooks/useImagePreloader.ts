@@ -14,6 +14,26 @@ export const useImagePreloader = (
       const backgroundImg = new Image();
       backgroundImg.src = backgroundImageUrl;
 
+      // 出題範囲に応じたゲーム画面背景画像をプリロード
+      const getGameBackgroundPath = (dormitory: string) => {
+        switch (dormitory) {
+          case 'バゥ寮':
+            return '/parerquiz/assets/images/dormitory/wa_wp.webp';
+          case 'ミュゥ寮':
+            return '/parerquiz/assets/images/dormitory/me_wp.webp';
+          case 'クゥ寮':
+            return '/parerquiz/assets/images/dormitory/co_wp.webp';
+          case 'ウィニー寮':
+            return '/parerquiz/assets/images/dormitory/wh_wp.webp';
+          case 'すべて':
+            return '/parerquiz/assets/images/clocktower.webp';
+          default:
+            return '/parerquiz/assets/images/clocktower.webp';
+        }
+      };
+
+      const gameBackgroundPath = getGameBackgroundPath(settings.dormitory);
+
       // 出題範囲に基づくタレント絞り込み
       const filteredTalents = settings.dormitory === 'すべて' 
         ? talents 
@@ -32,6 +52,7 @@ export const useImagePreloader = (
 
       // 背景画像を追加
       imageUrls.add(backgroundImageUrl);
+      imageUrls.add(gameBackgroundPath);
 
       // ゲームモードと難易度に基づく画像選択
       filteredTalents.forEach(talent => {

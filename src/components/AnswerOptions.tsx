@@ -320,7 +320,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
                 </div>
                 
                 {/* 正解情報表示 */}
-                <div className="bg-white/25 backdrop-blur-sm rounded-xl p-3 border border-white/40">
+                <div className="bg-white/25 rounded-xl p-3 border border-white/40">
                   <div className="text-white/90 text-xs font-medium mb-1">正解は...</div>
                   <div className="flex items-center justify-center space-x-3">
                     <img
