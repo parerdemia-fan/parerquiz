@@ -40,14 +40,6 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
 
         {/* コンテンツ */}
         <div className="p-6 space-y-6">
-          {/* 重要な注意事項 */}
-          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
-            <h3 className="font-bold text-yellow-800 mb-2 font-rounded">⚠️ 重要な注意事項</h3>
-            <p className="text-yellow-700 font-elegant leading-relaxed">
-              このゲームは二次創作物であり非公式のものです。パレデミア学園の公式コンテンツではありません。
-            </p>
-          </div>
-
           {/* ゲームの説明 */}
           <div className="space-y-4">
             <h3 className="text-xl font-bold text-gray-800 font-rounded border-b-2 border-purple-200 pb-2">
@@ -158,29 +150,46 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
               🏫 パレデミア学園公式情報
             </h3>
             <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-gray-700 font-elegant mb-2">
-                パレデミア学園の最新情報は公式サイトをチェック！
+              <p className="text-gray-700 font-elegant mb-4">
+                パレデミア学園の最新情報をチェック！
               </p>
-              <a
-                href="https://www.parerdemia.jp/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all duration-200 font-rounded text-sm"
-              >
-                🔗 公式サイトへ
-              </a>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a
+                  href="https://www.parerdemia.jp/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all duration-200 font-rounded text-sm"
+                >
+                  🌐 公式サイトへ
+                </a>
+                <a
+                  href="https://x.com/parerdemia"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-blue-400 to-blue-600 text-white font-bold rounded-lg hover:from-blue-500 hover:to-blue-700 transition-all duration-200 font-rounded text-sm"
+                >
+                  🐦 公式X（Twitter）へ
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
         {/* フッター */}
-        <div className="bg-gray-50 p-4 rounded-b-2xl text-center">
-          <button
-            onClick={onClose}
-            className="px-6 py-2 bg-gradient-to-r from-gray-400 to-gray-500 text-white font-bold rounded-lg hover:from-gray-500 hover:to-gray-600 transition-all duration-200 font-rounded"
-          >
-            閉じる
-          </button>
+        <div className="bg-gray-50 p-4 rounded-b-2xl">
+          <div className="text-center mb-3">
+            <button
+              onClick={onClose}
+              className="px-6 py-2 bg-gradient-to-r from-gray-400 to-gray-500 text-white font-bold rounded-lg hover:from-gray-500 hover:to-gray-600 transition-all duration-200 font-rounded"
+            >
+              閉じる
+            </button>
+          </div>
+          <div className="text-center">
+            <p className="text-xs text-gray-500 font-elegant">
+              このゲームは二次創作物であり非公式のものです。パレデミア学園の公式コンテンツではありません。
+            </p>
+          </div>
         </div>
       </div>
     </div>
