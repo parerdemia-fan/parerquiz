@@ -163,7 +163,8 @@
 ## アセット
 
 - assets/data/talents.json : タレントの情報を格納した JSON ファイル
-- assets/images/dormitory : 各寮のエンブレム画像(webp)
+- assets/images/dormitory/{dormitory-code}.webp : 各寮のエンブレム画像
+- assets/images/dormitory/{dormitory-code}_wp.webp : 各寮のウォールペーパー画像
 - assets/images/face : タレントの顔画像(png)
 - assets/images/ogp : タレントの OGP 画像(png)
 - assets/images/ogp.png : このゲームの OGP 画像
@@ -171,6 +172,8 @@
 - assets/images/stand : タレントの立ち絵(png)
 - assets/images/mirror.png : パレデミア学園の魔法の鏡の画像（favicon、出題範囲「すべて」、バッジコレクション「すべて」で使用）
 - assets/images/parerdemia-logo.png : パレデミア学園のロゴ画像
+- assets/images/clocktower.webp : 時計台の画像
+- assets/images/parerdemia_bg.jpeg : 公式Xのヘッダー画像
 
 ※各タレントの画像のファイル名はタレントの学籍番号(studentId)になっている
 ※各寮の画像のファイル名は各寮の略記号になっている
