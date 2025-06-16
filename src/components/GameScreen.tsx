@@ -5,6 +5,7 @@ import { useGame } from '../hooks/useGame';
 import { useBadges } from '../hooks/useBadges';
 import { QuestionDisplay } from './QuestionDisplay';
 import { AnswerOptions } from './AnswerOptions';
+import confetti from 'canvas-confetti';
 
 interface GameScreenProps {
   settings: GameSettings;
@@ -84,6 +85,130 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       }
     }
   }, [gameState.gameFinished, gameState.debugForceFinish, gameState.totalQuestions, gameState.correctAnswers, settings.dormitory, settings.difficulty, earnBadge, reloadBadges]);
+
+  // 全問正解時の継続的な打ち上げ花火エフェクト
+  useEffect(() => {
+    if (gameState.gameFinished) {
+      const totalQuestions = gameState.debugForceFinish?.totalQuestions || gameState.totalQuestions;
+      const correctAnswers = gameState.debugForceFinish?.correctAnswers || gameState.correctAnswers;
+      const correctRate = correctAnswers / totalQuestions;
+
+      if (correctRate === 1.0) {
+        // 打ち上げ花火のエフェクト関数
+        const fireworks = () => {
+          const count = 50;
+          const defaults = {
+            origin: { y: 0.7 }
+          };
+
+          function fire(particleRatio: number, opts: any) {
+            confetti({
+              ...defaults,
+              ...opts,
+              particleCount: Math.floor(count * particleRatio)
+            });
+          }
+
+          // 複数種類の花火を同時発射
+          fire(0.25, {
+            spread: 26,
+            startVelocity: 55,
+            colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7']
+          });
+          fire(0.2, {
+            spread: 60,
+            colors: ['#fd79a8', '#a29bfe', '#6c5ce7', '#fab1a0', '#e17055']
+          });
+          fire(0.35, {
+            spread: 100,
+            decay: 0.91,
+            scalar: 0.8,
+            colors: ['#00b894', '#00cec9', '#0984e3', '#6c5ce7', '#a29bfe']
+          });
+          fire(0.1, {
+            spread: 120,
+            startVelocity: 25,
+            decay: 0.92,
+            scalar: 1.2,
+            colors: ['#fdcb6e', '#e84393', '#ff7675', '#74b9ff', '#55a3ff']
+          });
+          fire(0.1, {
+            spread: 120,
+            startVelocity: 45,
+            colors: ['#ffeaa7', '#fab1a0', '#ff7675', '#fd79a8', '#e84393']
+          });
+        };
+
+        // ランダムな左右からの打ち上げ花火
+        const randomFireworks = () => {
+          const side = Math.random() < 0.5 ? 'left' : 'right';
+          const originX = side === 'left' ? 0.1 : 0.9;
+          
+          confetti({
+            particleCount: 100,
+            angle: side === 'left' ? 60 : 120,
+            spread: 55,
+            origin: { x: originX, y: 0.8 },
+            colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#fd79a8', '#a29bfe', '#6c5ce7'],
+            startVelocity: 60,
+            gravity: 0.8,
+            drift: side === 'left' ? 1 : -1,
+            scalar: 1.2
+          });
+        };
+
+        // 中央からの大型花火
+        const bigFireworks = () => {
+          confetti({
+            particleCount: 150,
+            spread: 360,
+            origin: { x: 0.5, y: 0.6 },
+            colors: ['#FFD700', '#FFA500', '#FF69B4', '#00CED1', '#9370DB', '#32CD32'],
+            startVelocity: 45,
+            gravity: 0.6,
+            scalar: 1.5,
+            shapes: ['star', 'circle']
+          });
+        };
+
+        // 連続花火のスケジュール
+        const intervals: number[] = [];
+        
+        // 即座に最初の花火
+        fireworks();
+        
+        // 0.5秒後に大型花火
+        const timeout1 = setTimeout(bigFireworks, 500);
+        
+        // 1秒後から5秒間隔で連続花火
+        const interval1 = setInterval(fireworks, 5000);
+        
+        // 2秒後から7秒間隔でランダム花火
+        const timeout2 = setTimeout(() => {
+          randomFireworks();
+          const interval2 = setInterval(randomFireworks, 7000);
+          intervals.push(interval2);
+        }, 2000);
+        
+        // 4秒後から10秒間隔で大型花火
+        const timeout3 = setTimeout(() => {
+          bigFireworks();
+          const interval3 = setInterval(bigFireworks, 10000);
+          intervals.push(interval3);
+        }, 4000);
+
+        intervals.push(interval1);
+
+        // コンポーネントアンマウント時やゲーム状態変更時のクリーンアップ
+        return () => {
+          clearTimeout(timeout1);
+          clearTimeout(timeout2);
+          clearTimeout(timeout3);
+          intervals.forEach(interval => clearInterval(interval));
+        };
+      }
+    }
+  }, [gameState.gameFinished, gameState.debugForceFinish, gameState.totalQuestions, gameState.correctAnswers]);
 
   // 自動進行のためのuseEffect
   useEffect(() => {
@@ -374,7 +499,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     };
     
     return (
-      <div className={`min-h-screen bg-gradient-to-br ${result.bgClass} relative overflow-hidden`} style={backgroundStyle}>
+      <div className={`min-h-screen bg-gradient-to-br ${result.bgClass} relative overflow-hidden ${result.celebration ? 'fireworks-celebration' : ''}`} style={backgroundStyle}>
         {/* 背景画像用のオーバーレイ - ぼかし無し */}
         <div className="absolute inset-0 bg-white/75"></div>
         
@@ -453,7 +578,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
         {/* メインコンテンツ */}
         <div className="flex items-center justify-center px-4 pb-8 relative z-20">
-          <div className={`bg-white/90 rounded-3xl shadow-2xl p-6 md:p-8 max-w-2xl w-full transform border border-white/40 ${result.celebration ? 'shadow-3xl border-4 border-yellow-400/50' : ''}`}>
+          <div className={`bg-white/90 rounded-3xl shadow-2xl p-6 md:p-8 max-w-2xl w-full transform border border-white/40 relative z-10 ${result.celebration ? 'shadow-3xl border-4 border-yellow-400/50' : ''}`}>
             <div className="text-center space-y-6">
               {/* 結果タイトル */}
               <div className="space-y-2">
