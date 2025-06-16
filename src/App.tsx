@@ -194,7 +194,8 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 flex flex-col title-background-scroll">
+      <div className="relative z-10 flex flex-col min-h-screen">
       {/* Header */}
       <header className="text-center py-4 md:py-8 px-4 relative">
         <div className="max-w-4xl mx-auto relative">
@@ -459,6 +460,7 @@ function App() {
           </p>
         </div>
       </footer>
+      </div>
     </div>
   );
 }

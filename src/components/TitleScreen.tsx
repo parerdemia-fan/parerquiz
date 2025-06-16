@@ -6,7 +6,7 @@ interface TitleScreenProps {
 
 export const TitleScreen: React.FC<TitleScreenProps> = ({ settings }) => {
   return (
-    <div className="title-screen">
+    <div className="title-screen title-background-scroll">
       <h1 className="text-4xl font-extrabold mb-4">Welcome to the Talent Quiz</h1>
       <p className="text-lg mb-8">Test your knowledge about the talents!</p>
       <div className="grid grid-cols-2 gap-4">

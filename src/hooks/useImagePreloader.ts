@@ -9,6 +9,11 @@ export const useImagePreloader = (
     if (!settings || talents.length === 0) return;
 
     const preloadImages = () => {
+      // 背景画像を最初にプリロード
+      const backgroundImageUrl = '/parerquiz/assets/images/parerdemia_bg.jpeg';
+      const backgroundImg = new Image();
+      backgroundImg.src = backgroundImageUrl;
+
       // 出題範囲に基づくタレント絞り込み
       const filteredTalents = settings.dormitory === 'すべて' 
         ? talents 
@@ -24,6 +29,9 @@ export const useImagePreloader = (
 
       // プリロードする画像URLのセット
       const imageUrls = new Set<string>();
+
+      // 背景画像を追加
+      imageUrls.add(backgroundImageUrl);
 
       // ゲームモードと難易度に基づく画像選択
       filteredTalents.forEach(talent => {

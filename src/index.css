@@ -586,3 +586,36 @@ img {
   image-rendering: optimizeQuality;
   image-rendering: -webkit-optimize-contrast;
 }
+
+/* タイトル画面背景の無限スクロールアニメーション */
+@keyframes backgroundScroll {
+  0% {
+    background-position-x: 0%;
+  }
+  100% {
+    background-position-x: -300vh;
+  }
+}
+
+.title-background-scroll {
+  background-image: url('/parerquiz/assets/images/parerdemia_bg.jpeg');
+  background-size: 300vh 100vh;
+  background-repeat: repeat-x;
+  background-position: center;
+  background-attachment: fixed;
+  animation: backgroundScroll 60s linear infinite;
+  background-blend-mode: soft-light;
+  position: relative;
+}
+
+.title-background-scroll::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  pointer-events: none;
+  z-index: 0;
+}
