@@ -2,12 +2,13 @@ import type { GameSettings, DebugMode, DormitoryInfo, Dormitory } from './types'
 // 値として使用するものは通常のインポート
 import { useState, useEffect } from 'react';
 import { GameScreen } from './components/GameScreen';
+import { OGPCaptureScreen } from './components/OGPCaptureScreen';
 import { Badge } from './components/Badge';
 import { HelpModal } from './components/HelpModal';
 import { useBadges } from './hooks/useBadges';
 import { useImagePreloader } from './hooks/useImagePreloader';
 
-type Screen = 'title' | 'game';
+type Screen = 'title' | 'game' | 'ogp-capture';
 
 // LocalStorage のキー名
 const STORAGE_KEYS = {
@@ -175,6 +176,11 @@ function App() {
     reloadBadges();
   };
 
+  // OGP撮影画面への遷移
+  const handleOGPCapture = () => {
+    setCurrentScreen('ogp-capture');
+  };
+
   // Xシェア用の関数
   const handleXShareTitle = () => {
     const shareText = `パレデミア学園の60名のアイドルを覚えるクイズゲーム「パレクイズ」で遊んでみよう！\n名前当てモード・顔当てモードで楽しく学習🎮\n\n#パレデミア学園 #パレクイズ`;
@@ -190,6 +196,12 @@ function App() {
         onBackToTitle={handleBackToTitle}
         debugMode={debugMode}
       />
+    );
+  }
+
+  if (currentScreen === 'ogp-capture') {
+    return (
+      <OGPCaptureScreen onBackToTitle={handleBackToTitle} />
     );
   }
 
@@ -394,6 +406,17 @@ function App() {
             <div className="bg-yellow-100 border border-yellow-300 rounded-2xl shadow-lg p-4 mt-6 md:mt-8">
               <h3 className="text-lg font-bold text-yellow-800 mb-3">🐛 デバッグ用機能</h3>
               
+              {/* OGP撮影用ページ */}
+              <div className="mb-4">
+                <h4 className="text-md font-bold text-yellow-700 mb-2">OGP画像撮影</h4>
+                <button
+                  onClick={handleOGPCapture}
+                  className="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition-colors text-sm"
+                >
+                  📸 OGP撮影用ページ
+                </button>
+              </div>
+
               {/* ゲーム結果シミュレーション */}
               <div className="mb-4">
                 <h4 className="text-md font-bold text-yellow-700 mb-2">ゲーム結果シミュレーション</h4>
