@@ -88,7 +88,7 @@ export const useImagePreloader = (
 
       // 全画像のプリロードを並行実行
       Promise.all(preloadPromises).then(() => {
-        console.log(`Preloaded ${imageUrls.size} images for game settings:`, {
+        console.log(`🎮 ゲーム準備完了！${imageUrls.size}枚の画像をプリロードしました 🌟`, {
           dormitory: settings.dormitory,
           gameMode: settings.gameMode,
           difficulty: settings.difficulty

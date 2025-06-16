@@ -151,7 +151,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
             </h3>
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-gray-700 font-elegant mb-4">
-                パレデミア学園の最新情報をチェック！
+                🌟 パレデミア学園の最新情報をチェック！✨
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <a
@@ -160,7 +160,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all duration-200 font-rounded text-sm"
                 >
-                  🌐 公式サイトへ
+                  🌐 公式サイトで最新情報をGET！
                 </a>
                 <a
                   href="https://x.com/parerdemia"
@@ -168,7 +168,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-blue-400 to-blue-600 text-white font-bold rounded-lg hover:from-blue-500 hover:to-blue-700 transition-all duration-200 font-rounded text-sm"
                 >
-                  🐦 公式X（Twitter）へ
+                  🐦 公式Xで推し活情報を追跡！
                 </a>
               </div>
             </div>

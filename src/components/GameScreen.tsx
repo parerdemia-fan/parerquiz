@@ -343,15 +343,23 @@ export const GameScreen: React.FC<GameScreenProps> = ({
                             settings.difficulty === 'むずかしい' ? 'むずかしい' : 
                             '寮生専用';
       
-      let shareText = `パレクイズで${settings.dormitory}の${modeText}モード（難易度:${difficultyText}）に挑戦！\n`;
-      shareText += `結果: ${correctRate}%正解 (${correctAnswers}/${totalQuestions}問)\n`;
+      let shareText = `🌟パレクイズ挑戦！\n`;
+      shareText += `${settings.dormitory}/${modeText}/${difficultyText}\n`;
+      shareText += `結果:${correctRate}%正解(${correctAnswers}/${totalQuestions}問)\n`;
       
       if (correctRate === 100) {
-        shareText += `🏆 パーフェクト達成！ 🏆\n`;
+        shareText += `🏆パーフェクト達成✨`;
+        if (settings.difficulty === '寮生専用') {
+          shareText += `シルエットモード制覇👑`;
+        }
       } else if (correctRate >= 90) {
-        shareText += `🌟 エクセレント！ 🌟\n`;
+        shareText += `🌟エクセレント！もう少しで完璧🔥`;
       } else if (correctRate >= 70) {
-        shareText += `✨ グレート！ ✨\n`;
+        shareText += `✨グレート！なかなかの腕前👍`;
+      } else if (correctRate >= 50) {
+        shareText += `📖まだまだ伸びしろあり💪`;
+      } else {
+        shareText += `🔥これからが本番✨`;
       }
       
       shareText += `\n#パレデミア学園 #パレクイズ`;
