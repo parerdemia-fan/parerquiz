@@ -1,6 +1,5 @@
 import type { GameSettings, Talent, GameState, QuizQuestion } from '../types';
 import { useState, useEffect } from 'react';
-import talentsData from '../../assets/data/talents.json';
 
 const DORMITORY_MAP = {
   'バゥ寮': 'バゥ',
@@ -35,13 +34,23 @@ export const useGame = (settings: GameSettings) => {
     gameFinished: false
   });
 
+  const [talents, setTalents] = useState<Talent[]>([]);
+
+  // タレントデータの読み込み
+  useEffect(() => {
+    fetch('/parerquiz/assets/data/talents.json')
+      .then(response => response.json())
+      .then(data => setTalents(data))
+      .catch(error => console.error('Failed to load talents data:', error));
+  }, []);
+
   // タレントデータをフィルタリング
   const getFilteredTalents = (): Talent[] => {
     const dormitoryName = DORMITORY_MAP[settings.dormitory];
-    let talents = !dormitoryName ? talentsData as Talent[] : 
-      (talentsData as Talent[]).filter(talent => talent.dormitory === dormitoryName);
+    let filteredTalents = !dormitoryName ? talents : 
+      talents.filter(talent => talent.dormitory === dormitoryName);
     
-    return talents;
+    return filteredTalents;
   };
 
   // 似た髪色のタレントを取得
@@ -101,6 +110,8 @@ export const useGame = (settings: GameSettings) => {
 
   // ゲーム初期化
   useEffect(() => {
+    if (talents.length === 0) return; // タレントデータが読み込まれるまで待機
+    
     const questions = generateQuestions();
     setGameState({
       currentQuestion: 0,
@@ -111,7 +122,7 @@ export const useGame = (settings: GameSettings) => {
       questions,
       gameFinished: false
     });
-  }, [settings]);
+  }, [settings, talents]); // talentsを依存配列に追加
 
   // 回答処理
   const answerQuestion = (selectedIndex: number) => {
@@ -151,6 +162,8 @@ export const useGame = (settings: GameSettings) => {
 
   // ゲーム再開
   const restartGame = () => {
+    if (talents.length === 0) return; // タレントデータが読み込まれるまで待機
+    
     const questions = generateQuestions();
     setGameState({
       currentQuestion: 0,
