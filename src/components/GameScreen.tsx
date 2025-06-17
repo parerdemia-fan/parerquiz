@@ -1041,7 +1041,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
             <div className="flex flex-col">
               <div className="bg-white/80 rounded-2xl shadow-lg p-1 md:p-6 border border-white/50 flex-1 min-h-0">
                 <h3 className="text-lg font-bold font-rounded text-gray-800 mb-2 md:mb-4 hidden lg:block">
-                  選択肢
+                  💫 正解はどれかな？
                 </h3>
                 <div className="h-full overflow-y-auto">
                   <AnswerOptions

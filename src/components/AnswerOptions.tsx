@@ -312,7 +312,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
               <div className="relative z-10 text-center">
                 <div className="flex items-center justify-center space-x-3 mb-2">
                   <div className="text-3xl">😅</div>
-                  <div className="text-2xl font-black text-white drop-shadow-lg">不正解</div>
+                  <div className="text-2xl font-black text-white drop-shadow-lg">ハズレ</div>
                   <div className="text-3xl">💪</div>
                 </div>
                 <div className="text-white font-bold text-sm drop-shadow-md mb-3">

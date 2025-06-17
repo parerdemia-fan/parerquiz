@@ -118,8 +118,8 @@ function App() {
   ];
 
   const gameModes = [
-    { id: 'name', name: '名前当てモード', description: '画像を見て名前を当てよう', color: 'from-green-400 to-green-600' },
-    { id: 'face', name: '顔当てモード', description: '情報を見て顔を当てよう', color: 'from-blue-400 to-blue-600' }
+    { id: 'name', name: '名前当てモード', description: '💭 この子の名前、覚えてる？', color: 'from-green-400 to-green-600' },
+    { id: 'face', name: '顔当てモード', description: '👀 みんなの顔、完璧に覚えた？', color: 'from-blue-400 to-blue-600' }
   ];
 
   const difficulties = [
