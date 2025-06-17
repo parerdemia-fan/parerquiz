@@ -5,13 +5,15 @@ interface QuestionDisplayProps {
   gameMode: GameMode;
   isAdvancedMode?: boolean; // 寮生専用モード判定
   isAnswered?: boolean; // 回答済み状態
+  difficulty?: string; // 難易度情報を追加
 }
 
 export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
   talent,
   gameMode,
   isAdvancedMode = false,
-  isAnswered = false
+  isAnswered = false,
+  difficulty = 'ふつう'
 }) => {
   // 誕生日フォーマット変換関数
   const formatBirthday = (birthday: string) => {
@@ -21,6 +23,18 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
 
   // 将来の夢を取得する関数
   const getDreamText = () => {
+    if (gameMode === 'face') {
+      // 顔当てモードの場合
+      if (difficulty === '鬼' && !isAnswered) {
+        // 鬼モードの顔当てモードで回答前の場合はmaskedDreamを優先
+        return talent.maskedDream || talent.dream;
+      } else {
+        // その他の場合は常にdreamを表示
+        return talent.dream;
+      }
+    }
+    
+    // 名前当てモードの場合
     if (isAnswered) {
       // 回答後は常にdreamを表示
       return talent.dream;
@@ -54,6 +68,14 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
         <h3 className="font-bold font-rounded text-yellow-700 mb-2">将来の夢</h3>
         <p className="text-sm text-gray-700 font-elegant">{getDreamText()}</p>
       </div>
+
+      {/* モバイル用 将来の夢 - 顔当てモード専用 */}
+      {gameMode === 'face' && (
+        <div className="bg-yellow-50 p-3 rounded-lg text-left mb-3 md:hidden">
+          <h3 className="font-bold font-rounded text-yellow-700 mb-2 text-sm">将来の夢</h3>
+          <p className="text-xs text-gray-700 font-elegant">{getDreamText()}</p>
+        </div>
+      )}
 
       {/* 趣味と特技を横並び */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mb-4 hidden md:grid">
@@ -96,13 +118,23 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
     </>
   );
 
+  // 鬼モザイク表示用の関数 - ランダム記号変換に変更
+  const getMosaicText = (text: string, isAnswered: boolean) => {
+    if (gameMode === 'face' && difficulty === '鬼' && !isAnswered) {
+      // 鬼モザイク: スペースはスペースのまま、それ以外の文字をランダムな記号に変換
+      const symbols = ['◆', '◇', '◈', '◉', '◎', '●', '○', '◐', '◑', '◒', '◓', '▲', '△', '▼', '▽', '■', '□', '▪', '▫', '◆', '◇', '★', '☆', '✦', '✧', '✩', '✪', '✫', '✬', '✭', '✮', '✯', '✰', '※', '◈', '◉', '◎'];
+      return text.replace(/[^\s]/g, () => symbols[Math.floor(Math.random() * symbols.length)]);
+    }
+    return text;
+  };
+
   return (
     <div className="bg-white/80 rounded-2xl shadow-lg p-2 md:p-6 border border-white/30">
       {gameMode === 'name' ? (
         // 名前当てモード: タレント画像と詳細情報を表示
         <div className="text-center">
           <h2 className="text-lg md:text-2xl font-bold font-rounded text-gray-800 mb-1 md:mb-4">
-            この子の名前は？
+            {difficulty === '鬼' ? 'この子の名前を入力してね！' : 'この子の名前は？'}
           </h2>
           <div className="mb-1 md:mb-4 relative">
             <img
@@ -137,13 +169,14 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
             )}
           </div>
           
+          {/* 鬼モードでは詳細情報を非表示にする */}
           {renderTalentDetails()}
         </div>
       ) : (
         // 顔当てモード: タレント名と詳細情報を表示
         <div className="text-center space-y-1 md:space-y-4">
           {/* タレント名（美しいカード風デザイン） */}
-          <div className="relative bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl p-1 shadow-2xl transform hover:scale-[1.02] transition-all duration-300">
+          <div className="relative bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl p-1 transform hover:scale-[1.02] transition-all duration-300">
             {/* 内側の白いカード */}
             <div className="bg-white rounded-xl p-2 md:p-8 relative overflow-hidden">
               {/* 装飾的な背景パターン */}
@@ -158,14 +191,14 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
 
               {/* メインコンテンツ */}
               <div className="relative z-10 space-y-1 md:space-y-4">
-                {/* 読み仮名 */}
+                {/* 読み仮名 - 鬼モザイク対応 */}
                 <div className="text-xs md:text-sm font-medium text-gray-500 tracking-wider uppercase mb-1 md:mb-2">
-                  {talent.kana}
+                  {getMosaicText(talent.kana, isAnswered)}
                 </div>
                 
-                {/* タレント名 - 動的フォントサイズ適用 */}
+                {/* タレント名 - 動的フォントサイズ適用・鬼モザイク対応 */}
                 <h2 className={`${getNameFontSize(talent.name)} font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight drop-shadow-sm mb-2 md:mb-6 whitespace-nowrap`}>
-                  {talent.name}
+                  {getMosaicText(talent.name, isAnswered)}
                 </h2>
                 
                 {/* 質問文 */}
@@ -182,11 +215,13 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
                   
                   <div className="relative z-10 text-center">
                     <h3 className="text-base md:text-xl lg:text-2xl font-black bg-gradient-to-r from-amber-600 via-orange-600 to-red-500 bg-clip-text text-transparent leading-tight mb-1 md:mb-2 drop-shadow-sm">
-                      この子はどれかな？
+                      {difficulty === '鬼' && !isAnswered ? 'この子はどれかな？（鬼モード）' : 'この子はどれかな？'}
                     </h3>
                     <div className="hidden md:flex items-center justify-center space-x-2 text-amber-700/80">
                       <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
-                      <span className="text-sm font-medium tracking-wide">顔をよく見て選んでね</span>
+                      <span className="text-sm font-medium tracking-wide">
+                        {difficulty === '鬼' && !isAnswered ? '名前を隠してあるよ！' : '顔をよく見て選んでね'}
+                      </span>
                       <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
                     </div>
                   </div>

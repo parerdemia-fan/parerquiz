@@ -45,6 +45,8 @@ export const Badge: React.FC<BadgeProps> = ({
         return 'border-4 border-gray-500 bg-gradient-to-br from-gray-100 to-gray-200 shadow-lg shadow-gray-200/50';
       case '寮生専用':
         return 'border-4 border-yellow-500 bg-gradient-to-br from-yellow-100 to-yellow-200 shadow-lg shadow-yellow-200/50';
+      case '鬼':
+        return 'border-4 border-red-600 bg-gradient-to-br from-red-100 to-red-200 shadow-lg shadow-red-200/50';
     }
   };
 
@@ -69,6 +71,8 @@ export const Badge: React.FC<BadgeProps> = ({
         return 'badge-silver';
       case '寮生専用':
         return 'badge-gold-enhanced';
+      case '鬼':
+        return 'badge-demon'; // 鬼専用のグローエフェクト
       default:
         return '';
     }
@@ -100,9 +104,12 @@ export const Badge: React.FC<BadgeProps> = ({
         }}
       />
       
-      {/* 金色バッジの特別演出 */}
+      {/* 特別演出 */}
       {earned && difficulty === '寮生専用' && (
         <div className="absolute inset-0 rounded-full animate-pulse bg-gradient-to-br from-yellow-400/20 to-transparent"></div>
+      )}
+      {earned && difficulty === '鬼' && (
+        <div className="absolute inset-0 rounded-full animate-pulse bg-gradient-to-br from-red-400/20 to-transparent"></div>
       )}
     </div>
   );

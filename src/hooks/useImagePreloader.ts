@@ -62,7 +62,7 @@ export const useImagePreloader = (
             // 寮生専用モード：ポートレート画像（シルエット用）
             imageUrls.add(`/parerquiz/assets/images/portrait/${talent.studentId}.webp`);
           } else {
-            // 通常モード：OGP画像
+            // 通常モード：OGP画像（鬼モードも含む）
             imageUrls.add(`/parerquiz/assets/images/ogp/${talent.studentId}.png`);
           }
           // 選択肢用のポートレート画像（回答後表示用）

@@ -53,8 +53,8 @@ export const OGPCaptureScreen: React.FC<OGPCaptureScreenProps> = ({ onBackToTitl
                 <span className="text-blue-700">顔当て</span>
               </div>
               <div className="flex items-center gap-3 bg-gradient-to-r from-purple-100 to-pink-100 px-6 py-4 rounded-2xl border-2 border-purple-300/50">
-                <span className="text-3xl">🏆</span>
-                <span className="text-purple-700">バッジ集め</span>
+                <span className="text-3xl">👹</span>
+                <span className="text-purple-700">鬼モード</span>
               </div>
             </div>
             

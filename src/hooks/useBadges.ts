@@ -7,7 +7,8 @@ const BADGES_STORAGE_KEY = 'parerquiz-badges';
 const DIFFICULTY_PRIORITY: Record<Difficulty, number> = {
   'ふつう': 1,
   'むずかしい': 2,
-  '寮生専用': 3
+  '寮生専用': 3,
+  '鬼': 4
 };
 
 export const useBadges = () => {
@@ -112,12 +113,13 @@ export const useBadges = () => {
       case 'ふつう': return 'bronze';
       case 'むずかしい': return 'silver';
       case '寮生専用': return 'gold';
+      case '鬼': return 'gold'; // 鬼も金バッジとして扱う（見た目は赤色）
     }
   }, []);
 
   // バッジが輝くべきかどうかを判定（タイトル画面用）
   const shouldBadgeGlow = useCallback((difficulty: Difficulty): boolean => {
-    return difficulty === 'むずかしい' || difficulty === '寮生専用';
+    return difficulty === 'むずかしい' || difficulty === '寮生専用' || difficulty === '鬼';
   }, []);
 
   // バッジを全てリセット
@@ -130,6 +132,18 @@ export const useBadges = () => {
     }
   }, []);
 
+  // 「すべて」の寮生専用以上のバッジを取得しているかチェック（鬼モード解放条件）
+  const hasAllDormitoriesAdvancedBadge = useCallback((): boolean => {
+    return badges.some(badge => 
+      badge.dormitory === 'すべて' && (badge.difficulty === '寮生専用' || badge.difficulty === '鬼')
+    );
+  }, [badges]);
+
+  // 鬼モードが解放されているかチェック
+  const isOniModeUnlocked = useCallback((): boolean => {
+    return hasAllDormitoriesAdvancedBadge();
+  }, [hasAllDormitoriesAdvancedBadge]);
+
   return {
     badges,
     earnBadge,
@@ -139,6 +153,8 @@ export const useBadges = () => {
     shouldBadgeGlow,
     resetAllBadges,
     reloadBadges,
-    isInitialized
+    isInitialized,
+    hasAllDormitoriesAdvancedBadge,
+    isOniModeUnlocked
   };
 };

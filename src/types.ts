@@ -16,7 +16,7 @@ export interface Talent {
 }
 
 export type GameMode = 'name' | 'face';
-export type Difficulty = 'ふつう' | 'むずかしい' | '寮生専用';
+export type Difficulty = 'ふつう' | 'むずかしい' | '寮生専用' | '鬼';
 export type Dormitory = 'バゥ寮' | 'ミュゥ寮' | 'クゥ寮' | 'ウィニー寮' | 'すべて';
 
 export interface GameSettings {
@@ -40,6 +40,8 @@ export interface GameState {
   questions: QuizQuestion[];
   gameFinished: boolean;
   debugForceFinish?: { correctAnswers: number; totalQuestions: number }; // デバッグ用強制終了
+  textAnswer?: string; // 鬼モード用テキスト回答
+  isTextAnswerCorrect?: boolean; // 鬼モード用正誤判定結果
 }
 
 // デバッグモード用の型定義を追加
@@ -73,3 +75,4 @@ export const DORMITORY_CODE_MAP: Record<Dormitory, string | null> = {
   'ウィニー寮': 'wh',
   'すべて': null
 };
+

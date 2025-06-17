@@ -70,8 +70,8 @@ export const useGame = (settings: GameSettings) => {
     return shuffledTalents.map(correctTalent => {
       let otherOptions: Talent[] = [];
       
-      if (settings.difficulty === 'むずかしい') {
-        // 似た髪色のタレントを優先的に選択
+      if (settings.difficulty === 'むずかしい' || settings.difficulty === '鬼') {
+        // 似た髪色のタレントを優先的に選択（鬼モードも含む）
         const similarHairTalents = getSimilarHairColorTalents(
           correctTalent.hairColor, 
           talents, 
@@ -139,6 +139,29 @@ export const useGame = (settings: GameSettings) => {
     }));
   };
 
+  // テキスト回答処理（鬼モード用）
+  const answerTextQuestion = (textAnswer: string) => {
+    if (gameState.isAnswered || gameState.gameFinished) return;
+
+    const currentQ = gameState.questions[gameState.currentQuestion];
+    const correctName = currentQ.correctTalent.name;
+    
+    // スペースと「・」を除去して比較
+    const normalizeText = (text: string) => text.replace(/[\s・]/g, '');
+    const normalizedAnswer = normalizeText(textAnswer);
+    const normalizedCorrect = normalizeText(correctName);
+    
+    const isCorrect = normalizedAnswer === normalizedCorrect;
+
+    setGameState(prev => ({
+      ...prev,
+      isAnswered: true,
+      textAnswer,
+      isTextAnswerCorrect: isCorrect,
+      correctAnswers: isCorrect ? prev.correctAnswers + 1 : prev.correctAnswers
+    }));
+  };
+
   // 次の問題へ
   const nextQuestion = () => {
     if (!gameState.isAnswered) return;
@@ -173,7 +196,9 @@ export const useGame = (settings: GameSettings) => {
       selectedAnswer: null,
       questions,
       gameFinished: false,
-      debugForceFinish: undefined
+      debugForceFinish: undefined,
+      textAnswer: undefined,
+      isTextAnswerCorrect: undefined
     });
   };
 
@@ -189,9 +214,11 @@ export const useGame = (settings: GameSettings) => {
   return {
     gameState,
     answerQuestion,
+    answerTextQuestion, // 新しいテキスト回答関数を追加
     nextQuestion,
     restartGame,
     debugForceFinish, // デバッグ用関数を追加
-    isAdvancedMode: settings.difficulty === '寮生専用' // 寮生専用モード判定を返す
+    isAdvancedMode: settings.difficulty === '寮生専用', // 寮生専用モード判定を返す
+    isOniMode: settings.difficulty === '鬼' // 鬼モード判定を修正：名前当て・顔当て両方で鬼モードに対応
   };
 };

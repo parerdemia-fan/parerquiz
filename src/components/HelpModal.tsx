@@ -1,9 +1,13 @@
+import { useBadges } from '../hooks/useBadges';
+
 interface HelpModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
 export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
+  const { isOniModeUnlocked } = useBadges();
+  
   if (!isOpen) return null;
 
   // 背景クリック時にモーダルを閉じる処理
@@ -85,6 +89,15 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
                   寮生の皆さんに挑戦してもらうための特別モード！シルエット表示でタレントを当てる超高難易度です。同じ学び舎で過ごす仲間たちなら、きっとシルエットだけでも見分けられるはず...！皆さんの愛と絆の深さを、ぜひ証明してください♪
                 </p>
               </div>
+              {/* 鬼モードは解放条件を満たしている場合のみ表示 */}
+              {isOniModeUnlocked() && (
+                <div className="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+                  <h4 className="font-bold text-red-800 mb-2 font-rounded">⭐⭐⭐⭐⭐ 鬼</h4>
+                  <p className="text-red-700 font-elegant">
+                    真の猛者のみが挑戦できる最高難易度！「すべて」で寮生専用モードを制覇した証である金バッジを取得した者のみに解放される伝説のモード。名前当てモードでは選択肢がなく、テキスト入力で正確な名前を答える必要があります。顔当てモードでは名前・カナ・将来の夢がランダムな記号で隠されます。パレデミア学園60名への愛と知識の全てが試される...君は真のマスターになれるか？
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -96,7 +109,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
             <p className="text-gray-600 font-elegant">
               各出題範囲・難易度で全問正解（100%）を達成するとバッジがもらえます！
             </p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-4 gap-3">
               <div className="text-center p-3 bg-amber-50 rounded-lg border border-amber-200">
                 <div className="text-2xl mb-1">🥉</div>
                 <div className="text-xs font-bold text-amber-700">ベーシック</div>
@@ -112,6 +125,14 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
                 <div className="text-xs font-bold text-yellow-700">エキスパート</div>
                 <div className="text-xs text-yellow-600">寮生専用</div>
               </div>
+              {/* 鬼モードが解放されている場合のみ表示 */}
+              {isOniModeUnlocked() && (
+                <div className="text-center p-3 bg-red-50 rounded-lg border border-red-500">
+                  <div className="text-2xl mb-1">👹</div>
+                  <div className="text-xs font-bold text-red-700">レジェンド</div>
+                  <div className="text-xs text-red-600">鬼</div>
+                </div>
+              )}
             </div>
           </div>
 

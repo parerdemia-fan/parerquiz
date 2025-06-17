@@ -82,7 +82,7 @@ function App() {
 
   useImagePreloader(currentSettings, talents);
 
-  const { getBadgeForDormitory, shouldBadgeGlow, resetAllBadges, reloadBadges, badges } = useBadges();
+  const { getBadgeForDormitory, shouldBadgeGlow, resetAllBadges, reloadBadges, badges, isOniModeUnlocked } = useBadges();
 
   const dormitories: DormitoryInfo[] = [
     { 
@@ -125,7 +125,11 @@ function App() {
   const difficulties = [
     { id: 'ふつう', name: 'ふつう', description: '標準的な難易度', color: 'from-blue-400 to-blue-600', available: true, emoji: '📝' },
     { id: 'むずかしい', name: 'むずかしい', description: '似た髪色の人が優先的に出現', color: 'from-orange-400 to-orange-600', available: true, emoji: '🔥' },
-    { id: '寮生専用', name: '寮生専用', description: 'マニア向け（シルエット表示）', color: 'from-purple-400 to-purple-600', available: true, emoji: '👑' }
+    { id: '寮生専用', name: '寮生専用', description: 'マニア向け（シルエット表示）', color: 'from-purple-400 to-purple-600', available: true, emoji: '👑' },
+    // 解放条件を満たしている場合のみ鬼モードを表示
+    ...(isOniModeUnlocked() ? [
+      { id: '鬼', name: '鬼', description: 'レジェンド級（要金バッジ）', color: 'from-red-500 to-red-700', available: true, emoji: '👹' }
+    ] : [])
   ];
 
   const handleDormitorySelect = (dormName: string) => {
@@ -141,11 +145,14 @@ function App() {
   };
 
   const handleGameStart = () => {
+    // 鬼モードの場合は、ゲームモードに関わらず鬼難易度を維持
+    const actualDifficulty = selectedDifficulty === '鬼' ? '鬼' : selectedDifficulty;
+    
     const settings: GameSettings = {
       dormitory: selectedDormitory as 'バゥ寮' | 'ミュゥ寮' | 'クゥ寮' | 'ウィニー寮' | 'すべて',
       gameMode: selectedGameMode as 'name' | 'face',
-      difficulty: selectedDifficulty as 'ふつう' | 'むずかしい' | '寮生専用',
-      isAdvancedMode: selectedDifficulty === '寮生専用'
+      difficulty: actualDifficulty as 'ふつう' | 'むずかしい' | '寮生専用' | '鬼',
+      isAdvancedMode: actualDifficulty === '寮生専用'
     };
     setGameSettings(settings);
     setDebugGameSettings(null);
@@ -155,11 +162,14 @@ function App() {
 
   // デバッグ用ゲーム終了画面表示
   const handleDebugGameEnd = (correctAnswers: number, totalQuestions: number) => {
+    // 鬼モードの場合は、ゲームモードに関わらず鬼難易度を維持
+    const actualDifficulty = selectedDifficulty === '鬼' ? '鬼' : selectedDifficulty;
+    
     const settings: GameSettings = {
       dormitory: selectedDormitory as 'バゥ寮' | 'ミュゥ寮' | 'クゥ寮' | 'ウィニー寮' | 'すべて',
       gameMode: selectedGameMode as 'name' | 'face',
-      difficulty: selectedDifficulty as 'ふつう' | 'むずかしい' | '寮生専用',
-      isAdvancedMode: selectedDifficulty === '寮生専用'
+      difficulty: actualDifficulty as 'ふつう' | 'むずかしい' | '寮生専用' | '鬼',
+      isAdvancedMode: actualDifficulty === '寮生専用'
     };
     setDebugGameSettings(settings);
     setDebugMode({ correctAnswers, totalQuestions });
@@ -273,7 +283,8 @@ function App() {
                         <div className="text-xs text-gray-500 mt-1 hidden md:block">
                           {badge.difficulty === 'ふつう' ? 'ベーシック' : 
                            badge.difficulty === 'むずかしい' ? 'アドバンス' : 
-                           badge.difficulty === '寮生専用' ? 'エキスパート' : badge.difficulty}
+                           badge.difficulty === '寮生専用' ? 'エキスパート' :
+                           badge.difficulty === '鬼' ? 'レジェンド' : badge.difficulty}
                         </div>
                       )}
                     </div>
@@ -371,7 +382,12 @@ function App() {
                   <div className="flex items-center justify-center gap-2">
                     <span className="text-lg">{difficulty.emoji}</span>
                     <span>{difficulty.name}</span>
-                    {!difficulty.available && (
+                    {!difficulty.available && difficulty.id === '鬼' && (
+                      <span className="ml-2 text-xs bg-gray-400 text-white px-2 py-1 rounded-full font-elegant">
+                        要金バッジ
+                      </span>
+                    )}
+                    {!difficulty.available && difficulty.id !== '鬼' && (
                       <span className="ml-2 text-xs bg-gray-400 text-white px-2 py-1 rounded-full font-elegant">
                         実装予定
                       </span>

@@ -5,6 +5,7 @@ import { useGame } from "../hooks/useGame";
 import { useBadges } from "../hooks/useBadges";
 import { QuestionDisplay } from "./QuestionDisplay";
 import { AnswerOptions } from "./AnswerOptions";
+import { TextInputAnswer } from "./TextInputAnswer";
 import confetti from "canvas-confetti";
 
 interface GameScreenProps {
@@ -21,10 +22,12 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   const {
     gameState,
     answerQuestion,
+    answerTextQuestion, // 新しいテキスト回答関数を追加
     nextQuestion,
     restartGame,
     debugForceFinish,
     isAdvancedMode,
+    isOniMode, // 鬼モード判定を追加
   } = useGame(settings);
   const { earnBadge, reloadBadges } = useBadges();
   const [newBadgeEarned, setNewBadgeEarned] = useState<boolean>(false);
@@ -83,7 +86,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         gameState.debugForceFinish?.correctAnswers || gameState.correctAnswers;
       const correctRate = correctAnswers / totalQuestions;
 
-      // 100%正解の場合のみバッジを取得
+      // 100%正解の場合のみバッジを取得（鬼モードも含む）
       if (correctRate === 1.0) {
         const badgeEarned = earnBadge(settings.dormitory, settings.difficulty);
         if (badgeEarned) {
@@ -264,10 +267,15 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   useEffect(() => {
     if (!gameState.isAnswered) return;
 
-    const currentQ = gameState.questions[gameState.currentQuestion];
-    const selectedOption = currentQ?.options[gameState.selectedAnswer!];
-    const isCorrect =
-      selectedOption?.studentId === currentQ?.correctTalent.studentId;
+    // 鬼モードの名前当てモードの場合はテキスト回答の正誤を判定、それ以外は選択肢の正誤を判定
+    let isCorrect: boolean;
+    if (isOniMode && settings.gameMode === 'name') {
+      isCorrect = gameState.isTextAnswerCorrect || false;
+    } else {
+      const currentQ = gameState.questions[gameState.currentQuestion];
+      const selectedOption = currentQ?.options[gameState.selectedAnswer!];
+      isCorrect = selectedOption?.studentId === currentQ?.correctTalent.studentId;
+    }
 
     // 正解なら1.5秒、不正解なら3秒後に次の問題へ
     const delay = isCorrect ? 1500 : 3000;
@@ -280,8 +288,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   }, [
     gameState.isAnswered,
     gameState.selectedAnswer,
+    gameState.isTextAnswerCorrect, // 鬼モード用の判定を追加
     gameState.questions,
     gameState.currentQuestion,
+    isOniMode, // 鬼モード判定を追加
+    settings.gameMode, // 鬼モードでのゲームモード判定に使用
     nextQuestion,
   ]);
 
@@ -305,7 +316,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
               title: "🏆 パレデミア学園マスター 🏆",
               message:
                 "素晴らしい！パレデミア学園60名完全制覇です！真のマスターです！",
-              bgClass: "from-yellow-200 via-orange-200 to-pink-200",
+              bgClass: "from-yellow-400 via-orange-400 to-pink-400",
               cardClass:
                 "bg-gradient-to-br from-yellow-50 via-orange-50 to-pink-50 border-2 border-yellow-300/50",
               titleClass: "from-yellow-500 via-orange-500 to-pink-500",
@@ -315,7 +326,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
             return {
               title: "🌟 エクセレント！",
               message: "ほぼ完璧です！パレデミア学園の知識が豊富ですね！",
-              bgClass: "from-purple-200 via-pink-200 to-blue-200",
+              bgClass: "from-purple-400 via-pink-400 to-blue-400",
               cardClass:
                 "bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 border-2 border-purple-300/50",
               titleClass: "from-purple-500 via-pink-500 to-blue-500",
@@ -377,7 +388,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
             return {
               title: dormMsg.perfect.title,
               message: dormMsg.perfect.message,
-              bgClass: "from-yellow-200 via-orange-200 to-pink-200",
+              bgClass: "from-yellow-400 via-orange-400 to-pink-400",
               cardClass:
                 "bg-gradient-to-br from-yellow-50 via-orange-50 to-pink-50 border-2 border-yellow-300/50",
               titleClass: "from-yellow-500 via-orange-500 to-pink-500",
@@ -387,7 +398,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
             return {
               title: dormMsg.excellent.title,
               message: dormMsg.excellent.message,
-              bgClass: "from-purple-200 via-pink-200 to-blue-200",
+              bgClass: "from-purple-400 via-pink-400 to-blue-400",
               cardClass:
                 "bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 border-2 border-purple-300/50",
               titleClass: "from-purple-500 via-pink-500 to-blue-500",
@@ -401,7 +412,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           return {
             title: "✨ グレート！",
             message: "良い結果です！さらに上を目指しましょう！",
-            bgClass: "from-blue-200 via-purple-200 to-pink-200",
+            bgClass: "from-blue-400 via-purple-400 to-pink-400",
             cardClass:
               "bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border-2 border-blue-300/50",
             titleClass: "from-blue-500 via-purple-500 to-pink-500",
@@ -411,7 +422,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           return {
             title: "👍 グッド！",
             message: "まずまずの結果です！もう少し頑張りましょう！",
-            bgClass: "from-green-200 via-blue-200 to-purple-200",
+            bgClass: "from-green-400 via-blue-400 to-purple-400",
             cardClass:
               "bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 border-2 border-green-300/50",
             titleClass: "from-green-500 via-blue-500 to-purple-500",
@@ -421,7 +432,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           return {
             title: "📚 ファイト！",
             message: "まだまだ伸びしろがあります！復習して再挑戦！",
-            bgClass: "from-gray-200 via-blue-200 to-purple-200",
+            bgClass: "from-gray-400 via-blue-400 to-purple-400",
             cardClass:
               "bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 border-2 border-gray-300/50",
             titleClass: "from-gray-500 via-blue-500 to-purple-500",
@@ -502,6 +513,13 @@ export const GameScreen: React.FC<GameScreenProps> = ({
             textClass: "text-white font-black drop-shadow-lg",
             borderClass:
               "border-purple-500/50 ring-2 ring-purple-300/50 shadow-lg shadow-purple-200/50",
+          };
+        case "鬼":
+          return {
+            bgClass: "bg-gradient-to-br from-red-500 to-red-700",
+            textClass: "text-white font-black drop-shadow-lg",
+            borderClass:
+              "border-red-600/50 ring-2 ring-red-300/50 shadow-lg shadow-red-200/50",
           };
         default:
           return {
@@ -695,22 +713,23 @@ export const GameScreen: React.FC<GameScreenProps> = ({
                   <div className="text-xl font-bold text-gray-700 mb-2">
                     {settings.dormitory}
                   </div>
-                  <div className="text-lg text-gray-600">
+                    <div className="text-lg text-gray-600">
                     {settings.difficulty === "ふつう"
                       ? "ベーシック"
                       : settings.difficulty === "むずかしい"
                       ? "アドバンス"
-                      : "マスター"}
-                  </div>
+                      : settings.difficulty === "寮生専用"
+                      ? "エキスパート"
+                      : "レジェンド"}
+                    </div>
 
                   {/* バッジの種類に応じた特別メッセージ */}
                   <div className="mt-4 px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full">
                     <span className="text-white font-black text-lg drop-shadow-md">
-                      {settings.difficulty === "寮生専用" &&
-                        "👑 金バッジ獲得！"}
-                      {settings.difficulty === "むずかしい" &&
-                        "⚡ 銀バッジ獲得！"}
-                      {settings.difficulty === "ふつう" && "🎖️ 銅バッジ獲得！"}
+                      {settings.difficulty === '鬼' && "👹 鬼バッジ獲得！"}
+                      {settings.difficulty === '寮生専用' && "👑 金バッジ獲得！"}
+                      {settings.difficulty === 'むずかしい' && "⚡ 銀バッジ獲得！"}
+                      {settings.difficulty === 'ふつう' && "🎖️ 銅バッジ獲得！"}
                     </span>
                   </div>
                 </div>
@@ -743,7 +762,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
               <div className="space-y-2">
                 <h2
                   className={`text-xl md:text-2xl lg:text-3xl xl:text-4xl font-black font-rounded bg-gradient-to-r ${
-                    result.titleClass
+                    result.bgClass
                   } bg-clip-text text-transparent text-shadow-soft leading-tight ${
                     result.celebration ? "animate-bounce drop-shadow-lg" : ""
                   }`}
@@ -1034,25 +1053,40 @@ export const GameScreen: React.FC<GameScreenProps> = ({
                 gameMode={settings.gameMode}
                 isAdvancedMode={isAdvancedMode}
                 isAnswered={gameState.isAnswered}
+                difficulty={settings.difficulty}
               />
             </div>
 
             {/* 回答選択肢エリア */}
             <div className="flex flex-col">
               <div className="bg-white/80 rounded-2xl shadow-lg p-1 md:p-6 border border-white/50 flex-1 min-h-0">
-                <h3 className="text-lg font-bold font-rounded text-gray-800 mb-2 md:mb-4 hidden lg:block">
-                  💫 正解はどれかな？
-                </h3>
+                {!isOniMode && (
+                  <h3 className="text-lg font-bold font-rounded text-gray-800 mb-2 md:mb-4 hidden lg:block">
+                    💫 正解はどれかな？
+                  </h3>
+                )}
                 <div className="h-full overflow-y-auto">
-                  <AnswerOptions
-                    options={currentQuestion.options}
-                    correctTalent={currentQuestion.correctTalent}
-                    gameMode={settings.gameMode}
-                    selectedAnswer={gameState.selectedAnswer}
-                    isAnswered={gameState.isAnswered}
-                    onAnswer={answerQuestion}
-                    isAdvancedMode={isAdvancedMode}
-                  />
+                  {isOniMode && settings.gameMode === 'name' ? (
+                    // 鬼モード・名前当てモード：テキスト入力
+                    <TextInputAnswer
+                      correctTalent={currentQuestion.correctTalent}
+                      isAnswered={gameState.isAnswered}
+                      textAnswer={gameState.textAnswer}
+                      isTextAnswerCorrect={gameState.isTextAnswerCorrect}
+                      onAnswer={answerTextQuestion}
+                    />
+                  ) : (
+                    // 通常モードまたは鬼モード・顔当てモード：選択肢
+                    <AnswerOptions
+                      options={currentQuestion.options}
+                      correctTalent={currentQuestion.correctTalent}
+                      gameMode={settings.gameMode}
+                      selectedAnswer={gameState.selectedAnswer}
+                      isAnswered={gameState.isAnswered}
+                      onAnswer={answerQuestion}
+                      isAdvancedMode={isAdvancedMode}
+                    />
+                  )}
                 </div>
               </div>
             </div>
