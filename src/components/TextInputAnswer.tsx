@@ -59,7 +59,7 @@ export const TextInputAnswer: React.FC<TextInputAnswerProps> = ({
       {/* 入力エリア */}
       <div className="bg-white/90 rounded-2xl shadow-lg p-4 md:p-6 border border-white/50">
         <h3 className="text-lg md:text-xl font-bold font-rounded text-gray-800 mb-3 md:mb-4 text-center">
-          👹 鬼モード：名前を入力してください
+          ～ 真のマスターへの挑戦 ～
         </h3>
         
         <div className="space-y-3 md:space-y-4">
@@ -134,9 +134,9 @@ export const TextInputAnswer: React.FC<TextInputAnswerProps> = ({
               <div className="relative z-10 text-center">
                 <div className="flex items-center justify-center space-x-3 mb-3">
                   <div className="text-4xl animate-bounce filter drop-shadow-lg">🎉</div>
-                  <div className="text-2xl md:text-3xl font-black text-white drop-shadow-2xl">
-                    鬼モード正解！
-                  </div>
+                        <div className="text-2xl md:text-3xl font-black text-white drop-shadow-2xl animate-pulse">
+                          正解！
+                        </div>
                   <div className="text-4xl animate-bounce filter drop-shadow-lg" style={{ animationDelay: '0.2s' }}>👹</div>
                 </div>
                 <div className="text-white font-bold text-base md:text-lg drop-shadow-2xl mb-3">
@@ -172,7 +172,7 @@ export const TextInputAnswer: React.FC<TextInputAnswerProps> = ({
                   <div className="text-3xl">💪</div>
                 </div>
                 <div className="text-white font-bold text-sm md:text-base drop-shadow-md mb-4">
-                  鬼モードは手強い！再挑戦しよう！
+                  難易度：鬼 は手強いね！でも諦めないで！
                 </div>
                 
                 {/* 正解情報表示 */}

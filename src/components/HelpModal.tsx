@@ -94,7 +94,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
                 <div className="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
                   <h4 className="font-bold text-red-800 mb-2 font-rounded">⭐⭐⭐⭐⭐ 鬼</h4>
                   <p className="text-red-700 font-elegant">
-                    真の猛者のみが挑戦できる最高難易度！「すべて」で寮生専用モードを制覇した証である金バッジを取得した者のみに解放される伝説のモード。名前当てモードでは選択肢がなく、テキスト入力で正確な名前を答える必要があります。顔当てモードでは名前・カナ・将来の夢がランダムな記号で隠されます。パレデミア学園60名への愛と知識の全てが試される...君は真のマスターになれるか？
+                    真の猛者のみが挑戦できる最高難易度！「すべて」で寮生専用モードを制覇した証である金バッジを取得した者のみに解放される伝説の難易度。名前当てモードでは選択肢がなく、テキスト入力で正確な名前を答える必要があります。顔当てモードでは名前・カナ・将来の夢がランダムな記号で隠されます。パレデミア学園60名への愛と知識の全てが試される...君は真のマスターになれるか？
                   </p>
                 </div>
               )}
@@ -130,7 +130,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
                 <div className="text-center p-3 bg-red-50 rounded-lg border border-red-500">
                   <div className="text-2xl mb-1">👹</div>
                   <div className="text-xs font-bold text-red-700">レジェンド</div>
-                  <div className="text-xs text-red-600">鬼</div>
+                  <div className="text-xs text-red-600">難易度：鬼</div>
                 </div>
               )}
             </div>

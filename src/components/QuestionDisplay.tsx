@@ -215,7 +215,7 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
                   
                   <div className="relative z-10 text-center">
                     <h3 className="text-base md:text-xl lg:text-2xl font-black bg-gradient-to-r from-amber-600 via-orange-600 to-red-500 bg-clip-text text-transparent leading-tight mb-1 md:mb-2 drop-shadow-sm">
-                      {difficulty === '鬼' && !isAnswered ? 'この子はどれかな？（鬼モード）' : 'この子はどれかな？'}
+                      {difficulty === '鬼' && !isAnswered ? 'この子はどれかな？（難易度：鬼）' : 'この子はどれかな？'}
                     </h3>
                     <div className="hidden md:flex items-center justify-center space-x-2 text-amber-700/80">
                       <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>

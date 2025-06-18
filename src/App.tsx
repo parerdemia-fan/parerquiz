@@ -197,7 +197,7 @@ function App() {
       `60名のアイドルを完全マスター！\n` +
       `👤顔当て 📝名前当て 👑寮生専用モード\n` +
       `🏆バッジコレクション要素あり\n` +
-      `君は何人知ってる？今すぐチャレンジ🔥\n` +
+      `キミは何人知ってる？今すぐチャレンジ🔥\n` +
       `#パレデミア学園 #パレクイズ #推し活`;
     const shareUrl = 'https://parerdemia-fan.github.io/parerquiz/';
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;

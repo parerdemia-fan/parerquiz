@@ -39,7 +39,7 @@ export const OGPCaptureScreen: React.FC<OGPCaptureScreenProps> = ({ onBackToTitl
               🌟 パレデミア学園60名 🌟
             </p>
             <p className="text-4xl font-black text-transparent bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text mb-6 drop-shadow-sm">
-              君は何人知ってる？
+              キミは何人知ってる？
             </p>
             
             {/* シンプルな特徴表示 */}
@@ -54,7 +54,7 @@ export const OGPCaptureScreen: React.FC<OGPCaptureScreenProps> = ({ onBackToTitl
               </div>
               <div className="flex items-center gap-3 bg-gradient-to-r from-purple-100 to-pink-100 px-6 py-4 rounded-2xl border-2 border-purple-300/50">
                 <span className="text-3xl">👹</span>
-                <span className="text-purple-700">鬼モード</span>
+                <span className="text-purple-700">難易度：鬼</span>
               </div>
             </div>
             

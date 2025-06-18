@@ -1067,7 +1067,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
                 )}
                 <div className="h-full overflow-y-auto">
                   {isOniMode && settings.gameMode === 'name' ? (
-                    // 鬼モード・名前当てモード：テキスト入力
+                    // 難易度：鬼・名前当てモード：テキスト入力
                     <TextInputAnswer
                       correctTalent={currentQuestion.correctTalent}
                       isAnswered={gameState.isAnswered}
@@ -1076,7 +1076,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
                       onAnswer={answerTextQuestion}
                     />
                   ) : (
-                    // 通常モードまたは鬼モード・顔当てモード：選択肢
+                    // 通常モードまたは難易度：鬼・顔当てモード：選択肢
                     <AnswerOptions
                       options={currentQuestion.options}
                       correctTalent={currentQuestion.correctTalent}
