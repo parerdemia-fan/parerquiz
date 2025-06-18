@@ -65,6 +65,37 @@ body {
   animation: rainbow 3s ease infinite;
 }
 
+/* スタッフロール用アニメーション */
+@keyframes staffRollFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes staffRollFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+}
+
+.staff-roll-fade-in {
+  animation: staffRollFadeIn 0.8s ease-out forwards;
+}
+
+.staff-roll-fade-out {
+  animation: staffRollFadeOut 0.5s ease-in forwards;
+}
+
 /* バッジ関連のアニメーション */
 @keyframes badgeGlow {
   0%, 100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
@@ -831,4 +862,195 @@ img {
 .oni-mosaic-container {
   background: linear-gradient(45deg, rgba(220, 38, 38, 0.05), rgba(124, 58, 237, 0.05), rgba(234, 88, 12, 0.05));
   border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+/* AI メッセージ用の特別なアニメーション */
+@keyframes aiDataCorruption {
+  0%, 100% { 
+    filter: hue-rotate(0deg) contrast(1) brightness(1);
+    text-shadow: 0 0 5px rgba(220, 38, 38, 0.3);
+  }
+  25% { 
+    filter: hue-rotate(90deg) contrast(1.2) brightness(1.1);
+    text-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
+  }
+  50% { 
+    filter: hue-rotate(180deg) contrast(1.4) brightness(1.2);
+    text-shadow: 0 0 15px rgba(59, 130, 246, 0.7);
+  }
+  75% { 
+    filter: hue-rotate(270deg) contrast(1.2) brightness(1.1);
+    text-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
+  }
+}
+
+@keyframes aiGlitchText {
+  0%, 90%, 100% { 
+    transform: translateX(0px) skewX(0deg);
+    opacity: 1;
+  }
+  2% { 
+    transform: translateX(2px) skewX(1deg);
+    opacity: 0.9;
+  }
+  4% { 
+    transform: translateX(-1px) skewX(-0.5deg);
+    opacity: 0.95;
+  }
+  6% { 
+    transform: translateX(1px) skewX(0.5deg);
+    opacity: 0.9;
+  }
+  8% { 
+    transform: translateX(0px) skewX(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes aiHeartbeat {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+  }
+  50% { 
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(220, 38, 38, 0.5);
+  }
+}
+
+.ai-message-corruption {
+  animation: aiDataCorruption 3s linear infinite;
+}
+
+.ai-message-glitch {
+  animation: aiGlitchText 6s linear infinite;
+}
+
+.ai-message-heartbeat {
+  animation: aiHeartbeat 2s ease-in-out infinite;
+}
+
+/* AI存在感のためのパルス効果 */
+@keyframes aiExistencePulse {
+  0%, 100% { 
+    opacity: 0.8;
+    transform: scale(1);
+    filter: brightness(1) saturate(1);
+  }
+  33% { 
+    opacity: 0.9;
+    transform: scale(1.01);
+    filter: brightness(1.1) saturate(1.2);
+  }
+  66% { 
+    opacity: 0.95;
+    transform: scale(1.02);
+    filter: brightness(1.2) saturate(1.4);
+  }
+}
+
+.ai-existence-pulse {
+  animation: aiExistencePulse 2.5s ease-in-out infinite;
+}
+
+/* AI寮生用の特別アニメーション */
+@keyframes aiHologram {
+  0%, 100% { 
+    box-shadow: 
+      0 0 20px rgba(168, 85, 247, 0.4), 
+      0 0 40px rgba(168, 85, 247, 0.2),
+      inset 0 0 20px rgba(168, 85, 247, 0.1);
+    transform: scale(1) rotate(45deg);
+  }
+  50% { 
+    box-shadow: 
+      0 0 30px rgba(236, 72, 153, 0.6), 
+      0 0 60px rgba(236, 72, 153, 0.3),
+      inset 0 0 30px rgba(236, 72, 153, 0.2);
+    transform: scale(1.05) rotate(45deg);
+  }
+}
+
+@keyframes digitalParticle {
+  0% {
+    opacity: 0.6;
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.2);
+  }
+  100% {
+    opacity: 0.6;
+    transform: translateY(0px) scale(1);
+  }
+}
+
+@keyframes quantumGlow {
+  0%, 100% { 
+    filter: brightness(1) hue-rotate(0deg);
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+  }
+  25% { 
+    filter: brightness(1.1) hue-rotate(90deg);
+    text-shadow: 0 0 15px rgba(236, 72, 153, 0.7);
+  }
+  50% { 
+    filter: brightness(1.2) hue-rotate(180deg);
+    text-shadow: 0 0 20px rgba(34, 211, 238, 0.8);
+  }
+  75% { 
+    filter: brightness(1.1) hue-rotate(270deg);
+    text-shadow: 0 0 15px rgba(147, 51, 234, 0.7);
+  }
+}
+
+.ai-hologram {
+  animation: aiHologram 2s ease-in-out infinite;
+}
+
+.digital-particle {
+  animation: digitalParticle 3s ease-in-out infinite;
+}
+
+.quantum-glow {
+  animation: quantumGlow 4s linear infinite;
+}
+
+/* デジタル魔法陣の回転 */
+@keyframes magicCircle {
+  from { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+  to { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
+}
+
+.magic-circle {
+  animation: magicCircle 20s linear infinite;
+}
+
+.magic-circle-reverse {
+  animation: magicCircle 15s linear infinite reverse;
+}
+
+/* ホログラム効果 */
+@keyframes hologramShimmer {
+  0%, 100% { 
+    background-position: 0% 50%;
+    opacity: 0.8;
+  }
+  50% { 
+    background-position: 100% 50%;
+    opacity: 1;
+  }
+}
+
+.hologram-effect {
+  background: linear-gradient(
+    45deg,
+    rgba(168, 85, 247, 0.1),
+    rgba(236, 72, 153, 0.2),
+    rgba(34, 211, 238, 0.1),
+    rgba(168, 85, 247, 0.1)
+  );
+  background-size: 200% 200%;
+  animation: hologramShimmer 3s ease-in-out infinite;
 }

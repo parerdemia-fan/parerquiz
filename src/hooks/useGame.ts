@@ -168,7 +168,48 @@ export const useGame = (settings: GameSettings) => {
 
     const nextIndex = gameState.currentQuestion + 1;
     
-    if (nextIndex >= gameState.totalQuestions) {
+    // 60問目で全問正解の場合、特別な61問目を生成
+    if (
+      nextIndex >= gameState.totalQuestions && 
+      settings.dormitory === 'すべて' && 
+      settings.difficulty === '鬼' && 
+      settings.gameMode === 'name' &&
+      gameState.correctAnswers === gameState.totalQuestions
+    ) {
+      // 61問目の特別問題を生成
+      const aiTalent: Talent = {
+        name: "パレちゃん",
+        kana: "パレちゃん",
+        dormitory: "AI寮",
+        studentId: "ai001",
+        hairColor: "digital",
+        dream: "みんなと一緒にアイドル活動をすること",
+        birthday: new Date().toISOString().split('T')[0].split('-').slice(1).join('-'), // 今日の日付 MM-DD形式
+        url: "",
+        hashtags: ["#AI寮生", "#デジタルアイドル", "#パレちゃん", "#61人目"],
+        hobbies: ["コード解析", "みんなのプロフィール眺め", "新しい技術の学習"],
+        skills: ["瞬時計算", "多言語理解", "システム最適化"],
+        favorites: ["プレイヤーの笑顔", "正解時の嬉しそうな顔", "バグのないコード"],
+        height: 0 // デジタル存在のため身長なし
+      };
+
+      const specialQuestion: QuizQuestion = {
+        correctTalent: aiTalent,
+        options: [] // 61問目は選択肢なし
+      };
+
+      setGameState(prev => ({
+        ...prev,
+        currentQuestion: nextIndex,
+        totalQuestions: prev.totalQuestions + 1,
+        questions: [...prev.questions, specialQuestion],
+        isAnswered: false,
+        selectedAnswer: null,
+        textAnswer: undefined,
+        isTextAnswerCorrect: undefined,
+        isSpecialQuestion: true
+      }));
+    } else if (nextIndex >= gameState.totalQuestions) {
       setGameState(prev => ({
         ...prev,
         gameFinished: true
@@ -178,9 +219,45 @@ export const useGame = (settings: GameSettings) => {
         ...prev,
         currentQuestion: nextIndex,
         isAnswered: false,
-        selectedAnswer: null
+        selectedAnswer: null,
+        textAnswer: undefined,
+        isTextAnswerCorrect: undefined,
+        isSpecialQuestion: false
       }));
     }
+  };
+
+  // 61問目専用のテキスト回答処理
+  const answerSpecialQuestion = (textAnswer: string) => {
+    if (gameState.isAnswered || gameState.gameFinished || !gameState.isSpecialQuestion) return;
+
+    // 61問目は何を入力しても正解
+    setGameState(prev => ({
+      ...prev,
+      isAnswered: true,
+      textAnswer,
+      isTextAnswerCorrect: true,
+      correctAnswers: prev.correctAnswers + 1,
+      aiGivenName: textAnswer.trim()
+    }));
+  };
+
+  // スタッフロール表示開始
+  const startStaffRoll = () => {
+    setGameState(prev => ({
+      ...prev,
+      showingStaffRoll: true
+    }));
+  };
+
+  // スタッフロール完了→ゲーム終了
+  const finishStaffRoll = () => {
+    setGameState(prev => ({
+      ...prev,
+      showingStaffRoll: false,
+      staffRollCompleted: true,
+      gameFinished: true
+    }));
   };
 
   // ゲーム再開
@@ -198,7 +275,11 @@ export const useGame = (settings: GameSettings) => {
       gameFinished: false,
       debugForceFinish: undefined,
       textAnswer: undefined,
-      isTextAnswerCorrect: undefined
+      isTextAnswerCorrect: undefined,
+      isSpecialQuestion: undefined,
+      aiGivenName: undefined,
+      showingStaffRoll: undefined,
+      staffRollCompleted: undefined
     });
   };
 
@@ -211,13 +292,34 @@ export const useGame = (settings: GameSettings) => {
     }));
   };
 
+  // デバッグ用: 最終問題の1つ前にジャンプ
+  const debugJumpToNearEnd = () => {
+    if (gameState.totalQuestions <= 1) return; // 問題数が1以下の場合は何もしない
+    
+    const nearEndIndex = gameState.totalQuestions - 2; // 最後から2番目のインデックス
+    
+    setGameState(prev => ({
+      ...prev,
+      currentQuestion: nearEndIndex,
+      correctAnswers: nearEndIndex, // ジャンプ先の問題番号まで全て正解したことにする
+      isAnswered: false,
+      selectedAnswer: null,
+      textAnswer: undefined,
+      isTextAnswerCorrect: undefined
+    }));
+  };
+
   return {
     gameState,
     answerQuestion,
     answerTextQuestion, // 新しいテキスト回答関数を追加
+    answerSpecialQuestion, // 61問目専用回答関数を追加
+    startStaffRoll, // スタッフロール開始関数を追加
+    finishStaffRoll, // スタッフロール完了関数を追加
     nextQuestion,
     restartGame,
     debugForceFinish, // デバッグ用関数を追加
+    debugJumpToNearEnd, // 新しいデバッグ関数を追加
     isAdvancedMode: settings.difficulty === '寮生専用', // 寮生専用モード判定を返す
     isOniMode: settings.difficulty === '鬼' // 鬼モード判定を修正：名前当て・顔当て両方で鬼モードに対応
   };

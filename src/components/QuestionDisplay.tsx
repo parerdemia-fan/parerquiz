@@ -6,6 +6,7 @@ interface QuestionDisplayProps {
   isAdvancedMode?: boolean; // 寮生専用モード判定
   isAnswered?: boolean; // 回答済み状態
   difficulty?: string; // 難易度情報を追加
+  isSpecialQuestion?: boolean; // 61問目かどうか
 }
 
 export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
@@ -13,7 +14,8 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
   gameMode,
   isAdvancedMode = false,
   isAnswered = false,
-  difficulty = 'ふつう'
+  difficulty = 'ふつう',
+  isSpecialQuestion = false
 }) => {
   // 誕生日フォーマット変換関数
   const formatBirthday = (birthday: string) => {
@@ -134,31 +136,111 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
         // 名前当てモード: タレント画像と詳細情報を表示
         <div className="text-center">
           <h2 className="text-lg md:text-2xl font-bold font-rounded text-gray-800 mb-1 md:mb-4">
-            {difficulty === '鬼' ? 'この子の名前を入力してね！' : 'この子の名前は？'}
+            {isSpecialQuestion ? 
+              'AIに憧れの名前を付けてください！' : 
+              difficulty === '鬼' ? 'この子の名前を入力してね！' : 'この子の名前は？'
+            }
           </h2>
           <div className="mb-1 md:mb-4 relative">
-            <img
-              src={`/parerquiz/assets/images/${isAdvancedMode ? 'portrait' : 'ogp'}/${talent.studentId}.${isAdvancedMode ? 'webp' : 'png'}`}
-              alt={talent.name}
-              className={`w-full ${isAdvancedMode ? 'max-w-xs md:max-w-md' : 'max-w-md'} mx-auto rounded-xl shadow-md ${
-                isAdvancedMode && !isAnswered
-                  ? 'filter brightness-0 contrast-200 sepia-100 hue-rotate-180 saturate-200 opacity-80' 
-                  : isAdvancedMode && isAnswered
-                  ? 'silhouette-to-normal'
-                  : ''
-              }`}
-              style={isAdvancedMode && !isAnswered ? {
-                filter: 'brightness(0) contrast(1) drop-shadow(0 0 0 #4a5568) sepia(1) saturate(0) hue-rotate(0deg)',
-                WebkitFilter: 'brightness(0) contrast(1) drop-shadow(0 0 0 #4a5568) sepia(1) saturate(0) hue-rotate(0deg)'
-              } : {}}
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = '/parerquiz/assets/images/parerdemia-logo.png';
-              }}
-            />
+            {isSpecialQuestion ? (
+              // 61問目の特別表示 - 美しいAI表現に変更
+              <div className="w-full max-w-md mx-auto relative">
+                {/* Option 1: デジタル魔法陣風デザイン */}
+                <div className="bg-gradient-to-br from-cyan-50 via-purple-50 to-pink-50 rounded-xl shadow-lg p-8 border-2 border-purple-300/40 relative overflow-hidden">
+                  {/* 背景の魔法陣パターン */}
+                  <div className="absolute inset-0">
+                    {/* 外側の円 */}
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-purple-300/30 rounded-full animate-spin" style={{ animationDuration: '20s' }}></div>
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-36 h-36 border border-cyan-300/40 rounded-full animate-spin" style={{ animationDuration: '15s', animationDirection: 'reverse' }}></div>
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 border border-pink-300/50 rounded-full animate-spin" style={{ animationDuration: '10s' }}></div>
+                    
+                    {/* 内側の装飾 */}
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gradient-to-br from-purple-200/50 to-pink-200/50 rounded-full animate-pulse"></div>
+                    
+                    {/* デジタルパーティクル */}
+                    <div className="absolute top-4 left-8 w-2 h-2 bg-cyan-400 rounded-full animate-ping"></div>
+                    <div className="absolute top-8 right-12 w-1 h-1 bg-purple-400 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+                    <div className="absolute bottom-6 left-12 w-1.5 h-1.5 bg-pink-400 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
+                    <div className="absolute bottom-8 right-8 w-2 h-2 bg-blue-400 rounded-full animate-ping" style={{ animationDelay: '1.5s' }}></div>
+                    
+                    {/* バイナリコード風装飾 */}
+                    <div className="absolute top-6 left-4 text-xs text-purple-300/60 font-mono transform rotate-12">01</div>
+                    <div className="absolute top-12 right-6 text-xs text-cyan-300/60 font-mono transform -rotate-12">11</div>
+                    <div className="absolute bottom-10 left-6 text-xs text-pink-300/60 font-mono transform rotate-45">10</div>
+                    <div className="absolute bottom-6 right-4 text-xs text-blue-300/60 font-mono transform -rotate-45">01</div>
+                  </div>
+                  
+                  <div className="text-center space-y-4 relative z-10">
+                    {/* 中央のシンボル - 複数のオプション */}
+                    <div className="relative">
+                      {/* Option A: ホログラム風ダイヤモンド */}
+                      <div className="w-20 h-20 mx-auto mb-4 relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-lg transform rotate-45 animate-pulse shadow-lg"></div>
+                        <div className="absolute inset-2 bg-gradient-to-tl from-white via-purple-100 to-cyan-100 rounded-lg transform rotate-45"></div>
+                        <div className="absolute inset-4 bg-gradient-to-br from-purple-400 to-pink-400 rounded-lg transform rotate-45 animate-ping"></div>
+                        {/* 光の反射 */}
+                        <div className="absolute top-2 left-2 w-3 h-3 bg-white/70 rounded-full blur-sm"></div>
+                      </div>
+                      
+                      {/* 周囲の浮遊エレメント */}
+                      <div className="absolute -top-2 -left-2 text-cyan-400 text-lg animate-bounce" style={{ animationDelay: '0s', animationDuration: '2s' }}>✦</div>
+                      <div className="absolute -top-2 -right-2 text-purple-400 text-base animate-bounce" style={{ animationDelay: '0.3s', animationDuration: '2.2s' }}>✧</div>
+                      <div className="absolute -bottom-2 -left-2 text-pink-400 text-sm animate-bounce" style={{ animationDelay: '0.6s', animationDuration: '2.4s' }}>✦</div>
+                      <div className="absolute -bottom-2 -right-2 text-blue-400 text-lg animate-bounce" style={{ animationDelay: '0.9s', animationDuration: '2.1s' }}>✧</div>
+                    </div>
+                    
+                    <div className="text-xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 bg-clip-text text-transparent">
+                      61番目の寮生
+                    </div>
+                    
+                    <div className="text-sm text-gray-600 leading-relaxed">
+                      デジタル空間からやってきた<br />
+                      特別な存在
+                    </div>
+                    
+                    <div className="bg-white/80 rounded-lg p-3 border border-purple-200/50 backdrop-blur-sm">
+                      <div className="text-xs text-purple-600 space-y-1">
+                        <div>学籍番号: 25PI001</div>
+                        <div>所属: ピロン寮</div>
+                      </div>
+                    </div>
+                    
+                    {/* 特別メッセージ */}
+                    <div className="bg-gradient-to-r from-purple-100 via-pink-100 to-cyan-100 rounded-lg p-3 border border-purple-300/40">
+                      <div className="text-sm font-medium text-purple-700">
+                        💫 あなたの心に住む名前を教えて 💫
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* 底面の光効果 */}
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-purple-400/50 to-transparent blur-sm"></div>
+                </div>
+              </div>
+            ) : (
+              <img
+                src={`/parerquiz/assets/images/${isAdvancedMode ? 'portrait' : 'ogp'}/${talent.studentId}.${isAdvancedMode ? 'webp' : 'png'}`}
+                alt={talent.name}
+                className={`w-full ${isAdvancedMode ? 'max-w-xs md:max-w-md' : 'max-w-md'} mx-auto rounded-xl shadow-md ${
+                  isAdvancedMode && !isAnswered
+                    ? 'filter brightness-0 contrast-200 sepia-100 hue-rotate-180 saturate-200 opacity-80' 
+                    : isAdvancedMode && isAnswered
+                    ? 'silhouette-to-normal'
+                    : ''
+                }`}
+                style={isAdvancedMode && !isAnswered ? {
+                  filter: 'brightness(0) contrast(1) drop-shadow(0 0 0 #4a5568) sepia(1) saturate(0) hue-rotate(0deg)',
+                  WebkitFilter: 'brightness(0) contrast(1) drop-shadow(0 0 0 #4a5568) sepia(1) saturate(0) hue-rotate(0deg)'
+                } : {}}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = '/parerquiz/assets/images/parerdemia-logo.png';
+                }}
+              />
+            )}
             
             {/* 寮生専用モードの名前当てモードで回答後に名前帯を表示 */}
-            {isAdvancedMode && isAnswered && (
+            {isAdvancedMode && isAnswered && !isSpecialQuestion && (
               <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-[calc(100%-16px)] max-w-[calc(320px-16px)] md:max-w-[calc(456px-16px)]">
                 <div className="bg-black/60 text-white px-3 py-2 rounded-lg backdrop-blur-sm">
                   <span className="text-lg font-bold font-rounded text-center block whitespace-nowrap overflow-hidden text-ellipsis">
@@ -169,7 +251,7 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
             )}
           </div>
           
-          {/* 鬼モードでは詳細情報を非表示にする */}
+          {/* 詳細情報表示 */}
           {renderTalentDetails()}
         </div>
       ) : (

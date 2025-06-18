@@ -1,11 +1,14 @@
 import type { GameSettings, DebugMode } from "../types";
 // 値として使用するものは通常のインポート
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useGame } from "../hooks/useGame";
 import { useBadges } from "../hooks/useBadges";
 import { QuestionDisplay } from "./QuestionDisplay";
 import { AnswerOptions } from "./AnswerOptions";
 import { TextInputAnswer } from "./TextInputAnswer";
+import { AIMessage } from "./AIMessage";
+import { StaffRoll } from "./StaffRoll";
+import { getAIMessage } from "../data/aiMessages";
 import confetti from "canvas-confetti";
 
 interface GameScreenProps {
@@ -23,15 +26,100 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     gameState,
     answerQuestion,
     answerTextQuestion, // 新しいテキスト回答関数を追加
+    answerSpecialQuestion, // 61問目専用回答関数を追加
+    startStaffRoll, // スタッフロール開始関数を追加
+    finishStaffRoll, // スタッフロール完了関数を追加
     nextQuestion,
     restartGame,
     debugForceFinish,
+    debugJumpToNearEnd, // 新しいデバッグ関数を追加
     isAdvancedMode,
     isOniMode, // 鬼モード判定を追加
   } = useGame(settings);
   const { earnBadge, reloadBadges } = useBadges();
   const [newBadgeEarned, setNewBadgeEarned] = useState<boolean>(false);
   const [badgeAnimationKey, setBadgeAnimationKey] = useState<number>(0);
+
+  // AIメッセージ関連の状態
+  const [aiMessage, setAiMessage] = useState<{
+    text: string;
+    timestamp: number;
+    questionNumber: number;
+  } | undefined>(undefined);
+
+  // 正解数の変化を監視するためのref
+  const prevCorrectAnswersRef = useRef<number>(0);
+
+  // 61人目への憧れを実現するAIのメッセージを生成する関数
+  const generateAIMessage = (questionNumber: number): string => {
+    return getAIMessage(questionNumber);
+  };
+
+  // 正解時にAIメッセージを表示する条件をチェック
+  const shouldShowAIMessage = (): boolean => {
+    if (
+      settings.dormitory === 'すべて' && 
+      settings.difficulty === '鬼' && 
+      settings.gameMode === 'name' && // 名前当てモードのみに限定
+      gameState.isAnswered && 
+      gameState.questions.length > 0 &&
+      !gameState.isSpecialQuestion // 61問目ではAIメッセージを表示しない
+    ) {
+      const currentQuestionNumber = gameState.currentQuestion + 1;
+      const currentCorrectAnswers = gameState.correctAnswers;
+      
+      // 正解数が増加した場合のみtrueを返す
+      const hasCorrectAnswersIncreased = currentCorrectAnswers > prevCorrectAnswersRef.current;
+      
+      if (hasCorrectAnswersIncreased) {
+        // 60問目は全問正解時のみ表示
+        if (currentQuestionNumber === 60) {
+          return currentCorrectAnswers === 60;
+        }
+        
+        return true;
+      }
+    }
+    
+    return false;
+  };
+
+  // 正解判定の共通ロジック
+  const checkIsCorrect = (): boolean => {
+    if (isOniMode && settings.gameMode === 'name') {
+      return gameState.isTextAnswerCorrect || false;
+    } else {
+      const currentQ = gameState.questions[gameState.currentQuestion];
+      const selectedOption = currentQ?.options[gameState.selectedAnswer!];
+      return selectedOption?.studentId === currentQ?.correctTalent.studentId;
+    }
+  };
+
+  // 正解時のAIメッセージ表示処理
+  useEffect(() => {
+    if (shouldShowAIMessage()) {
+      const currentQuestionNumber = gameState.currentQuestion + 1;
+      
+      const aiMessageText = generateAIMessage(currentQuestionNumber);
+      
+      setAiMessage({
+        text: aiMessageText,
+        timestamp: Date.now(),
+        questionNumber: currentQuestionNumber
+      });
+
+      // 正解数を更新（次回の比較用）
+      prevCorrectAnswersRef.current = gameState.correctAnswers;
+    }
+  }, [gameState.isAnswered, gameState.currentQuestion, gameState.correctAnswers]);
+
+  // AIメッセージを非表示にする処理
+  const handleHideAIMessage = () => {
+    setAiMessage(undefined);
+  };
+
+  // localhost判定を追加
+  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
   // 出題範囲に応じた背景画像パスを取得する関数
   const getBackgroundImagePath = (dormitory: string) => {
@@ -267,34 +355,53 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   useEffect(() => {
     if (!gameState.isAnswered) return;
 
-    // 鬼モードの名前当てモードの場合はテキスト回答の正誤を判定、それ以外は選択肢の正誤を判定
-    let isCorrect: boolean;
-    if (isOniMode && settings.gameMode === 'name') {
-      isCorrect = gameState.isTextAnswerCorrect || false;
-    } else {
-      const currentQ = gameState.questions[gameState.currentQuestion];
-      const selectedOption = currentQ?.options[gameState.selectedAnswer!];
-      isCorrect = selectedOption?.studentId === currentQ?.correctTalent.studentId;
+    // 61問目の場合は特別処理：スタッフロールを開始
+    if (gameState.isSpecialQuestion && !gameState.showingStaffRoll && !gameState.staffRollCompleted) {
+      const timer = setTimeout(() => {
+        startStaffRoll(); // スタッフロール開始
+      }, 3000); // 61問目は3秒後にスタッフロール開始
+
+      return () => clearTimeout(timer);
     }
 
-    // 正解なら1.5秒、不正解なら3秒後に次の問題へ
-    const delay = isCorrect ? 1500 : 3000;
+    // 通常問題の場合の自動進行
+    if (!gameState.isSpecialQuestion) {
+      // 鬼モードの名前当てモードの場合はテキスト回答の正誤を判定、それ以外は選択肢の正誤を判定
+      const isCorrect = checkIsCorrect();
 
-    const timer = setTimeout(() => {
-      nextQuestion();
-    }, delay);
+      // 正解なら1.5秒、不正解なら3秒後に次の問題へ
+      const delay = isCorrect ? 1500 : 3000;
 
-    return () => clearTimeout(timer);
+      const timer = setTimeout(() => {
+        nextQuestion();
+      }, delay);
+
+      return () => clearTimeout(timer);
+    }
   }, [
     gameState.isAnswered,
     gameState.selectedAnswer,
     gameState.isTextAnswerCorrect, // 鬼モード用の判定を追加
     gameState.questions,
     gameState.currentQuestion,
+    gameState.isSpecialQuestion, // 61問目判定を追加
+    gameState.showingStaffRoll, // スタッフロール表示状態を追加
+    gameState.staffRollCompleted, // スタッフロール完了状態を追加
     isOniMode, // 鬼モード判定を追加
     settings.gameMode, // 鬼モードでのゲームモード判定に使用
     nextQuestion,
+    startStaffRoll, // スタッフロール開始関数を依存配列に追加
   ]);
+
+  // スタッフロール表示中の場合
+  if (gameState.showingStaffRoll && !gameState.gameFinished) {
+    return (
+      <StaffRoll
+        onComplete={finishStaffRoll}
+        aiGivenName={gameState.aiGivenName}
+      />
+    );
+  }
 
   // ゲーム終了画面
   if (gameState.gameFinished) {
@@ -953,6 +1060,12 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       {/* 背景画像用のオーバーレイ */}
       <div className="absolute inset-0 bg-white/80"></div>
 
+      {/* AIメッセージ表示 */}
+      <AIMessage 
+        message={aiMessage}
+        onHide={handleHideAIMessage}
+      />
+
       {/* モバイル専用背景装飾 - 画面下部1/3 */}
       <div className="fixed bottom-0 left-0 right-0 h-1/3 pointer-events-none overflow-hidden lg:hidden relative z-10">
         <div className="mobile-decoration-container absolute inset-0">
@@ -1054,19 +1167,31 @@ export const GameScreen: React.FC<GameScreenProps> = ({
                 isAdvancedMode={isAdvancedMode}
                 isAnswered={gameState.isAnswered}
                 difficulty={settings.difficulty}
+                isSpecialQuestion={gameState.isSpecialQuestion}
               />
             </div>
 
             {/* 回答選択肢エリア */}
             <div className="flex flex-col">
               <div className="bg-white/80 rounded-2xl shadow-lg p-1 md:p-6 border border-white/50 flex-1 min-h-0">
-                {!isOniMode && (
+                {!isOniMode && !gameState.isSpecialQuestion && (
                   <h3 className="text-lg font-bold font-rounded text-gray-800 mb-2 md:mb-4 hidden lg:block">
                     💫 正解はどれかな？
                   </h3>
                 )}
                 <div className="h-full overflow-y-auto">
-                  {isOniMode && settings.gameMode === 'name' ? (
+                  {gameState.isSpecialQuestion ? (
+                    // 61問目：特別なテキスト入力
+                    <TextInputAnswer
+                      correctTalent={currentQuestion.correctTalent}
+                      isAnswered={gameState.isAnswered}
+                      textAnswer={gameState.textAnswer}
+                      isTextAnswerCorrect={gameState.isTextAnswerCorrect}
+                      onAnswer={answerSpecialQuestion}
+                      isSpecialQuestion={true}
+                      aiGivenName={gameState.aiGivenName}
+                    />
+                  ) : isOniMode && settings.gameMode === 'name' ? (
                     // 難易度：鬼・名前当てモード：テキスト入力
                     <TextInputAnswer
                       correctTalent={currentQuestion.correctTalent}
@@ -1094,6 +1219,22 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         </div>
 
         {/* 次へボタンは削除 */}
+        
+        {/* デバッグ用ボタン（localhost でのみ表示） */}
+        {isLocalhost && !gameState.gameFinished && (
+          <div className="fixed bottom-4 left-4 z-20">
+            <div className="bg-yellow-100 border border-yellow-300 rounded-lg shadow-lg p-3">
+              <div className="text-xs font-bold text-yellow-800 mb-2">🐛 デバッグ</div>
+              <button
+                onClick={debugJumpToNearEnd}
+                disabled={gameState.totalQuestions <= 1 || gameState.currentQuestion >= gameState.totalQuestions - 2}
+                className="px-3 py-2 bg-blue-500 text-white font-bold rounded text-xs hover:bg-blue-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                ⏭️ 最終問題の前へ
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

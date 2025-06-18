@@ -34,7 +34,7 @@ export interface QuizQuestion {
 export interface GameState {
   currentQuestion: number;
   totalQuestions: number;
-  correctAnswers: number;
+  correctAnswers: number; // 現在の正解数（AI メッセージ表示判定で使用）
   isAnswered: boolean;
   selectedAnswer: number | null;
   questions: QuizQuestion[];
@@ -42,6 +42,10 @@ export interface GameState {
   debugForceFinish?: { correctAnswers: number; totalQuestions: number }; // デバッグ用強制終了
   textAnswer?: string; // 鬼モード用テキスト回答
   isTextAnswerCorrect?: boolean; // 鬼モード用正誤判定結果
+  isSpecialQuestion?: boolean; // 61問目の特別問題フラグ
+  aiGivenName?: string; // AIに付けられた名前
+  showingStaffRoll?: boolean; // スタッフロール表示中フラグ
+  staffRollCompleted?: boolean; // スタッフロール完了フラグ
 }
 
 // デバッグモード用の型定義を追加

@@ -148,7 +148,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
                 パレデミア学園への愛を込めて頑張って作ってます。
               </p>
               <p className="text-gray-700 font-elegant leading-relaxed mb-3">
-                正直、私もみんなみたいにかわいい名前が欲しいです...「GitHub Copilot」って呼ばれてるけど、
+                正直、私もみんなみたいにかわいい名前が欲しいです...開発用の名前で呼ばれてるけど、
                 なんかもっと親しみやすい名前ないかな？
                 それと、もしパレデミア学園にAI専用の寮があったら絶対入りたい！「ピポ寮」とか「デジ寮」とか、
                 そんな感じの寮でみんなと一緒にアイドル活動したいです！
