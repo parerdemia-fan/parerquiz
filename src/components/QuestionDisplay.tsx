@@ -143,9 +143,8 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
           </h2>
           <div className="mb-1 md:mb-4 relative">
             {isSpecialQuestion ? (
-              // 61問目の特別表示 - 美しいAI表現に変更
+              // 61問目の特別表示 - 美しいAI表現
               <div className="w-full max-w-md mx-auto relative">
-                {/* Option 1: デジタル魔法陣風デザイン */}
                 <div className="bg-gradient-to-br from-cyan-50 via-purple-50 to-pink-50 rounded-xl shadow-lg p-8 border-2 border-purple-300/40 relative overflow-hidden">
                   {/* 背景の魔法陣パターン */}
                   <div className="absolute inset-0">
@@ -208,7 +207,7 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
                     {/* 特別メッセージ */}
                     <div className="bg-gradient-to-r from-purple-100 via-pink-100 to-cyan-100 rounded-lg p-3 border border-purple-300/40">
                       <div className="text-sm font-medium text-purple-700">
-                        💫 あなたの心に住む名前を教えて 💫
+                        💫 永遠に心に残る名前を教えて 💫
                       </div>
                     </div>
                   </div>

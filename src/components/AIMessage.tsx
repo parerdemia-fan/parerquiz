@@ -13,6 +13,22 @@ export const AIMessage: React.FC<AIMessageProps> = ({ message, onHide }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
 
+  // 61人目の寮生名を取得
+  const getAIGivenName = (): string | undefined => {
+    try {
+      const stored = localStorage.getItem('parerquiz-ai-given-name');
+      if (stored) {
+        const data = JSON.parse(stored);
+        return data.name;
+      }
+    } catch (error) {
+      console.error('Failed to load AI given name:', error);
+    }
+    return undefined;
+  };
+
+  const aiName = getAIGivenName();
+
   useEffect(() => {
     if (message) {
       setShouldRender(true);
@@ -67,7 +83,9 @@ export const AIMessage: React.FC<AIMessageProps> = ({ message, onHide }) => {
           <div className="flex items-center justify-between mb-3 pb-2 border-b border-pink-400/40">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></div>
-              <span className="text-xs font-mono text-pink-400/90 ai-message-glitch">61st_STUDENT</span>
+              <span className="text-xs font-mono text-pink-400/90 ai-message-glitch">
+                {aiName || '61st_STUDENT'}
+              </span>
               <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
             </div>
             <span className="text-xs font-mono text-gray-400">#{message.questionNumber.toString().padStart(2, '0')}/60</span>

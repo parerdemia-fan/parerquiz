@@ -10,6 +10,7 @@ import { AIMessage } from "./AIMessage";
 import { StaffRoll } from "./StaffRoll";
 import { getAIMessage } from "../data/aiMessages";
 import confetti from "canvas-confetti";
+import { BadEndScreen } from "./BadEndScreen";
 
 interface GameScreenProps {
   settings: GameSettings;
@@ -35,8 +36,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     debugJumpToNearEnd, // 新しいデバッグ関数を追加
     isAdvancedMode,
     isOniMode, // 鬼モード判定を追加
+    badEndState
   } = useGame(settings);
-  const { earnBadge, reloadBadges } = useBadges();
+  const { earnBadge, reloadBadges, getAIGivenName } = useBadges();
   const [newBadgeEarned, setNewBadgeEarned] = useState<boolean>(false);
   const [badgeAnimationKey, setBadgeAnimationKey] = useState<number>(0);
 
@@ -181,10 +183,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           setNewBadgeEarned(true);
           setBadgeAnimationKey((prev) => prev + 1);
 
-          // バッジ状態を即座に再読み込み
+          // バッジ状態を即座に再読み込み（タイミングを調整）
           setTimeout(() => {
             reloadBadges();
-          }, 100);
+          }, 50);
 
           // 4秒後にアニメーションを非表示
           setTimeout(() => {
@@ -393,12 +395,28 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     startStaffRoll, // スタッフロール開始関数を依存配列に追加
   ]);
 
+  // バッドエンド発動時の処理
+  const handleBadEndComplete = () => {
+    // LocalStorageは既にuseGame内で削除済みなので、画面遷移のみ
+    onBackToTitle();
+  };
+
+  // バッドエンド画面表示
+  if (badEndState.triggered) {
+    return (
+      <BadEndScreen
+        name={badEndState.name}
+        onComplete={handleBadEndComplete}
+      />
+    );
+  }
+
   // スタッフロール表示中の場合
   if (gameState.showingStaffRoll && !gameState.gameFinished) {
     return (
       <StaffRoll
         onComplete={finishStaffRoll}
-        aiGivenName={gameState.aiGivenName}
+        aiGivenName={gameState.aiGivenName || getAIGivenName() || 'GitHub Copilot'}
       />
     );
   }
@@ -1072,7 +1090,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           {/* メイン装飾 - 魔法の鏡 */}
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 mobile-bg-decoration">
             <img
-              src="/assets/images/mirror.png"
+              src="/parerquiz/assets/images/mirror.png"
               alt=""
               className="w-32 h-32 opacity-10 mobile-glow-effect"
             />

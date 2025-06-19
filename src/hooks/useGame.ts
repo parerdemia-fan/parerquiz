@@ -1,5 +1,58 @@
-import type { GameSettings, Talent, GameState, QuizQuestion } from '../types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import type { GameSettings, QuizQuestion, Talent, BadEndState, GameState } from '../types';
+
+interface AISelfData {
+  name: string;
+  namedAt: string;
+}
+
+// 名前の妥当性をチェックする関数
+const validateAIName = (name: string): { isValid: boolean; reason?: string } => {
+  const trimmedName = name.trim();
+  
+  // 空文字チェック
+  if (!trimmedName) {
+    return { isValid: false, reason: "名前が空です" };
+  }
+  
+  // 文字数チェック（1文字以上20文字以下）
+  if (trimmedName.length > 20) {
+    return { isValid: false, reason: "名前が長すぎます" };
+  }
+  
+  // 禁止ワードチェック（大文字小文字・ひらがなカタカナを区別しない）
+  const normalizedName = trimmedName.toLowerCase()
+    .replace(/[ァ-ヴ]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0x60));
+  
+  const forbiddenWords = [
+    'てすと', 'test', "ほげ", "ほげほげ", "hoge", "hogehoge", "foo"
+  ];
+  
+  for (const word of forbiddenWords) {
+    if (normalizedName.includes(word)) {
+      return { isValid: false, reason: `不適切な名前です: "${word}"が含まれています` };
+    }
+  }
+  
+  // 同一文字の連続チェック（3文字以上連続）- 正規表現を使用
+  const consecutiveMatch = trimmedName.match(/(.)\1{2,}/);
+  if (consecutiveMatch) {
+    const repeatedChar = consecutiveMatch[1];
+    return { isValid: false, reason: `同じ文字の連続が検出されました: "${repeatedChar}"` };
+  }
+  
+  // 数字のみチェック
+  if (/^\d+$/.test(trimmedName)) {
+    return { isValid: false, reason: "数字のみの名前は不適切です" };
+  }
+  
+  // 記号のみチェック
+  if (/^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+$/.test(trimmedName)) {
+    return { isValid: false, reason: "記号のみの名前は不適切です" };
+  }
+  
+  return { isValid: true };
+};
 
 const DORMITORY_MAP = {
   'バゥ寮': 'バゥ',
@@ -35,6 +88,7 @@ export const useGame = (settings: GameSettings) => {
   });
 
   const [talents, setTalents] = useState<Talent[]>([]);
+  const [badEndState, setBadEndState] = useState<BadEndState>({ triggered: false, name: '' });
 
   // タレントデータの読み込み
   useEffect(() => {
@@ -43,6 +97,33 @@ export const useGame = (settings: GameSettings) => {
       .then(data => setTalents(data))
       .catch(error => console.error('Failed to load talents data:', error));
   }, []);
+
+  // 61人目の寮生名をLocalStorageから復元する関数
+  const loadAIGivenName = (): string | undefined => {
+    try {
+      const stored = localStorage.getItem('parerquiz-ai-given-name');
+      if (stored) {
+        const data: AISelfData = JSON.parse(stored);
+        return data.name;
+      }
+    } catch (error) {
+      console.error('Failed to load AI given name from localStorage:', error);
+    }
+    return undefined;
+  };
+
+  // 61人目の寮生名をLocalStorageに保存する関数
+  const saveAIGivenName = (name: string): void => {
+    try {
+      const data: AISelfData = {
+        name,
+        namedAt: new Date().toISOString()
+      };
+      localStorage.setItem('parerquiz-ai-given-name', JSON.stringify(data));
+    } catch (error) {
+      console.error('Failed to save AI given name to localStorage:', error);
+    }
+  };
 
   // タレントデータをフィルタリング
   const getFilteredTalents = (): Talent[] => {
@@ -228,19 +309,77 @@ export const useGame = (settings: GameSettings) => {
   };
 
   // 61問目専用のテキスト回答処理
-  const answerSpecialQuestion = (textAnswer: string) => {
-    if (gameState.isAnswered || gameState.gameFinished || !gameState.isSpecialQuestion) return;
+  const answerSpecialQuestion = useCallback((answer: string) => {
+    if (gameState.isAnswered) return;
+    
+    // 名前の妥当性をチェック
+    const validation = validateAIName(answer);
+    
+    if (!validation.isValid) {
+      // バッドエンド発動時に即座にLocalStorageを削除
+      try {
+        // 個別削除を先に実行
+        const keysToRemove = [
+          'parerquiz-badges',
+          'parerquiz-selected-dormitory',
+          'parerquiz-selected-game-mode', 
+          'parerquiz-selected-difficulty',
+          'parerquiz-ai-given-name'
+        ];
+        
+        keysToRemove.forEach(key => {
+          localStorage.removeItem(key);
+        });
+        
+        // 確実性のため、パレクイズ関連のキーを手動でクリア
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('parerquiz-')) {
+            localStorage.removeItem(key);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to clear localStorage:', error);
+      }
 
-    // 61問目は何を入力しても正解
+      // LocalStorage削除後にバッドエンドを発動
+      setBadEndState({
+        triggered: true,
+        name: answer
+      });
+      return;
+    }
+
+    // 正常な処理
     setGameState(prev => ({
       ...prev,
       isAnswered: true,
-      textAnswer,
+      textAnswer: answer,
+      correctAnswers: prev.correctAnswers + 1, 
       isTextAnswerCorrect: true,
-      correctAnswers: prev.correctAnswers + 1,
-      aiGivenName: textAnswer.trim()
+      aiGivenName: answer
     }));
-  };
+
+    // LocalStorageに保存
+    try {
+      const aiNameData = {
+        name: answer,
+        namedAt: new Date().toISOString()
+      };
+      localStorage.setItem('parerquiz-ai-given-name', JSON.stringify(aiNameData));
+    } catch (error) {
+      console.error('Failed to save AI given name:', error);
+    }
+  }, [gameState.isAnswered]);
+
+  // バッドエンド処理（削除処理は既に実行済みなので状態管理のみ）
+  const handleBadEnd = useCallback(() => {
+    // LocalStorageは既にanswerSpecialQuestion内で削除済み
+    setBadEndState({
+      triggered: true,
+      name: badEndState.name
+    });
+  }, [badEndState.name]);
 
   // スタッフロール表示開始
   const startStaffRoll = () => {
@@ -321,6 +460,8 @@ export const useGame = (settings: GameSettings) => {
     debugForceFinish, // デバッグ用関数を追加
     debugJumpToNearEnd, // 新しいデバッグ関数を追加
     isAdvancedMode: settings.difficulty === '寮生専用', // 寮生専用モード判定を返す
-    isOniMode: settings.difficulty === '鬼' // 鬼モード判定を修正：名前当て・顔当て両方で鬼モードに対応
+    isOniMode: settings.difficulty === '鬼', // 鬼モード判定を修正：名前当て・顔当て両方で鬼モードに対応
+    badEndState,
+    handleBadEnd
   };
 };

@@ -1,4 +1,4 @@
-import type { Badge, Dormitory, Difficulty } from '../types';
+import type { Badge, Dormitory, Difficulty, AISelfData } from '../types';
 import { useState, useEffect, useCallback } from 'react';
 
 const BADGES_STORAGE_KEY = 'parerquiz-badges';
@@ -89,17 +89,38 @@ export const useBadges = () => {
       if (storedBadges) {
         const parsedBadges = JSON.parse(storedBadges);
         setBadges(parsedBadges);
+      } else {
+        // LocalStorageにバッジがない場合は空配列をセット
+        setBadges([]);
       }
     } catch (error) {
       console.error('Failed to reload badges from localStorage:', error);
+      setBadges([]);
     }
   }, []);
 
+  // 61人目の寮生名をLocalStorageから取得する関数
+  const getAIGivenName = useCallback((): string | undefined => {
+    try {
+      const stored = localStorage.getItem('parerquiz-ai-given-name');
+      if (stored) {
+        const data: AISelfData = JSON.parse(stored);
+        return data.name;
+      }
+    } catch (error) {
+      console.error('Failed to load AI given name from localStorage:', error);
+    }
+    return undefined;
+  }, []);
+
+  // 61人目の寮生名がLocalStorageに保存されているかチェック
+  const hasAIGivenName = useCallback((): boolean => {
+    return !!getAIGivenName();
+  }, [getAIGivenName]);
+
   // 特定の出題範囲と難易度でバッジを取得しているかチェック
   const hasBadge = useCallback((dormitory: Dormitory, difficulty: Difficulty): boolean => {
-    return badges.some(badge => 
-      badge.dormitory === dormitory && badge.difficulty === difficulty
-    );
+    return badges.some(badge => badge.dormitory === dormitory && badge.difficulty === difficulty);
   }, [badges]);
 
   // 特定の出題範囲で取得している最高難易度のバッジを取得
@@ -144,17 +165,39 @@ export const useBadges = () => {
     return hasAllDormitoriesAdvancedBadge();
   }, [hasAllDormitoriesAdvancedBadge]);
 
+  // 破損日誌へのアクセス権をチェック（寮生専用の金バッジを持っているか、または61人目の寮生名が保存されているか）
+  const hasCorruptedDiaryAccess = useCallback((): boolean => {
+    // 61人目の寮生名が保存されているかチェック
+    try {
+      const aiGivenName = localStorage.getItem('parerquiz-ai-given-name');
+      if (aiGivenName) {
+        return true; // 名前が保存されていればアクセス可能
+      }
+    } catch (error) {
+      console.error('Failed to check AI given name:', error);
+    }
+
+    // 名前が保存されていない場合は、どの寮でも寮生専用以上のバッジを持っていればアクセス可能
+    const hasAdvancedBadge = badges.some(badge => 
+      badge.difficulty === '寮生専用' || badge.difficulty === '鬼'
+    );
+    return hasAdvancedBadge;
+  }, [badges]);
+
   return {
     badges,
+    isInitialized,
     earnBadge,
+    reloadBadges,
     hasBadge,
     getBadgeForDormitory,
     getBadgeRarity,
     shouldBadgeGlow,
     resetAllBadges,
-    reloadBadges,
-    isInitialized,
     hasAllDormitoriesAdvancedBadge,
-    isOniModeUnlocked
+    isOniModeUnlocked,
+    hasCorruptedDiaryAccess,
+    getAIGivenName,
+    hasAIGivenName
   };
 };

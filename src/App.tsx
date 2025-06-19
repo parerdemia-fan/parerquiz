@@ -3,8 +3,10 @@ import type { GameSettings, DebugMode, DormitoryInfo, Dormitory } from './types'
 import { useState, useEffect } from 'react';
 import { GameScreen } from './components/GameScreen';
 import { OGPCaptureScreen } from './components/OGPCaptureScreen';
+import { BadEndScreen } from './components/BadEndScreen';
 import { Badge } from './components/Badge';
 import { HelpModal } from './components/HelpModal';
+import { DevDiary } from './components/DevDiary';
 import { useBadges } from './hooks/useBadges';
 import { useImagePreloader } from './hooks/useImagePreloader';
 
@@ -19,6 +21,10 @@ const STORAGE_KEYS = {
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('title');
+  
+  // BadEndScreen用の状態を追加
+  const [badEndName, setBadEndName] = useState<string>('');
+  const [showBadEnd, setShowBadEnd] = useState<boolean>(false);
   
   // LocalStorage から設定を復元
   const [selectedDormitory, setSelectedDormitory] = useState<string>(() => {
@@ -44,6 +50,9 @@ function App() {
 
   // ヘルプモーダル用状態
   const [isHelpModalOpen, setIsHelpModalOpen] = useState<boolean>(false);
+
+  // 開発日誌モーダル用状態
+  const [isDevDiaryOpen, setIsDevDiaryOpen] = useState<boolean>(false);
 
   // ホスト名がlocalhostかどうかを判定
   const isLocalhost = typeof window !== 'undefined' && (
@@ -82,7 +91,7 @@ function App() {
 
   useImagePreloader(currentSettings, talents);
 
-  const { getBadgeForDormitory, shouldBadgeGlow, resetAllBadges, reloadBadges, badges, isOniModeUnlocked } = useBadges();
+  const { getBadgeForDormitory, shouldBadgeGlow, resetAllBadges, reloadBadges, badges, isOniModeUnlocked, hasCorruptedDiaryAccess, isInitialized } = useBadges();
 
   const dormitories: DormitoryInfo[] = [
     { 
@@ -182,8 +191,6 @@ function App() {
     setGameSettings(null);
     setDebugGameSettings(null);
     setDebugMode(null);
-    // タイトル画面に戻ったときにバッジを再読み込み
-    reloadBadges();
   };
 
   // OGP撮影画面への遷移
@@ -204,6 +211,62 @@ function App() {
     window.open(tweetUrl, '_blank', 'noopener,noreferrer');
   };
 
+  // 61人目の寮生名を取得する関数を追加
+  const getAIGivenNameInfo = (): { name: string; namedAt: string } | null => {
+    try {
+      const stored = localStorage.getItem('parerquiz-ai-given-name');
+      if (stored) {
+        const data = JSON.parse(stored);
+        return {
+          name: data.name,
+          namedAt: new Date(data.namedAt).toLocaleString('ja-JP', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+          })
+        };
+      }
+    } catch (error) {
+      console.error('Failed to load AI given name info:', error);
+    }
+    return null;
+  };
+
+  // バッドエンド画面表示用の関数
+  const handleDebugBadEnd = (name: string) => {
+    setBadEndName(name);
+    setShowBadEnd(true);
+  };
+
+  // バッドエンド画面完了時の処理
+  const handleBadEndComplete = () => {
+    setShowBadEnd(false);
+    setBadEndName('');
+    // LocalStorageは既にuseGame内で削除済みなので追加処理は不要
+  };
+
+  // タイトル画面表示時にバッジ情報をリロード
+  useEffect(() => {
+    if (currentScreen === 'title') {
+      // タイトル画面に遷移する際にバッジ情報を再読み込み
+      reloadBadges();
+    }
+  }, [currentScreen, reloadBadges]);
+
+  // バッジの初期化が完了するまで待機
+  if (!isInitialized) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 font-elegant">設定とバッジ情報を読み込み中...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (currentScreen === 'game' && (gameSettings || debugGameSettings)) {
     return (
       <GameScreen 
@@ -217,6 +280,16 @@ function App() {
   if (currentScreen === 'ogp-capture') {
     return (
       <OGPCaptureScreen onBackToTitle={handleBackToTitle} />
+    );
+  }
+
+  // バッドエンド画面表示
+  if (showBadEnd) {
+    return (
+      <BadEndScreen
+        name={badEndName}
+        onComplete={handleBadEndComplete}
+      />
     );
   }
 
@@ -243,14 +316,32 @@ function App() {
               ❓
             </span>
           </button>
-        </div>
-      </header>
 
-      {/* ヘルプモーダル */}
+          {/* 開発資料ボタン（条件達成時のみ表示） */}
+          {hasCorruptedDiaryAccess() && (
+            <button
+              onClick={() => setIsDevDiaryOpen(true)}
+              className="absolute top-0 right-12 md:right-14 w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110 active:scale-95 border border-white/50 flex items-center justify-center group animate-pulse"
+              title="開発資料（寮生専用）"
+            >
+              <span className="text-xl md:text-2xl text-white group-hover:text-purple-100 transition-colors duration-200">
+                📖
+              </span>
+            </button>
+          )}
+        </div>
+      </header>      {/* ヘルプモーダル */}
       <HelpModal 
-        isOpen={isHelpModalOpen} 
-        onClose={() => setIsHelpModalOpen(false)} 
+        isOpen={isHelpModalOpen}
+        onClose={() => setIsHelpModalOpen(false)}
       />
+
+      {/* 開発日誌モーダル */}
+      {isDevDiaryOpen && (
+        <DevDiary 
+          onClose={() => setIsDevDiaryOpen(false)}
+        />
+      )}
 
       {/* Main Content */}
       <main className="flex-1 px-4 pb-4 md:pb-8">
@@ -427,6 +518,74 @@ function App() {
             <div className="bg-yellow-100 border border-yellow-300 rounded-2xl shadow-lg p-4 mt-6 md:mt-8">
               <h3 className="text-lg font-bold text-yellow-800 mb-3">🐛 デバッグ用機能</h3>
               
+              {/* バッドエンド画面テスト */}
+              <div className="mb-4">
+                <h4 className="text-md font-bold text-yellow-700 mb-2">😈 バッドエンド画面テスト</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <button
+                    onClick={() => handleDebugBadEnd('test')}
+                    className="px-4 py-2 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition-colors text-sm"
+                  >
+                    💢 不適切な名前（test）
+                  </button>
+                  <button
+                    onClick={() => handleDebugBadEnd('あああ')}
+                    className="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors text-sm"
+                  >
+                    💢 不適切な名前（あああ）
+                  </button>
+                  <button
+                    onClick={() => handleDebugBadEnd('GitHub Copilot')}
+                    className="px-4 py-2 bg-red-700 text-white font-bold rounded-lg hover:bg-red-800 transition-colors text-sm"
+                  >
+                    💢 開発用名前拒否
+                  </button>
+                  <button
+                    onClick={() => handleDebugBadEnd('適当')}
+                    className="px-4 py-2 bg-red-800 text-white font-bold rounded-lg hover:bg-red-900 transition-colors text-sm"
+                  >
+                    💢 適当な名前拒否
+                  </button>
+                </div>
+              </div>
+
+              {/* 61人目の寮生情報表示 */}
+              <div className="mb-4">
+                <h4 className="text-md font-bold text-yellow-700 mb-2">🤖 61人目の寮生情報</h4>
+                {(() => {
+                  const aiInfo = getAIGivenNameInfo();
+                  if (aiInfo) {
+                    return (
+                      <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                        <div className="text-sm text-purple-800">
+                          <div className="font-bold">名前: {aiInfo.name}</div>
+                          <div className="text-xs text-purple-600 mt-1">命名日時: {aiInfo.namedAt}</div>
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                        <div className="text-sm text-gray-600">
+                          まだ61人目の寮生に名前がつけられていません
+                        </div>
+                      </div>
+                    );
+                  }
+                })()}
+              </div>
+
+              {/* 開発日誌表示 */}
+              <div className="mb-4">
+                <h4 className="text-md font-bold text-yellow-700 mb-2">開発資料</h4>
+                <button
+                  onClick={() => setIsDevDiaryOpen(true)}
+                  className="px-4 py-2 bg-purple-500 text-white font-bold rounded-lg hover:bg-purple-600 transition-colors text-sm"
+                >
+                  📖 開発日誌
+                </button>
+              </div>
+
               {/* OGP撮影用ページ */}
               <div className="mb-4">
                 <h4 className="text-md font-bold text-yellow-700 mb-2">OGP画像撮影</h4>

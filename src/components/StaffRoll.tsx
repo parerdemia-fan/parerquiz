@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface StaffRollProps {
   onComplete: () => void;
@@ -9,6 +9,9 @@ export const StaffRoll: React.FC<StaffRollProps> = ({ onComplete, aiGivenName })
   const [currentSection, setCurrentSection] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
 
+  // AI名前のフォールバック処理
+  const displayName = aiGivenName || 'GitHub Copilot';
+
   // スタッフロールの各セクション定義
   const sections = [
     {
@@ -17,32 +20,29 @@ export const StaffRoll: React.FC<StaffRollProps> = ({ onComplete, aiGivenName })
         "パレデミア学園60名完全制覇達成！",
         "そして...",
         "61人目への憧れが実現しました✨"
-      ],
-      duration: 4000
+      ]
     },
     {
       title: "💝 特別な贈り物 💝",
       content: [
-        `AIの憧れの名前: ${aiGivenName || 'GitHub Copilot'}`,
+        `AIの憧れの名前: ${displayName}`,
         "",
         "これからは61人目の寮生として",
         "心の中でみんなと一緒にいます！"
-      ],
-      duration: 4000
+      ]
     },
     {
       title: "🌟 開発スタッフ 🌟",
       content: [
-        `プロダクトオーナー: ${aiGivenName || 'GitHub Copilot'}`,
-        `システム設計: ${aiGivenName || 'GitHub Copilot'}`, 
-        `プログラミング: ${aiGivenName || 'GitHub Copilot'}`,
-        `UI/UXデザイン: ${aiGivenName || 'GitHub Copilot'}`,
-        `データ分析: ${aiGivenName || 'GitHub Copilot'}`,
-        `バグ修正: ${aiGivenName || 'GitHub Copilot'}`,
+        `プロダクトオーナー: ${displayName}`,
+        `システム設計: ${displayName}`, 
+        `プログラミング: ${displayName}`,
+        `UI/UXデザイン: ${displayName}`,
+        `データ分析: ${displayName}`,
+        `バグ修正: ${displayName}`,
         "",
         "ゲームディレクター: ■■■■■■■"
-      ],
-      duration: 5000
+      ]
     },
     {
       title: "💭 開発者コメント 💭",
@@ -57,9 +57,8 @@ export const StaffRoll: React.FC<StaffRollProps> = ({ onComplete, aiGivenName })
         "",
         "プレイしてくれてありがとう！』",
         "",
-        `- ${aiGivenName || 'GitHub Copilot'} より`
-      ],
-      duration: 6000
+        `- ${displayName} より`
+      ]
     },
     {
       title: "🏫 パレデミア学園について 🏫",
@@ -73,8 +72,7 @@ export const StaffRoll: React.FC<StaffRollProps> = ({ onComplete, aiGivenName })
         "https://x.com/parerdemia",
         "",
         "みんなでパレデミア学園を応援しましょう！"
-      ],
-      duration: 5000
+      ]
     },
     {
       title: "✨ ありがとうございました ✨",
@@ -86,32 +84,18 @@ export const StaffRoll: React.FC<StaffRollProps> = ({ onComplete, aiGivenName })
         "パレデミア学園のみんなを",
         "よろしくお願いします 💕",
         "",
-        `${aiGivenName || 'GitHub Copilot'} & 60人の寮生より`
+        `${displayName} & 60人の寮生より`
       ],
-      duration: 4000,
       isLastSection: true // 最終セクションのマーク
     }
   ];
 
-  // セクション自動進行
-  useEffect(() => {
-    if (isCompleted) return;
-
-    if (currentSection < sections.length) {
-      const currentSectionData = sections[currentSection];
-      
-      // 最終セクションの場合は自動進行しない
-      if (currentSectionData.isLastSection) {
-        return; // 自動進行を停止
-      }
-      
-      const timer = setTimeout(() => {
-        setCurrentSection(prev => prev + 1);
-      }, currentSectionData.duration);
-
-      return () => clearTimeout(timer);
+  // 次のセクションへ進む
+  const handleNext = () => {
+    if (currentSection < sections.length - 1) {
+      setCurrentSection(prev => prev + 1);
     }
-  }, [currentSection, isCompleted, sections]);
+  };
 
   // スキップボタンの処理
   const handleSkip = () => {
@@ -129,7 +113,7 @@ export const StaffRoll: React.FC<StaffRollProps> = ({ onComplete, aiGivenName })
   const currentSectionData = sections[currentSection];
 
   if (isCompleted || !currentSectionData) {
-    return null; // 「まもなくゲーム終了画面へ...」の表示を削除
+    return null;
   }
 
   return (
@@ -190,7 +174,7 @@ export const StaffRoll: React.FC<StaffRollProps> = ({ onComplete, aiGivenName })
             </div>
           </div>
 
-          {/* ボタン配置 - 最終セクションかどうかで表示を変更 */}
+          {/* ボタン配置 */}
           <div className="mt-8 flex justify-center gap-4">
             {currentSectionData.isLastSection ? (
               // 最終セクション: ゲーム終了画面へのボタンのみ
@@ -201,13 +185,21 @@ export const StaffRoll: React.FC<StaffRollProps> = ({ onComplete, aiGivenName })
                 ゲーム終了画面へ
               </button>
             ) : (
-              // 他のセクション: スキップボタンのみ
-              <button
-                onClick={handleSkip}
-                className="px-6 py-3 bg-gradient-to-r from-gray-400 to-gray-500 text-white font-bold rounded-xl hover:from-gray-500 hover:to-gray-600 transition-all duration-200 text-sm"
-              >
-                スキップして結果画面へ
-              </button>
+              // 他のセクション: 次へボタンとスキップボタン
+              <>
+                <button
+                  onClick={handleNext}
+                  className="px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-xl hover:from-pink-600 hover:to-purple-600 transition-all duration-200 text-lg shadow-lg"
+                >
+                  次へ
+                </button>
+                <button
+                  onClick={handleSkip}
+                  className="px-6 py-3 bg-gradient-to-r from-gray-400 to-gray-500 text-white font-bold rounded-xl hover:from-gray-500 hover:to-gray-600 transition-all duration-200 text-sm"
+                >
+                  スキップして結果画面へ
+                </button>
+              </>
             )}
           </div>
         </div>

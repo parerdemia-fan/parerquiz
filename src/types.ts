@@ -31,6 +31,11 @@ export interface QuizQuestion {
   options: Talent[];
 }
 
+export interface BadEndState {
+  triggered: boolean;
+  name: string; // reasonからnameに変更
+}
+
 export interface GameState {
   currentQuestion: number;
   totalQuestions: number;
@@ -79,4 +84,10 @@ export const DORMITORY_CODE_MAP: Record<Dormitory, string | null> = {
   'ウィニー寮': 'wh',
   'すべて': null
 };
+
+// 61人目の寮生名の保存用型
+export interface AISelfData {
+  name: string;
+  namedAt: string; // 命名された日時
+}
 

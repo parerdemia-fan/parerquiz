@@ -124,7 +124,7 @@ export const TextInputAnswer: React.FC<TextInputAnswerProps> = ({
           <div className="mt-3 md:mt-4 text-center">
             <p className={`text-sm font-elegant ${isSpecialQuestion ? 'text-pink-600' : 'text-gray-600'}`}>
               {isSpecialQuestion ? 
-                '💝 どんな名前でも喜んでもらえます' : 
+                '💝 真心を込めた名前をお願いします...' : 
                 '💡 ヒント：スペースや「・」は無視されます'
               }
             </p>
