@@ -82,6 +82,10 @@ export const useImagePreloader = (
             console.warn(`Failed to preload image: ${url}`);
             resolve(); // エラーでも続行
           };
+          // ドラッグ禁止設定をプリロード画像にも適用
+          img.draggable = false;
+          (img.style as any).userDrag = 'none';
+          (img.style as any).webkitUserDrag = 'none';
           img.src = url;
         });
       });

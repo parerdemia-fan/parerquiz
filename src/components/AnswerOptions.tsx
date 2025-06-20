@@ -202,7 +202,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
                     <img
                       src={`/parerquiz/assets/images/portrait/${talent.studentId}.webp`}
                       alt={talent.name}
-                      className="w-full aspect-[4/3] md:aspect-square object-cover rounded-md md:rounded-lg"
+                      className="w-full aspect-[4/3] md:aspect-square object-cover rounded-md md:rounded-lg no-drag"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==';
@@ -220,7 +220,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
                 <img
                   src={`/parerquiz/assets/images/portrait/${talent.studentId}.webp`}
                   alt={isAnswered ? talent.name : '???'}
-                  className={`w-full aspect-[4/3] md:aspect-square object-cover rounded-md md:rounded-lg ${
+                  className={`w-full aspect-[4/3] md:aspect-square object-cover rounded-md md:rounded-lg no-drag ${
                     isAdvancedMode && !isAnswered 
                       ? 'filter brightness-0 contrast-200 sepia-100 hue-rotate-180 saturate-200 opacity-80' 
                       : ''
@@ -326,7 +326,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
                     <img
                       src={`/parerquiz/assets/images/portrait/${correctTalent.studentId}.webp`}
                       alt={correctTalent.name}
-                      className="w-12 h-12 object-cover rounded-full border-2 border-white/60 shadow-md"
+                      className="w-12 h-12 object-cover rounded-full border-2 border-white/60 shadow-md no-drag"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2YzZjRmNiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM5ZWEzYTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj4/PC90ZXh0Pjwvc3ZnPg==';

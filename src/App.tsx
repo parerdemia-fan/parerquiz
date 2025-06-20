@@ -240,13 +240,6 @@ function App() {
     setShowBadEnd(true);
   };
 
-  // バッドエンド画面完了時の処理
-  const handleBadEndComplete = () => {
-    setShowBadEnd(false);
-    setBadEndName('');
-    // LocalStorageは既にuseGame内で削除済みなので追加処理は不要
-  };
-
   // タイトル画面表示時にバッジ情報をリロード
   useEffect(() => {
     if (currentScreen === 'title') {
@@ -288,7 +281,6 @@ function App() {
     return (
       <BadEndScreen
         name={badEndName}
-        onComplete={handleBadEndComplete}
       />
     );
   }
@@ -409,7 +401,7 @@ function App() {
                     <img
                       src={dorm.imagePath}
                       alt={`${dorm.name}のエンブレム`}
-                      className="w-5 h-5 md:w-6 md:h-6 object-contain"
+                      className="w-5 h-5 md:w-6 md:h-6 object-contain no-drag"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.style.display = 'none';

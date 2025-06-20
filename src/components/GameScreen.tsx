@@ -395,18 +395,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     startStaffRoll, // スタッフロール開始関数を依存配列に追加
   ]);
 
-  // バッドエンド発動時の処理
-  const handleBadEndComplete = () => {
-    // LocalStorageは既にuseGame内で削除済みなので、画面遷移のみ
-    onBackToTitle();
-  };
-
   // バッドエンド画面表示
   if (badEndState.triggered) {
     return (
       <BadEndScreen
         name={badEndState.name}
-        onComplete={handleBadEndComplete}
       />
     );
   }
@@ -1092,7 +1085,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
             <img
               src="/parerquiz/assets/images/mirror.png"
               alt=""
-              className="w-32 h-32 opacity-10 mobile-glow-effect"
+              className="w-32 h-32 opacity-10 mobile-glow-effect no-drag"
             />
           </div>
 

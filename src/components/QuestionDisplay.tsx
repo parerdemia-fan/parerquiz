@@ -220,7 +220,7 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
               <img
                 src={`/parerquiz/assets/images/${isAdvancedMode ? 'portrait' : 'ogp'}/${talent.studentId}.${isAdvancedMode ? 'webp' : 'png'}`}
                 alt={talent.name}
-                className={`w-full ${isAdvancedMode ? 'max-w-xs md:max-w-md' : 'max-w-md'} mx-auto rounded-xl shadow-md ${
+                className={`w-full ${isAdvancedMode ? 'max-w-xs md:max-w-md' : 'max-w-md'} mx-auto rounded-xl shadow-md no-drag ${
                   isAdvancedMode && !isAnswered
                     ? 'filter brightness-0 contrast-200 sepia-100 hue-rotate-180 saturate-200 opacity-80' 
                     : isAdvancedMode && isAnswered

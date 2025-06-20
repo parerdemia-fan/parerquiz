@@ -95,7 +95,7 @@ export const Badge: React.FC<BadgeProps> = ({
         src={getEmblemPath(dormitory)}
         alt={`${dormitory}のエンブレム`}
         className={`
-          w-full h-full object-contain relative z-10 rounded-full
+          w-full h-full object-contain relative z-10 rounded-full no-drag
           ${!earned ? 'grayscale opacity-40' : 'drop-shadow-sm'}
         `}
         onError={(e) => {

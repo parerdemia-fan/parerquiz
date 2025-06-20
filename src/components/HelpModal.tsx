@@ -6,7 +6,7 @@ interface HelpModalProps {
 }
 
 export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
-  const { isOniModeUnlocked, hasAIGivenName, getAIGivenName } = useBadges();
+  const { isOniModeUnlocked } = useBadges();
   
   if (!isOpen) return null;
 

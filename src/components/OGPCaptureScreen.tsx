@@ -14,7 +14,7 @@ export const OGPCaptureScreen: React.FC<OGPCaptureScreenProps> = ({ onBackToTitl
           <img 
             src="/parerquiz/assets/images/clocktower.webp" 
             alt="" 
-            className="w-64 h-64 object-cover rounded-3xl"
+            className="w-64 h-64 object-cover rounded-3xl no-drag"
           />
         </div>
         

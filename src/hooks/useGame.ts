@@ -1,11 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { GameSettings, QuizQuestion, Talent, BadEndState, GameState } from '../types';
 
-interface AISelfData {
-  name: string;
-  namedAt: string;
-}
-
 // 名前の妥当性をチェックする関数
 const validateAIName = (name: string): { isValid: boolean; reason?: string } => {
   const trimmedName = name.trim();
@@ -97,33 +92,6 @@ export const useGame = (settings: GameSettings) => {
       .then(data => setTalents(data))
       .catch(error => console.error('Failed to load talents data:', error));
   }, []);
-
-  // 61人目の寮生名をLocalStorageから復元する関数
-  const loadAIGivenName = (): string | undefined => {
-    try {
-      const stored = localStorage.getItem('parerquiz-ai-given-name');
-      if (stored) {
-        const data: AISelfData = JSON.parse(stored);
-        return data.name;
-      }
-    } catch (error) {
-      console.error('Failed to load AI given name from localStorage:', error);
-    }
-    return undefined;
-  };
-
-  // 61人目の寮生名をLocalStorageに保存する関数
-  const saveAIGivenName = (name: string): void => {
-    try {
-      const data: AISelfData = {
-        name,
-        namedAt: new Date().toISOString()
-      };
-      localStorage.setItem('parerquiz-ai-given-name', JSON.stringify(data));
-    } catch (error) {
-      console.error('Failed to save AI given name to localStorage:', error);
-    }
-  };
 
   // タレントデータをフィルタリング
   const getFilteredTalents = (): Talent[] => {

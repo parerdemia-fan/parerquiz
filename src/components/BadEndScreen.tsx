@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 
 interface BadEndScreenProps {
   name: string;
-  onComplete: () => void;
 }
 
-export const BadEndScreen: React.FC<BadEndScreenProps> = ({ name, onComplete }) => {
+export const BadEndScreen: React.FC<BadEndScreenProps> = ({ name }) => {
   const [currentPhase, setCurrentPhase] = useState(0);
 
   // 各フェーズの内容
@@ -89,8 +88,8 @@ export const BadEndScreen: React.FC<BadEndScreenProps> = ({ name, onComplete }) 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-900 via-pink-900 to-purple-900 flex items-center justify-center p-4 relative overflow-hidden">
       {/* 怒りの背景エフェクト */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-20 left-20 text-red-400 text-4xl animate-bounce" style={{ animationDelay: '0s', animationDuration: '1s' }}>💢</div>
+      <div className="absolute inset-0 pointer-events-none no-drag">
+        <div className="absolute top-20 left-20 text-red-400 text-4xl animate-bounce no-drag" style={{ animationDelay: '0s', animationDuration: '1s' }}>💢</div>
         <div className="absolute top-32 right-32 text-orange-400 text-3xl animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '1.2s' }}>😤</div>
         <div className="absolute bottom-40 left-40 text-red-500 text-4xl animate-bounce" style={{ animationDelay: '1s', animationDuration: '0.8s' }}>🔥</div>
         <div className="absolute bottom-20 right-20 text-pink-400 text-3xl animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '1.1s' }}>💔</div>
