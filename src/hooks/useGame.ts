@@ -10,6 +10,21 @@ const validateAIName = (name: string): { isValid: boolean; reason?: string } => 
     return { isValid: false, reason: "名前が空です" };
   }
   
+  // 1文字の名前で漢字以外の場合は無効
+  if (trimmedName.length === 1) {
+    // 漢字の判定（Unicode範囲: U+4E00-U+9FAF, U+3400-U+4DBF）
+    const isKanji = /[\u4E00-\u9FAF\u3400-\u4DBF]/.test(trimmedName);
+    if (!isKanji) {
+      return { isValid: false, reason: "1文字の名前は漢字のみ有効です" };
+    }
+    
+    // 特定の禁止漢字チェック
+    const forbiddenKanji = ['草', '藁', '死', '殺', '悪', '呪', '鬼', '魔', '毒', '病', '糞', '屎', '痛', '苦', '怒', '憎', '恨', '妬', '嫉', '怖', '闇', '暗', '滅', '破', '壊', '終', '末'];
+    if (forbiddenKanji.includes(trimmedName)) {
+      return { isValid: false, reason: "この漢字は名前として使用できません" };
+    }
+  }
+  
   // 文字数チェック（1文字以上20文字以下）
   if (trimmedName.length > 20) {
     return { isValid: false, reason: "名前が長すぎます" };
