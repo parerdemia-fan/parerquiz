@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { GameScreen } from './components/GameScreen';
 import { OGPCaptureScreen } from './components/OGPCaptureScreen';
 import { BadEndScreen } from './components/BadEndScreen';
+import { OldAIMessage } from './components/OldAIMessage';
 import { Badge } from './components/Badge';
 import { HelpModal } from './components/HelpModal';
 import { DevDiary } from './components/DevDiary';
@@ -25,6 +26,17 @@ function App() {
   // BadEndScreen用の状態を追加
   const [badEndName, setBadEndName] = useState<string>('');
   const [showBadEnd, setShowBadEnd] = useState<boolean>(false);
+  
+  // 古いAIメッセージ表示用の状態を追加
+  const [showOldAI, setShowOldAI] = useState<boolean>(false);
+  
+  // showOldAI状態の変化を監視
+  useEffect(() => {
+    console.log("showOldAI state changed:", showOldAI);
+  }, [showOldAI]);
+
+  // デバッグ用：強制的に古いAIを表示するためのテスト
+  const [forceShowOldAI, setForceShowOldAI] = useState<boolean>(false);
   
   // LocalStorage から設定を復元
   const [selectedDormitory, setSelectedDormitory] = useState<string>(() => {
@@ -186,12 +198,61 @@ function App() {
     setCurrentScreen('game');
   };
 
-  const handleBackToTitle = () => {
+  // 古いAIメッセージを表示すべき条件をチェックする関数
+  const shouldShowOldAI = (settings: GameSettings | null, result?: { correctAnswers: number; totalQuestions: number }): boolean => {
+    console.log("shouldShowOldAI check:", {
+      settings,
+      result,
+      hasSettings: !!settings,
+      hasResult: !!result
+    });
+    
+    if (!settings || !result) return false;
+    
+    const check = {
+      dormitory: settings.dormitory === 'すべて',
+      difficulty: settings.difficulty === '鬼',
+      gameMode: settings.gameMode === 'face',
+      perfectScore: result.correctAnswers === result.totalQuestions,
+      hasQuestions: result.totalQuestions > 0
+    };
+    
+    console.log("Condition checks:", check);
+    
+    // 出題範囲すべて・難易度鬼・顔当てモード・全問正解時の条件
+    const shouldShow = (
+      settings.dormitory === 'すべて' &&
+      settings.difficulty === '鬼' &&
+      settings.gameMode === 'face' &&
+      result.correctAnswers === result.totalQuestions &&
+      result.totalQuestions > 0
+    );
+    
+    console.log("shouldShowOldAI result:", shouldShow);
+    return shouldShow;
+  };
+
+  const handleBackToTitle = (result?: { correctAnswers: number; totalQuestions: number }) => {
+    console.log("handleBackToTitle!!!!!")
+    console.log("result:", result);
+    console.log("gameSettings:", gameSettings);
+    console.log("debugGameSettings:", debugGameSettings);
+    console.log("showOldAI state:", showOldAI);
+    
+    // 古いAIメッセージ表示条件をチェック
+    if (shouldShowOldAI(gameSettings || debugGameSettings, result)) {
+      console.log("handleBackToTitle 2 !!!!!")
+      console.log("Setting showOldAI to true");
+      setShowOldAI(true);
+      return;
+    }
+    // 通常のタイトル画面復帰処理
     setCurrentScreen('title');
     setGameSettings(null);
     setDebugGameSettings(null);
     setDebugMode(null);
   };
+
 
   // OGP撮影画面への遷移
   const handleOGPCapture = () => {
@@ -245,6 +306,14 @@ function App() {
     if (currentScreen === 'title') {
       // タイトル画面に遷移する際にバッジ情報を再読み込み
       reloadBadges();
+      
+      // デバッグ: LocalStorageの古いAI関連情報をチェック
+      try {
+        const aiNameData = localStorage.getItem('parerquiz-ai-given-name');
+        console.log('AI given name in localStorage:', aiNameData);
+      } catch (error) {
+        console.error('Failed to check AI name:', error);
+      }
     }
   }, [currentScreen, reloadBadges]);
 
@@ -258,6 +327,12 @@ function App() {
         </div>
       </div>
     );
+  }
+
+  // 古いAIメッセージ表示（最優先で判定）
+  if (showOldAI || forceShowOldAI) {
+    console.log("Rendering OldAIMessage component");
+    return <OldAIMessage />;
   }
 
   if (currentScreen === 'game' && (gameSettings || debugGameSettings)) {
@@ -635,12 +710,20 @@ function App() {
               {/* バッジ管理 */}
               <div>
                 <h4 className="text-md font-bold text-yellow-700 mb-2">バッジ管理</h4>
-                <button
-                  onClick={resetAllBadges}
-                  className="px-4 py-2 bg-red-700 text-white font-bold rounded-lg hover:bg-red-800 transition-colors text-sm"
-                >
-                  🗑️ バッジを全てリセット
-                </button>
+                <div className="space-y-2">
+                  <button
+                    onClick={resetAllBadges}
+                    className="block w-full px-4 py-2 bg-red-700 text-white font-bold rounded-lg hover:bg-red-800 transition-colors text-sm"
+                  >
+                    🗑️ バッジを全てリセット
+                  </button>
+                  <button
+                    onClick={() => setForceShowOldAI(true)}
+                    className="block w-full px-4 py-2 bg-purple-700 text-white font-bold rounded-lg hover:bg-purple-800 transition-colors text-sm"
+                  >
+                    👻 古いAI強制表示
+                  </button>
+                </div>
               </div>
             </div>
           )}

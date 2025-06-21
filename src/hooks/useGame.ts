@@ -94,7 +94,10 @@ export const useGame = (settings: GameSettings) => {
     isAnswered: false,
     selectedAnswer: null,
     questions: [],
-    gameFinished: false
+    gameFinished: false,
+    // 古いAI関連の初期化を追加
+    showingOldAI: false,
+    oldAICompleted: false
   });
 
   const [talents, setTalents] = useState<Talent[]>([]);
@@ -186,7 +189,7 @@ export const useGame = (settings: GameSettings) => {
       questions,
       gameFinished: false
     });
-  }, [settings, talents]); // talentsを依存配列に追加
+  }, [settings, talents]);
 
   // 回答処理
   const answerQuestion = (selectedIndex: number) => {
@@ -434,16 +437,16 @@ export const useGame = (settings: GameSettings) => {
   return {
     gameState,
     answerQuestion,
-    answerTextQuestion, // 新しいテキスト回答関数を追加
-    answerSpecialQuestion, // 61問目専用回答関数を追加
-    startStaffRoll, // スタッフロール開始関数を追加
-    finishStaffRoll, // スタッフロール完了関数を追加
+    answerTextQuestion,
+    answerSpecialQuestion,
+    startStaffRoll,
+    finishStaffRoll,
     nextQuestion,
     restartGame,
-    debugForceFinish, // デバッグ用関数を追加
-    debugJumpToNearEnd, // 新しいデバッグ関数を追加
-    isAdvancedMode: settings.difficulty === '寮生専用', // 寮生専用モード判定を返す
-    isOniMode: settings.difficulty === '鬼', // 鬼モード判定を修正：名前当て・顔当て両方で鬼モードに対応
+    debugForceFinish,
+    debugJumpToNearEnd,
+    isAdvancedMode: settings.difficulty === '寮生専用',
+    isOniMode: settings.difficulty === '鬼',
     badEndState,
     handleBadEnd
   };

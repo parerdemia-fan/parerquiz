@@ -3,12 +3,38 @@ import { useState, useEffect, useCallback } from 'react';
 
 const BADGES_STORAGE_KEY = 'parerquiz-badges';
 
-// 難易度の優先度
-const DIFFICULTY_PRIORITY: Record<Difficulty, number> = {
-  'ふつう': 1,
-  'むずかしい': 2,
-  '寮生専用': 3,
-  '鬼': 4
+// バッドネーム判定用の配列
+const badNames = [
+  'test', 'TEST', 'Test',
+  'あああ', 'いいい', 'ううう', 'えええ', 'おおお',
+  'aaa', 'AAA', 'bbb', 'BBB', 'ccc', 'CCC',
+  'GitHub Copilot', 'github copilot', 'GITHUB COPILOT',
+  'AI', 'ai', 'Ai', 'aI',
+  '適当', '適当な名前', 'てきとう',
+  'ああああ', 'いいいい', 'ううううう',
+  'qwerty', 'QWERTY', 'asdf', 'ASDF',
+  '111', '222', '333', '444', '555',
+  'xxx', 'XXX', 'yyy', 'YYY', 'zzz', 'ZZZ',
+  'hoge', 'HOGE', 'fuga', 'FUGA', 'piyo', 'PIYO',
+  'sample', 'SAMPLE', 'example', 'EXAMPLE',
+  'user', 'USER', 'player', 'PLAYER',
+  'name', 'NAME', 'なまえ', 'ネーム'
+];
+
+// バッドネーム判定関数
+const isBadName = (name: string): boolean => {
+  const normalizedName = name.trim().toLowerCase();
+  
+  // 空文字や短すぎる場合
+  if (normalizedName.length === 0 || normalizedName.length === 1) {
+    return true;
+  }
+  
+  // バッドネーム配列との完全一致チェック
+  return badNames.some(badName => 
+    normalizedName === badName.toLowerCase() ||
+    normalizedName.replace(/\s/g, '') === badName.toLowerCase().replace(/\s/g, '')
+  );
 };
 
 export const useBadges = () => {
@@ -42,45 +68,62 @@ export const useBadges = () => {
 
   // バッジ取得処理 - 即座に状態を更新
   const earnBadge = useCallback((dormitory: Dormitory, difficulty: Difficulty): boolean => {
-    // 現在のバッジ状態を取得（LocalStorageから最新を取得）
-    let currentBadges: Badge[];
+    // LocalStorageから現在のバッジを直接読み込み
+    let currentBadges: Badge[] = [];
     try {
       const storedBadges = localStorage.getItem(BADGES_STORAGE_KEY);
-      currentBadges = storedBadges ? JSON.parse(storedBadges) : [];
+      if (storedBadges) {
+        currentBadges = JSON.parse(storedBadges);
+      }
     } catch (error) {
       console.error('Failed to load current badges:', error);
-      currentBadges = badges;
+      currentBadges = [];
     }
 
-    const existingBadgeIndex = currentBadges.findIndex(badge => badge.dormitory === dormitory);
-    const newBadge: Badge = {
-      dormitory,
-      difficulty,
-      earnedAt: new Date().toISOString()
-    };
-
-    let updatedBadges: Badge[];
-
-    if (existingBadgeIndex !== -1) {
+    const dormitoryKey = dormitory as Dormitory;
+    
+    // 既存のバッジをチェック
+    const existingBadgeIndex = currentBadges.findIndex(badge => badge.dormitory === dormitoryKey);
+    
+    if (existingBadgeIndex >= 0) {
       const existingBadge = currentBadges[existingBadgeIndex];
-      const existingPriority = DIFFICULTY_PRIORITY[existingBadge.difficulty];
-      const newPriority = DIFFICULTY_PRIORITY[difficulty];
-
-      // 上位難易度の場合のみ更新
-      if (newPriority > existingPriority) {
-        updatedBadges = [...currentBadges];
-        updatedBadges[existingBadgeIndex] = newBadge;
-        saveBadges(updatedBadges);
+      
+      // 難易度の順序を定義（数字が大きいほど上位）
+      const difficultyOrder: Record<string, number> = {
+        'ふつう': 1,
+        'むずかしい': 2,
+        '寮生専用': 3,
+        '鬼': 4
+      };
+      
+      const currentDifficultyLevel = difficultyOrder[difficulty] || 0;
+      const existingDifficultyLevel = difficultyOrder[existingBadge.difficulty] || 0;
+      
+      // より上位の難易度の場合のみ更新
+      if (currentDifficultyLevel > existingDifficultyLevel) {
+        currentBadges[existingBadgeIndex] = {
+          dormitory: dormitoryKey,
+          difficulty,
+          earnedAt: new Date().toISOString()
+        };
+        saveBadges(currentBadges);
         return true;
       }
-      return false; // 下位難易度の場合は取得しない
+      
+      return false; // 下位難易度または同等の場合は取得しない
     } else {
-      // 新規バッジ取得
-      updatedBadges = [...currentBadges, newBadge];
+      // 新しいバッジを追加
+      const newBadge: Badge = {
+        dormitory: dormitoryKey,
+        difficulty,
+        earnedAt: new Date().toISOString()
+      };
+      
+      const updatedBadges = [...currentBadges, newBadge];
       saveBadges(updatedBadges);
       return true;
     }
-  }, [badges, saveBadges]);
+  }, [saveBadges]);
 
   // バッジ状態を強制的に再読み込み
   const reloadBadges = useCallback(() => {
@@ -184,6 +227,37 @@ export const useBadges = () => {
     return hasAdvancedBadge;
   }, [badges]);
 
+  // 61人目の寮生名を保存
+  const saveAIGivenName = useCallback((name: string): boolean => {
+    // バッドネーム判定
+    if (isBadName(name)) {
+      // バッドエンド処理：全データ削除
+      try {
+        localStorage.removeItem('parerquiz-badges');
+        localStorage.removeItem('parerquiz-selected-dormitory');
+        localStorage.removeItem('parerquiz-selected-game-mode');
+        localStorage.removeItem('parerquiz-selected-difficulty');
+        localStorage.removeItem('parerquiz-ai-given-name');
+        setBadges([]);
+      } catch (error) {
+        console.error('Failed to clear data for bad end:', error);
+      }
+      return false; // バッドエンドトリガー
+    }
+
+    try {
+      const data = {
+        name: name.trim(),
+        namedAt: new Date().toISOString()
+      };
+      localStorage.setItem('parerquiz-ai-given-name', JSON.stringify(data));
+      return true;
+    } catch (error) {
+      console.error('Failed to save AI given name:', error);
+      return false;
+    }
+  }, []);
+
   return {
     badges,
     isInitialized,
@@ -198,6 +272,7 @@ export const useBadges = () => {
     isOniModeUnlocked,
     hasCorruptedDiaryAccess,
     getAIGivenName,
-    hasAIGivenName
+    hasAIGivenName,
+    saveAIGivenName
   };
 };

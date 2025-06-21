@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface OGPCaptureScreenProps {
-  onBackToTitle: () => void;
+  onBackToTitle: (result?: { correctAnswers: number; totalQuestions: number }) => void;
 }
 
 export const OGPCaptureScreen: React.FC<OGPCaptureScreenProps> = ({ onBackToTitle }) => {
@@ -70,7 +70,7 @@ export const OGPCaptureScreen: React.FC<OGPCaptureScreenProps> = ({ onBackToTitl
 
       {/* 戻るボタン */}
       <button
-        onClick={onBackToTitle}
+        onClick={() => onBackToTitle()}
         className="fixed top-4 left-4 z-20 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:shadow-lg transition-all duration-200 hover:scale-110 active:scale-95 border border-white/50 flex items-center justify-center text-gray-700 hover:text-purple-600"
       >
         <span className="text-xl">←</span>

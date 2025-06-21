@@ -14,7 +14,7 @@ import { BadEndScreen } from "./BadEndScreen";
 
 interface GameScreenProps {
   settings: GameSettings;
-  onBackToTitle: () => void;
+  onBackToTitle: (result?: { correctAnswers: number; totalQuestions: number }) => void;
   debugMode?: DebugMode | null;
 }
 
@@ -176,6 +176,18 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         gameState.debugForceFinish?.correctAnswers || gameState.correctAnswers;
       const correctRate = correctAnswers / totalQuestions;
 
+      console.log('Game finished check:', {
+        correctRate,
+        dormitory: settings.dormitory,
+        difficulty: settings.difficulty,
+        gameMode: settings.gameMode,
+        showingOldAI: gameState.showingOldAI,
+        oldAICompleted: gameState.oldAICompleted
+      });
+
+      // 古いAI表示条件チェック（この処理を削除）
+      // 条件に関係なく、通常のバッジ処理を続行
+
       // 100%正解の場合のみバッジを取得（鬼モードも含む）
       if (correctRate === 1.0) {
         const badgeEarned = earnBadge(settings.dormitory, settings.difficulty);
@@ -200,8 +212,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     gameState.debugForceFinish,
     gameState.totalQuestions,
     gameState.correctAnswers,
+    gameState.showingOldAI,
+    gameState.oldAICompleted,
     settings.dormitory,
     settings.difficulty,
+    settings.gameMode,
     earnBadge,
     reloadBadges,
   ]);
@@ -677,6 +692,14 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
     const gameModeStyle = getGameModeStyle(settings.gameMode);
 
+    // タイトルに戻る処理（結果を渡す）
+    const handleBackToTitle = () => {
+      onBackToTitle({
+        correctAnswers,
+        totalQuestions
+      });
+    };
+
     // Xシェア用のテキストを生成
     const generateShareText = () => {
       const modeText = settings.gameMode === "name" ? "名前当て" : "顔当て";
@@ -1036,7 +1059,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
                 </button>
 
                 <button
-                  onClick={onBackToTitle}
+                  onClick={handleBackToTitle}
                   className="w-full px-6 py-3 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-700 font-bold font-rounded text-base rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 hover:from-gray-400 hover:to-gray-500 hover:text-white"
                 >
                   🏠 タイトルに戻る
@@ -1115,7 +1138,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
       {/* タイトルに戻るボタン - 左上固定 */}
       <button
-        onClick={onBackToTitle}
+        onClick={() => onBackToTitle()}
         className="fixed top-4 left-4 lg:left-1/2 lg:transform lg:-translate-x-1/2 lg:translate-x-[calc(-50vw+256px-48px)] xl:translate-x-[calc(-50vw+288px-48px)] z-20 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:shadow-lg transition-all duration-200 hover:scale-110 active:scale-95 border border-white/50 flex items-center justify-center text-gray-700 hover:text-purple-600"
       >
         <span className="text-xl">←</span>
@@ -1236,13 +1259,18 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           <div className="fixed bottom-4 left-4 z-20">
             <div className="bg-yellow-100 border border-yellow-300 rounded-lg shadow-lg p-3">
               <div className="text-xs font-bold text-yellow-800 mb-2">🐛 デバッグ</div>
-              <button
-                onClick={debugJumpToNearEnd}
-                disabled={gameState.totalQuestions <= 1 || gameState.currentQuestion >= gameState.totalQuestions - 2}
-                className="px-3 py-2 bg-blue-500 text-white font-bold rounded text-xs hover:bg-blue-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-              >
-                ⏭️ 最終問題の前へ
-              </button>
+              <div className="space-y-2">
+                <button
+                  onClick={debugJumpToNearEnd}
+                  disabled={gameState.totalQuestions <= 1 || gameState.currentQuestion >= gameState.totalQuestions - 2}
+                  className="block w-full px-3 py-2 bg-blue-500 text-white font-bold rounded text-xs hover:bg-blue-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  ⏭️ 最終問題の前へ
+                </button>
+                <div className="text-xs text-yellow-700">
+                  <div>デバッグモード</div>
+                </div>
+              </div>
             </div>
           </div>
         )}
