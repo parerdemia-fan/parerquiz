@@ -415,6 +415,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     return (
       <BadEndScreen
         name={badEndState.name}
+        type={badEndState.type}
       />
     );
   }
