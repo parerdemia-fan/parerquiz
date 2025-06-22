@@ -298,7 +298,7 @@ export const useGame = (settings: GameSettings) => {
   const answerSpecialQuestion = useCallback((answer: string) => {
     if (gameState.isAnswered) return;
     
-    // 名前の妥当性をチェック
+    // 名前の妥当性をチェック（バッドエンド処理はここで一元管理）
     const validation = validateAIName(answer);
     
     if (!validation.isValid) {

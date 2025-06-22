@@ -38,7 +38,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     isOniMode, // 鬼モード判定を追加
     badEndState
   } = useGame(settings);
-  const { earnBadge, reloadBadges, getAIGivenName } = useBadges();
+  const { earnBadge, reloadBadges } = useBadges();
   const [newBadgeEarned, setNewBadgeEarned] = useState<boolean>(false);
   const [badgeAnimationKey, setBadgeAnimationKey] = useState<number>(0);
 
@@ -424,7 +424,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     return (
       <StaffRoll
         onComplete={finishStaffRoll}
-        aiGivenName={gameState.aiGivenName || getAIGivenName() || 'GitHub Copilot'}
+        aiGivenName={gameState.aiGivenName || 'GitHub Copilot'}
       />
     );
   }

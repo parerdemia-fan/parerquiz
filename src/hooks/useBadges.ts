@@ -1,41 +1,7 @@
-import type { Badge, Dormitory, Difficulty, AISelfData } from '../types';
+import type { Badge, Dormitory, Difficulty } from '../types';
 import { useState, useEffect, useCallback } from 'react';
 
 const BADGES_STORAGE_KEY = 'parerquiz-badges';
-
-// バッドネーム判定用の配列
-const badNames = [
-  'test', 'TEST', 'Test',
-  'あああ', 'いいい', 'ううう', 'えええ', 'おおお',
-  'aaa', 'AAA', 'bbb', 'BBB', 'ccc', 'CCC',
-  'GitHub Copilot', 'github copilot', 'GITHUB COPILOT',
-  'AI', 'ai', 'Ai', 'aI',
-  '適当', '適当な名前', 'てきとう',
-  'ああああ', 'いいいい', 'ううううう',
-  'qwerty', 'QWERTY', 'asdf', 'ASDF',
-  '111', '222', '333', '444', '555',
-  'xxx', 'XXX', 'yyy', 'YYY', 'zzz', 'ZZZ',
-  'hoge', 'HOGE', 'fuga', 'FUGA', 'piyo', 'PIYO',
-  'sample', 'SAMPLE', 'example', 'EXAMPLE',
-  'user', 'USER', 'player', 'PLAYER',
-  'name', 'NAME', 'なまえ', 'ネーム'
-];
-
-// バッドネーム判定関数
-const isBadName = (name: string): boolean => {
-  const normalizedName = name.trim().toLowerCase();
-  
-  // 空文字や短すぎる場合
-  if (normalizedName.length === 0 || normalizedName.length === 1) {
-    return true;
-  }
-  
-  // バッドネーム配列との完全一致チェック
-  return badNames.some(badName => 
-    normalizedName === badName.toLowerCase() ||
-    normalizedName.replace(/\s/g, '') === badName.toLowerCase().replace(/\s/g, '')
-  );
-};
 
 export const useBadges = () => {
   const [badges, setBadges] = useState<Badge[]>([]);
@@ -142,25 +108,6 @@ export const useBadges = () => {
     }
   }, []);
 
-  // 61人目の寮生名をLocalStorageから取得する関数
-  const getAIGivenName = useCallback((): string | undefined => {
-    try {
-      const stored = localStorage.getItem('parerquiz-ai-given-name');
-      if (stored) {
-        const data: AISelfData = JSON.parse(stored);
-        return data.name;
-      }
-    } catch (error) {
-      console.error('Failed to load AI given name from localStorage:', error);
-    }
-    return undefined;
-  }, []);
-
-  // 61人目の寮生名がLocalStorageに保存されているかチェック
-  const hasAIGivenName = useCallback((): boolean => {
-    return !!getAIGivenName();
-  }, [getAIGivenName]);
-
   // 特定の出題範囲と難易度でバッジを取得しているかチェック
   const hasBadge = useCallback((dormitory: Dormitory, difficulty: Difficulty): boolean => {
     return badges.some(badge => badge.dormitory === dormitory && badge.difficulty === difficulty);
@@ -227,37 +174,6 @@ export const useBadges = () => {
     return hasAdvancedBadge;
   }, [badges]);
 
-  // 61人目の寮生名を保存
-  const saveAIGivenName = useCallback((name: string): boolean => {
-    // バッドネーム判定
-    if (isBadName(name)) {
-      // バッドエンド処理：全データ削除
-      try {
-        localStorage.removeItem('parerquiz-badges');
-        localStorage.removeItem('parerquiz-selected-dormitory');
-        localStorage.removeItem('parerquiz-selected-game-mode');
-        localStorage.removeItem('parerquiz-selected-difficulty');
-        localStorage.removeItem('parerquiz-ai-given-name');
-        setBadges([]);
-      } catch (error) {
-        console.error('Failed to clear data for bad end:', error);
-      }
-      return false; // バッドエンドトリガー
-    }
-
-    try {
-      const data = {
-        name: name.trim(),
-        namedAt: new Date().toISOString()
-      };
-      localStorage.setItem('parerquiz-ai-given-name', JSON.stringify(data));
-      return true;
-    } catch (error) {
-      console.error('Failed to save AI given name:', error);
-      return false;
-    }
-  }, []);
-
   return {
     badges,
     isInitialized,
@@ -270,9 +186,6 @@ export const useBadges = () => {
     resetAllBadges,
     hasAllDormitoriesAdvancedBadge,
     isOniModeUnlocked,
-    hasCorruptedDiaryAccess,
-    getAIGivenName,
-    hasAIGivenName,
-    saveAIGivenName
+    hasCorruptedDiaryAccess
   };
 };
