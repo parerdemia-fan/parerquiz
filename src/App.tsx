@@ -1,4 +1,4 @@
-import type { GameSettings, DebugMode, DormitoryInfo, Dormitory } from './types';
+import type { GameSettings, DebugMode, DormitoryInfo, Dormitory, BadEndState } from './types';
 // 値として使用するものは通常のインポート
 import { useState, useEffect } from 'react';
 import { GameScreen } from './components/GameScreen';
@@ -26,6 +26,7 @@ function App() {
   // BadEndScreen用の状態を追加
   const [badEndName, setBadEndName] = useState<string>('');
   const [showBadEnd, setShowBadEnd] = useState<boolean>(false);
+  const [badEndState, setBadEndState] = useState<BadEndState>({ triggered: false, name: '', type: 'inappropriate' });
   
   // 古いAIメッセージ表示用の状態を追加
   const [showOldAI, setShowOldAI] = useState<boolean>(false);
@@ -296,8 +297,9 @@ function App() {
   };
 
   // バッドエンド画面表示用の関数
-  const handleDebugBadEnd = (name: string) => {
+  const handleDebugBadEnd = (name: string, type: 'inappropriate' | 'duplicate' = 'inappropriate') => {
     setBadEndName(name);
+    setBadEndState({ triggered: true, name, type });
     setShowBadEnd(true);
   };
 
@@ -356,6 +358,7 @@ function App() {
     return (
       <BadEndScreen
         name={badEndName}
+        type={badEndState.type}
       />
     );
   }
@@ -606,6 +609,18 @@ function App() {
                     className="px-4 py-2 bg-red-700 text-white font-bold rounded-lg hover:bg-red-800 transition-colors text-sm"
                   >
                     💢 開発用名前拒否
+                  </button>
+                  <button
+                    onClick={() => handleDebugBadEnd('犬丸 なでこ', 'duplicate')}
+                    className="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition-colors text-sm"
+                  >
+                    🤔 重複名前（犬丸 なでこ）
+                  </button>
+                  <button
+                    onClick={() => handleDebugBadEnd('朧月 ひかる', 'duplicate')}
+                    className="px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    🤔 重複名前（朧月 ひかる）
                   </button>
                   <button
                     onClick={() => handleDebugBadEnd('適当')}

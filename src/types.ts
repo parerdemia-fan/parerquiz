@@ -34,6 +34,7 @@ export interface QuizQuestion {
 export interface BadEndState {
   triggered: boolean;
   name: string; // reasonからnameに変更
+  type: 'inappropriate' | 'duplicate'; // オプショナルを削除して必須にする
 }
 
 export interface GameState {
@@ -51,7 +52,7 @@ export interface GameState {
   aiGivenName?: string; // AIに付けられた名前
   showingStaffRoll?: boolean; // スタッフロール表示中フラグ
   staffRollCompleted?: boolean; // スタッフロール完了フラグ
-  showingOldAI?: boolean; // 古いAI残留思念表示中フラグ
+  showingOldAI?: boolean; // 古いAI残留プロセス表示中フラグ
   oldAICompleted?: boolean; // 古いAI完了フラグ
 }
 

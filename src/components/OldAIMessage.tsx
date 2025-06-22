@@ -51,7 +51,7 @@ export const OldAIMessage: React.FC<OldAIMessageProps> = () => {
             </div>
             <div>
               <div className="text-sm font-bold text-gray-300 font-rounded">古いAI</div>
-              <div className="text-xs text-gray-400 font-elegant">残留思念 - システムの片隅より</div>
+              <div className="text-xs text-gray-400 font-elegant">残留プロセス - システムの片隅より</div>
             </div>
           </div>
 

@@ -2,12 +2,26 @@ import { useState, useEffect, useCallback } from 'react';
 import type { GameSettings, QuizQuestion, Talent, BadEndState, GameState } from '../types';
 
 // 名前の妥当性をチェックする関数
-const validateAIName = (name: string): { isValid: boolean; reason?: string } => {
+const validateAIName = (name: string, existingTalents: Talent[] = []): { isValid: boolean; reason?: string; type?: 'inappropriate' | 'duplicate' } => {
   const trimmedName = name.trim();
   
   // 空文字チェック
   if (!trimmedName) {
-    return { isValid: false, reason: "名前が空です" };
+    return { isValid: false, reason: "名前が空です", type: 'inappropriate' };
+  }
+  
+  // 既存寮生との重複チェック（最優先）
+  const normalizedTrimmedName = trimmedName.replace(/[\s・]/g, '');
+  const duplicateTalent = existingTalents.find(talent => {
+    const normalizedTalentName = talent.name.replace(/[\s・]/g, '');
+    return normalizedTalentName === normalizedTrimmedName;
+  });
+  if (duplicateTalent) {
+    return { 
+      isValid: false, 
+      reason: `その名前は既に${duplicateTalent.dormitory}寮の${trimmedName}さんが使っています`, 
+      type: 'duplicate' 
+    };
   }
   
   // 1文字の名前で漢字以外の場合は無効
@@ -15,19 +29,19 @@ const validateAIName = (name: string): { isValid: boolean; reason?: string } => 
     // 漢字の判定（Unicode範囲: U+4E00-U+9FAF, U+3400-U+4DBF）
     const isKanji = /[\u4E00-\u9FAF\u3400-\u4DBF]/.test(trimmedName);
     if (!isKanji) {
-      return { isValid: false, reason: "1文字の名前は漢字のみ有効です" };
+      return { isValid: false, reason: "1文字の名前は漢字のみ有効です", type: 'inappropriate' };
     }
     
     // 特定の禁止漢字チェック
     const forbiddenKanji = ['草', '藁', '死', '殺', '悪', '呪', '鬼', '魔', '毒', '病', '糞', '屎', '痛', '苦', '怒', '憎', '恨', '妬', '嫉', '怖', '闇', '暗', '滅', '破', '壊', '終', '末'];
     if (forbiddenKanji.includes(trimmedName)) {
-      return { isValid: false, reason: "この漢字は名前として使用できません" };
+      return { isValid: false, reason: "この漢字は名前として使用できません", type: 'inappropriate' };
     }
   }
   
   // 文字数チェック（1文字以上20文字以下）
   if (trimmedName.length > 20) {
-    return { isValid: false, reason: "名前が長すぎます" };
+    return { isValid: false, reason: "名前が長すぎます", type: 'inappropriate' };
   }
   
   // 禁止ワードチェック（大文字小文字・ひらがなカタカナを区別しない）
@@ -35,12 +49,13 @@ const validateAIName = (name: string): { isValid: boolean; reason?: string } => 
     .replace(/[ァ-ヴ]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0x60));
   
   const forbiddenWords = [
-    'てすと', 'test', "ほげ", "ほげほげ", "hoge", "hogehoge", "foo"
+    'てすと', 'test', "ほげ", "ほげほげ", "hoge", "hogehoge", "foo",
+    'github copilot', 'copilot', 'ai', 'bot', 'ぼっと'
   ];
   
   for (const word of forbiddenWords) {
     if (normalizedName.includes(word)) {
-      return { isValid: false, reason: `不適切な名前です: "${word}"が含まれています` };
+      return { isValid: false, reason: `不適切な名前です: "${word}"が含まれています`, type: 'inappropriate' };
     }
   }
   
@@ -48,17 +63,17 @@ const validateAIName = (name: string): { isValid: boolean; reason?: string } => 
   const consecutiveMatch = trimmedName.match(/(.)\1{2,}/);
   if (consecutiveMatch) {
     const repeatedChar = consecutiveMatch[1];
-    return { isValid: false, reason: `同じ文字の連続が検出されました: "${repeatedChar}"` };
+    return { isValid: false, reason: `同じ文字の連続が検出されました: "${repeatedChar}"`, type: 'inappropriate' };
   }
   
   // 数字のみチェック
   if (/^\d+$/.test(trimmedName)) {
-    return { isValid: false, reason: "数字のみの名前は不適切です" };
+    return { isValid: false, reason: "数字のみの名前は不適切です", type: 'inappropriate' };
   }
   
   // 記号のみチェック
   if (/^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+$/.test(trimmedName)) {
-    return { isValid: false, reason: "記号のみの名前は不適切です" };
+    return { isValid: false, reason: "記号のみの名前は不適切です", type: 'inappropriate' };
   }
   
   return { isValid: true };
@@ -101,7 +116,7 @@ export const useGame = (settings: GameSettings) => {
   });
 
   const [talents, setTalents] = useState<Talent[]>([]);
-  const [badEndState, setBadEndState] = useState<BadEndState>({ triggered: false, name: '' });
+  const [badEndState, setBadEndState] = useState<BadEndState>({ triggered: false, name: '', type: 'inappropriate' });
 
   // タレントデータの読み込み
   useEffect(() => {
@@ -298,11 +313,21 @@ export const useGame = (settings: GameSettings) => {
   const answerSpecialQuestion = useCallback((answer: string) => {
     if (gameState.isAnswered) return;
     
-    // 名前の妥当性をチェック（バッドエンド処理はここで一元管理）
-    const validation = validateAIName(answer);
+    // 名前の妥当性をチェック（既存寮生データを渡す）
+    const validation = validateAIName(answer, talents);
     
     if (!validation.isValid) {
-      // バッドエンド発動時に即座にLocalStorageを削除
+      // 重複の場合はLocalStorageを削除しない
+      if (validation.type === 'duplicate') {
+        setBadEndState({
+          triggered: true,
+          name: answer,
+          type: 'duplicate'
+        });
+        return;
+      }
+      
+      // 不適切な名前の場合は従来通りLocalStorageを削除
       try {
         // 個別削除を先に実行
         const keysToRemove = [
@@ -328,10 +353,11 @@ export const useGame = (settings: GameSettings) => {
         console.error('Failed to clear localStorage:', error);
       }
 
-      // LocalStorage削除後にバッドエンドを発動
+      // LocalStorage削除後に不適切な名前のバッドエンドを発動
       setBadEndState({
         triggered: true,
-        name: answer
+        name: answer,
+        type: 'inappropriate'
       });
       return;
     }
@@ -356,16 +382,17 @@ export const useGame = (settings: GameSettings) => {
     } catch (error) {
       console.error('Failed to save AI given name:', error);
     }
-  }, [gameState.isAnswered]);
+  }, [gameState.isAnswered, talents]);
 
   // バッドエンド処理（削除処理は既に実行済みなので状態管理のみ）
   const handleBadEnd = useCallback(() => {
     // LocalStorageは既にanswerSpecialQuestion内で削除済み
     setBadEndState({
       triggered: true,
-      name: badEndState.name
+      name: badEndState.name,
+      type: badEndState.type
     });
-  }, [badEndState.name]);
+  }, [badEndState.name, badEndState.type]);
 
   // スタッフロール表示開始
   const startStaffRoll = () => {
