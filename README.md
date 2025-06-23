@@ -23,7 +23,7 @@
 
 ## 🌐 プレイ
 
-**公式サイト**: [https://parerdemia-fan.github.io/parerquiz/](https://parerdemia-fan.github.io/parerquiz/)
+[https://parerdemia-fan.github.io/parerquiz/](https://parerdemia-fan.github.io/parerquiz/)
 
 ## 💻 技術スタック
 
