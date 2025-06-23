@@ -59,17 +59,17 @@ export const TextInputAnswer: React.FC<TextInputAnswerProps> = ({
   }, [isAnswered]);
 
   return (
-    <div className="space-y-4 md:space-y-6">
+    <div className="space-y-4 lg:space-y-6">
       {/* 入力エリア */}
-      <div className="bg-white/90 rounded-2xl shadow-lg p-4 md:p-6 border border-white/50">
-        <h3 className="text-lg md:text-xl font-bold font-rounded text-gray-800 mb-3 md:mb-4 text-center">
+      <div className="bg-white/90 rounded-2xl shadow-lg p-4 lg:p-6 border border-white/50">
+        <h3 className="text-lg lg:text-xl font-bold font-rounded text-gray-800 mb-3 lg:mb-4 text-center">
           {isSpecialQuestion ? 
             "💫 ～ AIへの名前の贈り物 ～ 💫" : 
             "～ 真のマスターへの挑戦 ～"
           }
         </h3>
         
-        <div className="space-y-3 md:space-y-4">
+        <div className="space-y-3 lg:space-y-4">
           {/* テキスト入力 */}
           <div className="relative">
             <input
@@ -80,7 +80,7 @@ export const TextInputAnswer: React.FC<TextInputAnswerProps> = ({
               onKeyPress={handleKeyPress}
               disabled={isAnswered}
               placeholder={isSpecialQuestion ? "AIの新しい名前を入力..." : "タレントの名前を入力..."}
-              className={`w-full px-4 py-3 md:py-4 text-lg md:text-xl font-medium font-rounded rounded-xl border-2 transition-all duration-200 ${
+              className={`w-full px-4 py-3 lg:py-4 text-lg lg:text-xl font-medium font-rounded rounded-xl border-2 transition-all duration-200 ${
                 isAnswered
                   ? isTextAnswerCorrect
                     ? isSpecialQuestion 
@@ -107,7 +107,7 @@ export const TextInputAnswer: React.FC<TextInputAnswerProps> = ({
           <button
             onClick={handleSubmit}
             disabled={isAnswered || !inputValue.trim()}
-            className={`w-full py-3 md:py-4 font-bold font-rounded text-lg md:text-xl rounded-xl transition-all duration-200 ${
+            className={`w-full py-3 lg:py-4 font-bold font-rounded text-lg lg:text-xl rounded-xl transition-all duration-200 ${
               isAnswered || !inputValue.trim()
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : isSpecialQuestion
@@ -121,7 +121,7 @@ export const TextInputAnswer: React.FC<TextInputAnswerProps> = ({
 
         {/* ヒント表示 */}
         {!isAnswered && (
-          <div className="mt-3 md:mt-4 text-center">
+          <div className="mt-3 lg:mt-4 text-center">
             <p className={`text-sm font-elegant ${isSpecialQuestion ? 'text-pink-600' : 'text-gray-600'}`}>
               {isSpecialQuestion ? 
                 '💝 真心を込めた名前をお願いします...' : 
@@ -134,10 +134,10 @@ export const TextInputAnswer: React.FC<TextInputAnswerProps> = ({
 
       {/* 回答結果表示 */}
       {isAnswered && (
-        <div className="mt-4 md:mt-6">
+        <div className="mt-4 lg:mt-6">
           {isTextAnswerCorrect && isSpecialQuestion ? (
             // 61問目の特別正解表示
-            <div className="relative overflow-hidden bg-gradient-to-r from-pink-400 via-purple-400 to-pink-500 rounded-2xl p-4 md:p-6 shadow-lg">
+            <div className="relative overflow-hidden bg-gradient-to-r from-pink-400 via-purple-400 to-pink-500 rounded-2xl p-4 lg:p-6 shadow-lg">
               {/* 特別な背景エフェクト */}
               <div className="absolute inset-0 bg-gradient-to-r from-pink-300/20 via-purple-300/20 to-pink-400/20"></div>
               
@@ -152,18 +152,18 @@ export const TextInputAnswer: React.FC<TextInputAnswerProps> = ({
               <div className="relative z-10 text-center">
                 <div className="flex items-center justify-center space-x-3 mb-3">
                   <div className="text-4xl animate-bounce filter drop-shadow-lg">💖</div>
-                  <div className="text-2xl md:text-3xl font-black text-white drop-shadow-2xl animate-pulse">
+                  <div className="text-2xl lg:text-3xl font-black text-white drop-shadow-2xl animate-pulse">
                     ありがとう！
                   </div>
                   <div className="text-4xl animate-bounce filter drop-shadow-lg" style={{ animationDelay: '0.2s' }}>✨</div>
                 </div>
-                <div className="text-white font-bold text-base md:text-lg drop-shadow-2xl mb-3">
+                <div className="text-white font-bold text-base lg:text-lg drop-shadow-2xl mb-3">
                   {aiGivenName && `もしも${aiGivenName}になれたら、きっと幸せです！`}
                 </div>
                 
                 {/* 特別メッセージ */}
-                <div className="bg-white/25 rounded-xl p-3 md:p-4 border border-white/40">
-                    <div className="text-white font-black text-lg md:text-xl drop-shadow-lg">
+                <div className="bg-white/25 rounded-xl p-3 lg:p-4 border border-white/40">
+                    <div className="text-white font-black text-lg lg:text-xl drop-shadow-lg">
                     憧れの名前をもらえました！
                     </div>
                   <div className="text-white/90 text-sm mt-2">
@@ -174,7 +174,7 @@ export const TextInputAnswer: React.FC<TextInputAnswerProps> = ({
             </div>
           ) : isTextAnswerCorrect ? (
             // 正解時の表示
-            <div className="relative overflow-hidden bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 rounded-2xl p-4 md:p-6 shadow-lg">
+            <div className="relative overflow-hidden bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 rounded-2xl p-4 lg:p-6 shadow-lg">
               {/* 背景エフェクト */}
               <div className="absolute inset-0 bg-gradient-to-r from-green-300/20 via-emerald-300/20 to-green-400/20"></div>
               
@@ -189,28 +189,28 @@ export const TextInputAnswer: React.FC<TextInputAnswerProps> = ({
               <div className="relative z-10 text-center">
                 <div className="flex items-center justify-center space-x-3 mb-3">
                   <div className="text-4xl animate-bounce filter drop-shadow-lg">🎉</div>
-                        <div className="text-2xl md:text-3xl font-black text-white drop-shadow-2xl animate-pulse">
+                        <div className="text-2xl lg:text-3xl font-black text-white drop-shadow-2xl animate-pulse">
                           正解！
                         </div>
                   <div className="text-4xl animate-bounce filter drop-shadow-lg" style={{ animationDelay: '0.2s' }}>👹</div>
                 </div>
-                <div className="text-white font-bold text-base md:text-lg drop-shadow-2xl mb-3">
+                <div className="text-white font-bold text-base lg:text-lg drop-shadow-2xl mb-3">
                   素晴らしい！真の猛者です！
                 </div>
                 
                 {/* 正解表示 */}
-                <div className="bg-white/25 rounded-xl p-3 md:p-4 border border-white/40">
+                <div className="bg-white/25 rounded-xl p-3 lg:p-4 border border-white/40">
                   <div className="flex items-center justify-center space-x-3">
                     <img
                       src={`/parerquiz/assets/images/portrait/${correctTalent.studentId}.webp`}
                       alt={correctTalent.name}
-                      className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-full border-2 border-white/60 shadow-md"
+                      className="w-12 h-12 lg:w-16 lg:h-16 object-cover rounded-full border-2 border-white/60 shadow-md"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = '/parerquiz/assets/images/parerdemia-logo.png';
                       }}
                     />
-                    <div className="text-white font-black text-lg md:text-xl drop-shadow-lg">
+                    <div className="text-white font-black text-lg lg:text-xl drop-shadow-lg">
                       {correctTalent.name}
                     </div>
                   </div>
@@ -219,31 +219,31 @@ export const TextInputAnswer: React.FC<TextInputAnswerProps> = ({
             </div>
           ) : (
             // 不正解時の表示
-            <div className="relative overflow-hidden bg-gradient-to-r from-rose-400 via-pink-400 to-red-400 rounded-2xl p-4 md:p-6 shadow-lg">
+            <div className="relative overflow-hidden bg-gradient-to-r from-rose-400 via-pink-400 to-red-400 rounded-2xl p-4 lg:p-6 shadow-lg">
               <div className="relative z-10 text-center">
                 <div className="flex items-center justify-center space-x-3 mb-3">
                   <div className="text-3xl">😤</div>
-                  <div className="text-2xl md:text-3xl font-black text-white drop-shadow-lg">ハズレ</div>
+                  <div className="text-2xl lg:text-3xl font-black text-white drop-shadow-lg">ハズレ</div>
                   <div className="text-3xl">💪</div>
                 </div>
-                <div className="text-white font-bold text-sm md:text-base drop-shadow-md mb-4">
+                <div className="text-white font-bold text-sm lg:text-base drop-shadow-md mb-4">
                   難易度：鬼 は手強いね！でも諦めないで！
                 </div>
                 
                 {/* 正解情報表示 */}
-                <div className="bg-white/25 rounded-xl p-3 md:p-4 border border-white/40">
-                  <div className="text-white/90 text-xs md:text-sm font-medium mb-2">正解は...</div>
+                <div className="bg-white/25 rounded-xl p-3 lg:p-4 border border-white/40">
+                  <div className="text-white/90 text-xs lg:text-sm font-medium mb-2">正解は...</div>
                   <div className="flex items-center justify-center space-x-3">
                     <img
                       src={`/parerquiz/assets/images/portrait/${correctTalent.studentId}.webp`}
                       alt={correctTalent.name}
-                      className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-full border-2 border-white/60 shadow-md"
+                      className="w-12 h-12 lg:w-16 lg:h-16 object-cover rounded-full border-2 border-white/60 shadow-md"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = '/parerquiz/assets/images/parerdemia-logo.png';
                       }}
                     />
-                    <div className="text-white font-black text-lg md:text-xl drop-shadow-lg">
+                    <div className="text-white font-black text-lg lg:text-xl drop-shadow-lg">
                       {correctTalent.name}
                     </div>
                   </div>

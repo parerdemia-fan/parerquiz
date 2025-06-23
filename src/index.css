@@ -494,7 +494,7 @@ body {
   animation: silhouetteToNormal 0.5s ease-out forwards;
 }
 
-/* モバイル背景装飾アニメーション */
+/* モバイル専用背景装飾アニメーション */
 @keyframes floatingMirror {
   0%, 100% { 
     transform: translateY(0px) scale(1) rotate(0deg); 

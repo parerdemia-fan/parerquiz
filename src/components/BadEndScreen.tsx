@@ -201,7 +201,7 @@ export const BadEndScreen: React.FC<BadEndScreenProps> = ({ name, type = 'inappr
           type === 'duplicate' ? 'border-4 border-blue-400/50' : 'border-4 border-red-500/50'
         }`}>
           {/* タイトル */}
-          <h1 className={`text-3xl md:text-5xl font-black mb-8 drop-shadow-lg animate-pulse ${
+          <h1 className={`text-3xl lg:text-5xl font-black mb-8 drop-shadow-lg animate-pulse ${
             type === 'duplicate' 
               ? 'text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 bg-clip-text'
               : 'text-transparent bg-gradient-to-r from-red-500 via-pink-500 to-purple-500 bg-clip-text'
@@ -210,7 +210,7 @@ export const BadEndScreen: React.FC<BadEndScreenProps> = ({ name, type = 'inappr
           </h1>
 
           {/* コンテンツ */}
-          <div className="space-y-4 text-gray-800 text-lg md:text-xl font-medium leading-relaxed mb-12">
+          <div className="space-y-4 text-gray-800 text-lg lg:text-xl font-medium leading-relaxed mb-12">
             {currentPhaseData.content.map((line, index) => (
               <div 
                 key={index}

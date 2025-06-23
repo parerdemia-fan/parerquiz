@@ -49,7 +49,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
             <h3 className="text-xl font-bold text-gray-800 font-rounded border-b-2 border-purple-200 pb-2">
               🎮 ゲームの遊び方
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="bg-blue-50 p-4 rounded-lg">
                 <h4 className="font-bold text-blue-700 mb-2 font-rounded">名前当てモード</h4>
                 <p className="text-sm text-blue-600 font-elegant">
@@ -174,7 +174,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
               <p className="text-gray-700 font-elegant mb-4">
                 🌟 パレデミア学園の最新情報をチェック！✨
               </p>
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col lg:flex-row gap-3">
                 <a
                   href="https://www.parerdemia.jp/"
                   target="_blank"

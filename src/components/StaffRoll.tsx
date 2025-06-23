@@ -130,14 +130,14 @@ export const StaffRoll: React.FC<StaffRollProps> = ({ onComplete, aiGivenName })
 
       {/* メインコンテンツ */}
       <div className="relative z-10 max-w-4xl w-full">
-        <div className="bg-white/95 rounded-3xl shadow-2xl p-8 md:p-12 border-4 border-white/50 text-center animate-slideUp">
+        <div className="bg-white/95 rounded-3xl shadow-2xl p-8 lg:p-12 border-4 border-white/50 text-center animate-slideUp">
           {/* タイトル */}
-          <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent mb-8 drop-shadow-lg animate-pulse">
+          <h1 className="text-3xl lg:text-5xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent mb-8 drop-shadow-lg animate-pulse">
             {currentSectionData.title}
           </h1>
 
           {/* コンテンツ */}
-          <div className="space-y-4 text-gray-800 text-lg md:text-xl font-medium leading-relaxed">
+          <div className="space-y-4 text-gray-800 text-lg lg:text-xl font-medium leading-relaxed">
             {currentSectionData.content.map((line, index) => (
               <div 
                 key={index}

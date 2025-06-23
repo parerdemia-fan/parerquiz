@@ -1146,10 +1146,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       </button>
 
       {/* メインコンテンツ */}
-      <div className="min-h-screen flex flex-col p-2 md:p-4 relative z-10">
+      <div className="min-h-screen flex flex-col p-2 lg:p-4 relative z-10">
         {/* ゲームタイトル */}
-        <div className="text-center py-2 md:py-4 relative">
-          <h1 className="text-xl md:text-3xl font-black font-rounded bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+        <div className="text-center py-2 lg:py-4 relative">
+          <h1 className="text-xl lg:text-3xl font-black font-rounded bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
             パレクイズ
           </h1>
           <p className="text-sm text-gray-600 font-medium font-elegant hidden lg:block">
@@ -1165,7 +1165,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         </div>
 
         {/* ヘッダー - プログレスバーのみ */}
-        <header className="mb-4 md:mb-6 hidden lg:block">
+        <header className="mb-4 lg:mb-6 hidden lg:block">
           <div className="bg-white/80 rounded-lg shadow-md p-4 max-w-4xl mx-auto w-full">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium font-rounded text-gray-600">
@@ -1192,8 +1192,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         </header>
 
         {/* メインコンテンツエリア */}
-        <div className="flex-1 max-w-4xl mx-auto w-full pb-1 md:pb-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-6 h-full">
+        <div className="flex-1 max-w-4xl mx-auto w-full pb-1 lg:pb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-6 h-full">
             {/* 問題表示エリア */}
             <div className="flex flex-col">
               <QuestionDisplay
@@ -1208,9 +1208,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
             {/* 回答選択肢エリア */}
             <div className="flex flex-col">
-              <div className="bg-white/80 rounded-2xl shadow-lg p-1 md:p-6 border border-white/50 flex-1 min-h-0">
+              <div className="bg-white/80 rounded-2xl shadow-lg p-1 lg:p-6 border border-white/50 flex-1 min-h-0">
                 {!isOniMode && !gameState.isSpecialQuestion && (
-                  <h3 className="text-lg font-bold font-rounded text-gray-800 mb-2 md:mb-4 hidden lg:block">
+                  <h3 className="text-lg font-bold font-rounded text-gray-800 mb-2 lg:mb-4 hidden lg:block">
                     💫 正解はどれかな？
                   </h3>
                 )}
