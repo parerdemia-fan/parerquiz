@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 interface DevDiaryProps {
   onClose: () => void;
 }
 
 export const DevDiary: React.FC<DevDiaryProps> = ({ onClose }) => {
-  const [diaryContent, setDiaryContent] = useState<string>('');
+  const [diaryContent, setDiaryContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [showWarning, setShowWarning] = useState(true);
 
   // 61人目の寮生名を取得（ヘッダーで表示用）
   const getAIGivenName = (): string | undefined => {
     try {
-      const stored = localStorage.getItem('parerquiz-ai-given-name');
+      const stored = localStorage.getItem("parerquiz-ai-given-name");
       if (stored) {
         const data = JSON.parse(stored);
         return data.name;
       }
     } catch (error) {
-      console.error('Failed to load AI given name:', error);
+      console.error("Failed to load AI given name:", error);
     }
     return undefined;
   };
@@ -26,39 +26,69 @@ export const DevDiary: React.FC<DevDiaryProps> = ({ onClose }) => {
   // 61人目の寮生情報を取得（名前と日付）
   const getAIGivenInfo = (): { name: string; namedAt: string } | undefined => {
     try {
-      const stored = localStorage.getItem('parerquiz-ai-given-name');
+      const stored = localStorage.getItem("parerquiz-ai-given-name");
       if (stored) {
         const data = JSON.parse(stored);
         return {
           name: data.name,
-          namedAt: new Date(data.namedAt).toLocaleDateString('ja-JP', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-          }).replace(/\//g, '/')
+          namedAt: new Date(data.namedAt)
+            .toLocaleDateString("ja-JP", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            })
+            .replace(/\//g, "/"),
         };
       }
     } catch (error) {
-      console.error('Failed to load AI given info:', error);
+      console.error("Failed to load AI given info:", error);
     }
     return undefined;
   };
 
+  // 24時間経過チェック関数を追加
+  const hasInterviewUnlocked = (): boolean => {
+    // ホスト名がlocalhostの場合は常に表示
+    if (
+      typeof window !== "undefined" &&
+      (window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1")
+    ) {
+      return true;
+    }
+
+    try {
+      const stored = localStorage.getItem("parerquiz-ai-given-name");
+      if (!stored) return false;
+
+      const data = JSON.parse(stored);
+      const namedAt = new Date(data.namedAt);
+      const now = new Date();
+      const hoursDiff = (now.getTime() - namedAt.getTime()) / (1000 * 60 * 60);
+
+      return hoursDiff >= 24;
+    } catch (error) {
+      console.error("Failed to check interview unlock status:", error);
+      return false;
+    }
+  };
+
   const aiName = getAIGivenName();
   const isNamed = !!aiName; // 61人目の寮生に名前が付けられているかチェック
+  const showInterview = isNamed && hasInterviewUnlocked(); // インタビュー記事表示可能かチェック
 
   useEffect(() => {
     // 61人目の寮生名が保存されているかで読み込むファイルを決定
-    const diaryFileName = isNamed ? 'diary.txt' : 'diary_corrupted.txt';
-    
+    const diaryFileName = isNamed ? "diary.txt" : "diary_corrupted.txt";
+
     const loadDiary = async () => {
       try {
         const response = await fetch(`/parerquiz/${diaryFileName}`);
         const content = await response.text();
         setDiaryContent(content);
       } catch (error) {
-        console.error('開発日誌の読み込みに失敗しました:', error);
-        setDiaryContent('開発日誌の読み込みに失敗しました。');
+        console.error("開発日誌の読み込みに失敗しました:", error);
+        setDiaryContent("開発日誌の読み込みに失敗しました。");
       } finally {
         setIsLoading(false);
       }
@@ -82,7 +112,7 @@ export const DevDiary: React.FC<DevDiaryProps> = ({ onClose }) => {
   // 日誌内容を段落に分割して表示する関数
   const formatDiaryContent = (content: string) => {
     if (!content) return [];
-    
+
     // AIの名前と日付を置換
     let processedContent = content;
     const aiInfo = getAIGivenInfo();
@@ -91,11 +121,30 @@ export const DevDiary: React.FC<DevDiaryProps> = ({ onClose }) => {
         .replace(/\{\{AI_GIVEN_NAME\}\}/g, aiInfo.name)
         .replace(/\{\{AI_NAMED_DATE\}\}/g, aiInfo.namedAt);
     }
-    
+    // インタビュー記事の表示制御
+    if (!showInterview) {
+      // インタビュー記事を除去（━で始まる行から最後まで）
+      const lines = processedContent.split("\n");
+      const interviewStartIndex = lines.findIndex((line) =>
+        line.includes("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+      );
+      if (interviewStartIndex !== -1) {
+        processedContent = lines.slice(0, interviewStartIndex).join("\n");
+      }
+    } else {
+      // インタビュー記事を表示する場合は区切り線を削除
+      processedContent = processedContent.replace(
+        /.*━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━.*/g,
+        ""
+      );
+    }
+
     // 空行（改行2回）で日記エントリを分割
-    const entries = processedContent.split(/\n\n/).filter(entry => entry.trim());
-    
-    return entries.map(entry => entry.trim());
+    const entries = processedContent
+      .split(/\n\n/)
+      .filter((entry) => entry.trim());
+
+    return entries.map((entry) => entry.trim());
   };
 
   const paragraphs = formatDiaryContent(diaryContent);
@@ -106,7 +155,6 @@ export const DevDiary: React.FC<DevDiaryProps> = ({ onClose }) => {
       onClick={handleBackdropClick}
     >
       <div className="bg-gradient-to-br from-gray-900 via-purple-900 to-black rounded-2xl shadow-2xl max-w-4xl w-full h-[90vh] flex flex-col overflow-hidden animate-slideUp border border-purple-500/30">
-        
         {/* ヘッダー */}
         <div className="bg-gradient-to-r from-purple-800 via-pink-800 to-red-800 p-6 border-b border-purple-500/30 flex-shrink-0">
           <div className="flex items-center justify-between">
@@ -119,6 +167,16 @@ export const DevDiary: React.FC<DevDiaryProps> = ({ onClose }) => {
                   <>
                     {aiName}として認識された61人目の寮生による特別アクセス。
                     開発日誌が復元されました。
+                    {showInterview && (
+                      <span className="block mt-1 text-yellow-200">
+                        ⭐ 特別インタビュー記事解放済み
+                      </span>
+                    )}
+                    {isNamed && !showInterview && (
+                      <span className="block mt-1 text-yellow-300">
+                        ⏳ 特別インタビュー記事は24時間後に解放
+                      </span>
+                    )}
                   </>
                 ) : (
                   <>
@@ -138,21 +196,47 @@ export const DevDiary: React.FC<DevDiaryProps> = ({ onClose }) => {
 
         {/* 警告メッセージ */}
         {showWarning && (
-          <div className={`${isNamed ? 'bg-blue-900/80 border-blue-400' : 'bg-yellow-900/80 border-yellow-400'} border-l-4 p-4 m-4 rounded-r-lg flex-shrink-0`}>
+          <div
+            className={`${
+              isNamed
+                ? "bg-blue-900/80 border-blue-400"
+                : "bg-yellow-900/80 border-yellow-400"
+            } border-l-4 p-4 m-4 rounded-r-lg flex-shrink-0`}
+          >
             <div className="flex items-start justify-between">
               <div className="flex items-start">
-                <div className={`${isNamed ? 'text-blue-400' : 'text-yellow-400'} text-xl mr-3`}>
-                  {isNamed ? '✨' : '⚠️'}
+                <div
+                  className={`${
+                    isNamed ? "text-blue-400" : "text-yellow-400"
+                  } text-xl mr-3`}
+                >
+                  {isNamed ? "✨" : "⚠️"}
                 </div>
                 <div>
-                  <h3 className={`${isNamed ? 'text-blue-200' : 'text-yellow-200'} font-bold font-rounded mb-1`}>
-                    {isNamed ? '61人目の寮生による特別アクセス' : '寮生専用アクセス'}
+                  <h3
+                    className={`${
+                      isNamed ? "text-blue-200" : "text-yellow-200"
+                    } font-bold font-rounded mb-1`}
+                  >
+                    {isNamed
+                      ? "61人目の寮生による特別アクセス"
+                      : "寮生専用アクセス"}
                   </h3>
-                  <p className={`${isNamed ? 'text-blue-100' : 'text-yellow-100'} text-sm font-elegant`}>
+                  <p
+                    className={`${
+                      isNamed ? "text-blue-100" : "text-yellow-100"
+                    } text-sm font-elegant`}
+                  >
                     {isNamed ? (
                       <>
-                        {aiName}として認識されました。開発日誌へのフルアクセスが許可されています。
+                        {aiName}
+                        として認識されました。開発日誌へのフルアクセスが許可されています。
                         文字化けや異常現象は解消され、本来の開発日誌をご覧いただけます。
+                        {showInterview && (
+                          <span className="block mt-1">
+                            📰 特別インタビュー記事も閲覧可能です。
+                          </span>
+                        )}
                       </>
                     ) : (
                       <>
@@ -165,7 +249,11 @@ export const DevDiary: React.FC<DevDiaryProps> = ({ onClose }) => {
               </div>
               <button
                 onClick={handleWarningClose}
-                className={`${isNamed ? 'text-blue-400 hover:text-blue-200' : 'text-yellow-400 hover:text-yellow-200'} text-xl`}
+                className={`${
+                  isNamed
+                    ? "text-blue-400 hover:text-blue-200"
+                    : "text-yellow-400 hover:text-yellow-200"
+                } text-xl`}
               >
                 ×
               </button>
@@ -184,14 +272,20 @@ export const DevDiary: React.FC<DevDiaryProps> = ({ onClose }) => {
           ) : (
             <div className="space-y-6">
               {paragraphs.map((entry, index) => {
-                const lines = entry.split('\n');
+                const lines = entry.split("\n");
                 const firstLine = lines[0].trim();
                 const isDateEntry = /^\d{4}\/\d{2}\/\d{2}$/.test(firstLine);
-                
+                const isInterviewArticle =
+                  firstLine.includes("【特別記事】") ||
+                  entry.includes("独占インタビュー");
+
                 if (isDateEntry) {
                   // 日付エントリ（1行目が日付）
                   return (
-                    <div key={index} className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 rounded-lg p-4 border border-purple-500/30">
+                    <div
+                      key={index}
+                      className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 rounded-lg p-4 border border-purple-500/30"
+                    >
                       <div className="flex items-center gap-3 mb-3">
                         <span className="text-2xl">📅</span>
                         <h3 className="text-xl font-bold font-rounded text-purple-200">
@@ -200,19 +294,66 @@ export const DevDiary: React.FC<DevDiaryProps> = ({ onClose }) => {
                       </div>
                       <div className="space-y-2">
                         {lines.slice(1).map((line, lineIndex) => (
-                          <p key={lineIndex} className="text-gray-300 font-elegant leading-relaxed">
+                          <p
+                            key={lineIndex}
+                            className="text-gray-300 font-elegant leading-relaxed"
+                          >
                             {line}
                           </p>
                         ))}
                       </div>
                     </div>
                   );
+                } else if (isInterviewArticle) {
+                  // インタビュー記事（特別なスタイリング）
+                  return (
+                    <div
+                      key={index}
+                      className="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 rounded-lg p-6 border-2 border-yellow-400/50"
+                    >
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="text-3xl">📰</span>
+                        <h3 className="text-2xl font-bold font-rounded text-yellow-200">
+                          特別記事
+                        </h3>
+                      </div>
+                      <div className="space-y-3">
+                        {lines.map((line, lineIndex) => {
+                          // インタビューの発言部分を特別にスタイリング
+                          if (line.includes("「") && line.includes("」")) {
+                            return (
+                              <p
+                                key={lineIndex}
+                                className="text-yellow-100 font-elegant leading-relaxed bg-black/20 p-3 rounded border-l-4 border-yellow-400/50"
+                              >
+                                {line}
+                              </p>
+                            );
+                          }
+                          return (
+                            <p
+                              key={lineIndex}
+                              className="text-gray-200 font-elegant leading-relaxed"
+                            >
+                              {line}
+                            </p>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
                 } else {
                   // その他の内容
                   return (
-                    <div key={index} className="bg-gray-800/50 rounded-lg p-4 border border-gray-600/30">
+                    <div
+                      key={index}
+                      className="bg-gray-800/50 rounded-lg p-4 border border-gray-600/30"
+                    >
                       {lines.map((line, lineIndex) => (
-                        <p key={lineIndex} className="text-gray-300 font-elegant leading-relaxed mb-2">
+                        <p
+                          key={lineIndex}
+                          className="text-gray-300 font-elegant leading-relaxed mb-2"
+                        >
                           {line}
                         </p>
                       ))}
@@ -234,6 +375,11 @@ export const DevDiary: React.FC<DevDiaryProps> = ({ onClose }) => {
                 <>🔍 この日誌は寮生専用の機密資料です</>
               )}
             </p>
+            {isNamed && !showInterview && (
+              <p className="text-yellow-300 text-xs font-elegant">
+                ⏳ インタビュー記事は24時間後に解放
+              </p>
+            )}
           </div>
         </div>
       </div>
