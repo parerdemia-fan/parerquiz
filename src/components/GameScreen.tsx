@@ -14,7 +14,10 @@ import { BadEndScreen } from "./BadEndScreen";
 
 interface GameScreenProps {
   settings: GameSettings;
-  onBackToTitle: (result?: { correctAnswers: number; totalQuestions: number }) => void;
+  onBackToTitle: (result?: {
+    correctAnswers: number;
+    totalQuestions: number;
+  }) => void;
   debugMode?: DebugMode | null;
 }
 
@@ -36,18 +39,21 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     debugJumpToNearEnd, // 新しいデバッグ関数を追加
     isAdvancedMode,
     isOniMode, // 鬼モード判定を追加
-    badEndState
+    badEndState,
   } = useGame(settings);
   const { earnBadge, reloadBadges } = useBadges();
   const [newBadgeEarned, setNewBadgeEarned] = useState<boolean>(false);
   const [badgeAnimationKey, setBadgeAnimationKey] = useState<number>(0);
 
   // AIメッセージ関連の状態
-  const [aiMessage, setAiMessage] = useState<{
-    text: string;
-    timestamp: number;
-    questionNumber: number;
-  } | undefined>(undefined);
+  const [aiMessage, setAiMessage] = useState<
+    | {
+        text: string;
+        timestamp: number;
+        questionNumber: number;
+      }
+    | undefined
+  >(undefined);
 
   // 正解数の変化を監視するためのref
   const prevCorrectAnswersRef = useRef<number>(0);
@@ -60,35 +66,36 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   // 正解時にAIメッセージを表示する条件をチェック
   const shouldShowAIMessage = (): boolean => {
     if (
-      settings.dormitory === 'すべて' && 
-      settings.difficulty === '鬼' && 
-      settings.gameMode === 'name' && // 名前当てモードのみに限定
-      gameState.isAnswered && 
+      settings.dormitory === "すべて" &&
+      settings.difficulty === "鬼" &&
+      settings.gameMode === "name" && // 名前当てモードのみに限定
+      gameState.isAnswered &&
       gameState.questions.length > 0 &&
       !gameState.isSpecialQuestion // 61問目ではAIメッセージを表示しない
     ) {
       const currentQuestionNumber = gameState.currentQuestion + 1;
       const currentCorrectAnswers = gameState.correctAnswers;
-      
+
       // 正解数が増加した場合のみtrueを返す
-      const hasCorrectAnswersIncreased = currentCorrectAnswers > prevCorrectAnswersRef.current;
-      
+      const hasCorrectAnswersIncreased =
+        currentCorrectAnswers > prevCorrectAnswersRef.current;
+
       if (hasCorrectAnswersIncreased) {
         // 60問目は全問正解時のみ表示
         if (currentQuestionNumber === 60) {
           return currentCorrectAnswers === 60;
         }
-        
+
         return true;
       }
     }
-    
+
     return false;
   };
 
   // 正解判定の共通ロジック
   const checkIsCorrect = (): boolean => {
-    if (isOniMode && settings.gameMode === 'name') {
+    if (isOniMode && settings.gameMode === "name") {
       return gameState.isTextAnswerCorrect || false;
     } else {
       const currentQ = gameState.questions[gameState.currentQuestion];
@@ -101,19 +108,23 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   useEffect(() => {
     if (shouldShowAIMessage()) {
       const currentQuestionNumber = gameState.currentQuestion + 1;
-      
+
       const aiMessageText = generateAIMessage(currentQuestionNumber);
-      
+
       setAiMessage({
         text: aiMessageText,
         timestamp: Date.now(),
-        questionNumber: currentQuestionNumber
+        questionNumber: currentQuestionNumber,
       });
 
       // 正解数を更新（次回の比較用）
       prevCorrectAnswersRef.current = gameState.correctAnswers;
     }
-  }, [gameState.isAnswered, gameState.currentQuestion, gameState.correctAnswers]);
+  }, [
+    gameState.isAnswered,
+    gameState.currentQuestion,
+    gameState.correctAnswers,
+  ]);
 
   // AIメッセージを非表示にする処理
   const handleHideAIMessage = () => {
@@ -121,7 +132,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   };
 
   // localhost判定を追加
-  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const isLocalhost =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
 
   // 出題範囲に応じた背景画像パスを取得する関数
   const getBackgroundImagePath = (dormitory: string) => {
@@ -176,13 +189,13 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         gameState.debugForceFinish?.correctAnswers || gameState.correctAnswers;
       const correctRate = correctAnswers / totalQuestions;
 
-      console.log('Game finished check:', {
+      console.log("Game finished check:", {
         correctRate,
         dormitory: settings.dormitory,
         difficulty: settings.difficulty,
         gameMode: settings.gameMode,
         showingOldAI: gameState.showingOldAI,
-        oldAICompleted: gameState.oldAICompleted
+        oldAICompleted: gameState.oldAICompleted,
       });
 
       // 古いAI表示条件チェック（この処理を削除）
@@ -373,7 +386,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     if (!gameState.isAnswered) return;
 
     // 61問目の場合は特別処理：スタッフロールを開始
-    if (gameState.isSpecialQuestion && !gameState.showingStaffRoll && !gameState.staffRollCompleted) {
+    if (
+      gameState.isSpecialQuestion &&
+      !gameState.showingStaffRoll &&
+      !gameState.staffRollCompleted
+    ) {
       const timer = setTimeout(() => {
         startStaffRoll(); // スタッフロール開始
       }, 3000); // 61問目は3秒後にスタッフロール開始
@@ -412,12 +429,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
   // バッドエンド画面表示
   if (badEndState.triggered) {
-    return (
-      <BadEndScreen
-        name={badEndState.name}
-        type={badEndState.type}
-      />
-    );
+    return <BadEndScreen name={badEndState.name} type={badEndState.type} />;
   }
 
   // スタッフロール表示中の場合
@@ -425,7 +437,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     return (
       <StaffRoll
         onComplete={finishStaffRoll}
-        aiGivenName={gameState.aiGivenName || 'GitHub Copilot'}
+        aiGivenName={gameState.aiGivenName || "GitHub Copilot"}
       />
     );
   }
@@ -697,7 +709,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     const handleBackToTitle = () => {
       onBackToTitle({
         correctAnswers,
-        totalQuestions
+        totalQuestions,
       });
     };
 
@@ -709,7 +721,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           ? "ふつう"
           : settings.difficulty === "むずかしい"
           ? "むずかしい"
-          : "寮生専用";
+          : settings.difficulty === "寮生専用"
+          ? "寮生専用"
+          : settings.difficulty === "鬼"
+          ? "鬼"
+          : "ふつう"; // フォールバック
 
       let shareText = `🌟パレクイズ挑戦！\n`;
       shareText += `${settings.dormitory}/${modeText}/${difficultyText}\n`;
@@ -719,6 +735,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         shareText += `🏆パーフェクト達成✨`;
         if (settings.difficulty === "寮生専用") {
           shareText += `シルエットモード制覇👑`;
+        } else if (settings.difficulty === "鬼") {
+          shareText += `難易度：鬼モード制覇👹`;
         }
       } else if (correctRate >= 90) {
         shareText += `🌟エクセレント！もう少しで完璧🔥`;
@@ -855,7 +873,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
                   <div className="text-xl font-bold text-gray-700 mb-2">
                     {settings.dormitory}
                   </div>
-                    <div className="text-lg text-gray-600">
+                  <div className="text-lg text-gray-600">
                     {settings.difficulty === "ふつう"
                       ? "ベーシック"
                       : settings.difficulty === "むずかしい"
@@ -863,15 +881,17 @@ export const GameScreen: React.FC<GameScreenProps> = ({
                       : settings.difficulty === "寮生専用"
                       ? "エキスパート"
                       : "レジェンド"}
-                    </div>
+                  </div>
 
                   {/* バッジの種類に応じた特別メッセージ */}
                   <div className="mt-4 px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full">
                     <span className="text-white font-black text-lg drop-shadow-md">
-                      {settings.difficulty === '鬼' && "👹 鬼バッジ獲得！"}
-                      {settings.difficulty === '寮生専用' && "👑 金バッジ獲得！"}
-                      {settings.difficulty === 'むずかしい' && "⚡ 銀バッジ獲得！"}
-                      {settings.difficulty === 'ふつう' && "🎖️ 銅バッジ獲得！"}
+                      {settings.difficulty === "鬼" && "👹 鬼バッジ獲得！"}
+                      {settings.difficulty === "寮生専用" &&
+                        "👑 金バッジ獲得！"}
+                      {settings.difficulty === "むずかしい" &&
+                        "⚡ 銀バッジ獲得！"}
+                      {settings.difficulty === "ふつう" && "🎖️ 銅バッジ獲得！"}
                     </span>
                   </div>
                 </div>
@@ -1096,10 +1116,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       <div className="absolute inset-0 bg-white/80"></div>
 
       {/* AIメッセージ表示 */}
-      <AIMessage 
-        message={aiMessage}
-        onHide={handleHideAIMessage}
-      />
+      <AIMessage message={aiMessage} onHide={handleHideAIMessage} />
 
       {/* モバイル専用背景装飾 - 画面下部1/3 */}
       <div className="fixed bottom-0 left-0 right-0 h-1/3 pointer-events-none overflow-hidden lg:hidden relative z-10">
@@ -1226,7 +1243,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
                       isSpecialQuestion={true}
                       aiGivenName={gameState.aiGivenName}
                     />
-                  ) : isOniMode && settings.gameMode === 'name' ? (
+                  ) : isOniMode && settings.gameMode === "name" ? (
                     // 難易度：鬼・名前当てモード：テキスト入力
                     <TextInputAnswer
                       correctTalent={currentQuestion.correctTalent}
@@ -1254,16 +1271,21 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         </div>
 
         {/* 次へボタンは削除 */}
-        
+
         {/* デバッグ用ボタン（localhost でのみ表示） */}
         {isLocalhost && !gameState.gameFinished && (
           <div className="fixed bottom-4 left-4 z-20">
             <div className="bg-yellow-100 border border-yellow-300 rounded-lg shadow-lg p-3">
-              <div className="text-xs font-bold text-yellow-800 mb-2">🐛 デバッグ</div>
+              <div className="text-xs font-bold text-yellow-800 mb-2">
+                🐛 デバッグ
+              </div>
               <div className="space-y-2">
                 <button
                   onClick={debugJumpToNearEnd}
-                  disabled={gameState.totalQuestions <= 1 || gameState.currentQuestion >= gameState.totalQuestions - 2}
+                  disabled={
+                    gameState.totalQuestions <= 1 ||
+                    gameState.currentQuestion >= gameState.totalQuestions - 2
+                  }
                   className="block w-full px-3 py-2 bg-blue-500 text-white font-bold rounded text-xs hover:bg-blue-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   ⏭️ 最終問題の前へ
